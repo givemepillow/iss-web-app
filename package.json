@@ -9,17 +9,24 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@vicons/ionicons5": "^0.12.0",
+    "cropperjs": "^1.5.13",
+    "eslint": "^8.33.0",
+    "eslint-plugin-vue": "^9.9.0",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.1.4",
     "@vitejs/plugin-vue": "^4.0.0",
-    "@vue/eslint-config-prettier": "^7.0.0",
-    "eslint": "^8.22.0",
-    "eslint-plugin-vue": "^9.3.0",
-    "prettier": "^2.7.1",
+    "naive-ui": "^2.34.3",
+    "sass": "^1.57.1",
     "vite": "^4.0.0"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": false
   }
 }
