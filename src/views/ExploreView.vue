@@ -1,6 +1,7 @@
 <script setup>
 import NavigationHeader from "@/components/NavigationBar.vue";
-import TemplatePage from "@/pages/TemplatePage.vue";
+import TemplatePage from "@/pages/BasePage.vue";
+import ExplorePage from "@/pages/ExplorePage.vue";
 </script>
 
 <template>
@@ -9,10 +10,10 @@ import TemplatePage from "@/pages/TemplatePage.vue";
       <NavigationHeader :is-profile="false"/>
     </template>
     <template v-slot:main>
-<!--      <FeedCollection />-->
+      <ExplorePage/>
     </template>
     <template v-slot:footer>
-      <NavigationHeader />
+<!--      <NavigationHeader />-->
     </template>
   </TemplatePage>
 </template>

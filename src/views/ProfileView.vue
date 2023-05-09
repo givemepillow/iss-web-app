@@ -1,6 +1,6 @@
 <script setup>
 import NavigationHeader from "@/components/NavigationBar.vue";
-import TemplatePage from "@/pages/TemplatePage.vue";
+import TemplatePage from "@/pages/BasePage.vue";
 </script>
 
 <template>

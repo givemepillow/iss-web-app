@@ -1,18 +1,10 @@
 <script setup>
-import NavigationHeader from "@/components/NavigationBar.vue";
-import TemplatePage from "@/pages/TemplatePage.vue";
-import PostCreator from "@/pages/CreatePostPage.vue";
+
+import CropperGallery from "@/components/cropper/CropperGallery.vue";
+import PictureUploader from "@/components/cropper/PictureUploader.vue";
 </script>
 
 <template>
-  <TemplatePage>
-    <template v-slot:header>
-      <NavigationHeader :is-profile="false"/>
-    </template>
-    <template v-slot:main>
-      <PostCreator/>
-    </template>
-    <template v-slot:footer>
-    </template>
-  </TemplatePage>
+  <CropperGallery></CropperGallery>
+<!--  <PictureUploader></PictureUploader>-->
 </template>
