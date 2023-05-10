@@ -1,7 +1,7 @@
 <script setup>
-import WallFeed from "@/components/wall/WallFeed.vue";
 import TemplatePage from "@/pages/BasePage.vue";
 import NavigationBar from "@/components/NavigationBar.vue";
+import CreatePost from "@/components/create-post/CreatePost.vue";
 </script>
 
 
@@ -11,8 +11,9 @@ import NavigationBar from "@/components/NavigationBar.vue";
       <NavigationBar/>
     </template>
     <template v-slot:main>
-      <WallFeed />
+      <CreatePost/>
     </template>
     <template v-slot:footer></template>
   </TemplatePage>
 </template>
+

@@ -4,7 +4,6 @@ import {
   PersonCircleOutline,
   SettingsOutline,
   LogOutOutline,
-  HomeOutline,
   PlanetOutline,
   Add,
   NotificationsOutline
@@ -50,14 +49,7 @@ const options = [
         </n-icon>
       </n-button>
     </RouterLink>
-    <RouterLink to="/feed">
-      <n-button circle quaternary size="medium" strong>
-        <n-icon size="large">
-          <home-outline />
-        </n-icon>
-      </n-button>
-    </RouterLink >
-    <RouterLink to="/new">
+    <RouterLink to="/create">
     <n-button circle quaternary size="medium" strong>
       <n-icon size="x-large">
         <add />

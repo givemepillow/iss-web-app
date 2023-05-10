@@ -1,10 +1,18 @@
 <script setup>
-
-import CropperGallery from "@/components/cropper/CropperGallery.vue";
-import PictureUploader from "@/components/cropper/PictureUploader.vue";
+import PostItem from "@/components/post/PostItem.vue";
+import WallFeed from "@/components/wall/WallFeed.vue";
+import TemplatePage from "@/pages/BasePage.vue";
 </script>
 
 <template>
-  <CropperGallery></CropperGallery>
-<!--  <PictureUploader></PictureUploader>-->
+  <TemplatePage>
+    <template v-slot:header>
+    </template>
+    <template v-slot:main>
+      <PostItem />
+      <WallFeed />
+    </template>
+    <template v-slot:footer>
+    </template>
+  </TemplatePage>
 </template>

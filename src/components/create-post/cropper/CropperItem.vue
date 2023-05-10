@@ -3,6 +3,7 @@
     <div ref="canvas" class="cropper-canvas">
       <img ref="image" :src="src" alt="" @load="onLoad">
     </div>
+    <a ref="a" style="display:none;position: absolute"></a>
   </div>
 
 </template>
@@ -11,6 +12,7 @@
 import { ref, watch } from "vue";
 import Cropper from "cropperjs";
 
+const a = ref(null);
 const props = defineProps({
   index: {
     type: Number,
@@ -38,6 +40,18 @@ function destroy() {
   cropper.value.destroy();
 }
 
+function save() {
+  cropper.value.getCroppedCanvas({
+    imageSmoothingEnabled: false,
+    imageSmoothingQuality: "high"
+  }).toBlob((b) => {
+    a.value.href = window.URL.createObjectURL(b);
+    a.value.download = props.index + ".png";
+    a.value.click();
+    window.URL.revokeObjectURL(a.value.href);
+  }, "image/png", 1);
+}
+
 function zoomPicture(v) {
   if (cropper.value === null) return;
   const containerData = cropper.value.getContainerData();
@@ -58,6 +72,7 @@ defineExpose({
   zoomPicture,
   getPictureRatio,
   destroy,
+  save,
   currentZoom
 });
 
@@ -79,6 +94,7 @@ function onLoad() {
     background: false,
     highlight: true,
     autoCropArea: 1,
+    autoCrop: true,
     cropBoxResizable: false,
     cropBoxMovable: false,
     ready(_) {

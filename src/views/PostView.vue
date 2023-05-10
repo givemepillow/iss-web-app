@@ -1,16 +1,21 @@
 <script setup>
-import NavigationHeader from "@/components/NavigationBar.vue";
+import PostItem from "@/components/post/PostItem.vue";
+import WallFeed from "@/components/wall/WallFeed.vue";
 import TemplatePage from "@/pages/BasePage.vue";
+import NavigationBar from "@/components/NavigationBar.vue";
 </script>
+
 
 <template>
   <TemplatePage>
     <template v-slot:header>
-      <NavigationHeader :is-profile="false"/>
+      <NavigationBar/>
     </template>
     <template v-slot:main>
-<!--      <ImageCropper />-->
+      <PostItem />
+      <WallFeed />
     </template>
     <template v-slot:footer></template>
   </TemplatePage>
 </template>
+

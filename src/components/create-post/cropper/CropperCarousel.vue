@@ -1,6 +1,6 @@
 <template>
-  <div class="container" @mouseleave="hideNavigation" @mouseover="showNavigation">
-    <div class="swiper">
+  <div class="cropper-carousel-container" @mouseleave="hideNavigation" @mouseover="showNavigation">
+    <div ref="swiperItem" class="swiper">
       <DeleteButton
         :size="30" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
         class="delete-button"
@@ -11,19 +11,19 @@
           <PictureCropper :ref="(el) => {croppers[i] = el }" :index="v.index" :ratio="ratio" :src="v.file" />
         </div>
         <div v-if="links.length < 3" class="swiper-slide">
-          <PictureUploader @upload="onUpload" @mouseover="hideTools"/>
+          <PictureUploader @mouseover="hideTools" @upload="onUpload" />
         </div>
       </div>
       <div class="swiper-pagination" @click="hideTools"></div>
-      <PrevButton :size="30" :style="prevButtonStyle" class="swiper-button-prev" />
-      <NextButton :size="30" :style="nextButtonStyle" class="swiper-button-next" />
+      <PrevButton :size="26" :style="prevButtonStyle" class="swiper-button-prev" />
+      <NextButton :size="26" :style="nextButtonStyle" class="swiper-button-next" />
       <CropButton
-        :size="30" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
+        :size="28" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
         class="crop-button"
         @click="cropMenuShowed = !cropMenuShowed; sliderShowed = false"
       />
       <ZoomButton
-        :size="30" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
+        :size="28" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
         class="zoom-button"
         @click="sliderShowed = !sliderShowed; cropMenuShowed = false"
       />
@@ -45,21 +45,22 @@
 <script setup>
 import { onMounted, onUpdated, reactive, ref } from "vue";
 import Swiper, { Pagination, Navigation } from "swiper";
-import PictureCropper from "@/components/cropper/PictureCropper.vue";
+import PictureCropper from "@/components/create-post/cropper/CropperItem.vue";
 import NextButton from "@/components/buttons/NextButton.vue";
 import PrevButton from "@/components/buttons/PrevButton.vue";
 import CropButton from "@/components/buttons/CropButton.vue";
 import ZoomButton from "@/components/buttons/ZoomButton.vue";
-import ZoomSlider from "@/components/cropper/ZoomSlider.vue";
-import CropRatioMenu from "@/components/cropper/CropMenu.vue";
-import PictureUploader from "@/components/cropper/PictureUploader.vue";
+import ZoomSlider from "@/components/create-post/cropper/ZoomSlider.vue";
+import CropRatioMenu from "@/components/create-post/cropper/CropMenu.vue";
+import PictureUploader from "@/components/create-post/cropper/FileUploader.vue";
 import DeleteButton from "@/components/buttons/DeleteButton.vue";
 
+const swiperItem = ref(null);
 const count = ref(0);
 const index = ref(0);
 const links = ref([]);
 const swiper = ref(null);
-const ratio = ref(0);
+const ratio = ref(1);
 const croppers = ref({});
 const current = ref(null);
 let sliderShowed = ref(false);
@@ -82,6 +83,12 @@ function onUpload(files) {
     if (links.value.length > 2) return;
     links.value.push({ index: getIndex(), file: URL.createObjectURL(f) });
   });
+}
+
+function onSave() {
+  for (const [_, c] of Object.entries(croppers.value)) {
+    c.save();
+  }
 }
 
 onUpdated(() => {
@@ -125,7 +132,7 @@ function hideTools() {
 }
 
 onMounted(() => {
-  swiper.value = new Swiper(".swiper", {
+  swiper.value = new Swiper(swiperItem.value, {
     modules: [Navigation, Pagination],
     direction: "horizontal",
     loop: false,
@@ -156,53 +163,55 @@ onMounted(() => {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.cropper-carousel-container {
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  //background-color: #3399ff;
 
-.container {
-    height: 550px;
-    width: 550px;
-    user-select: none;
-}
 
-.crop-button, .zoom-button, .delete-button {
+  .crop-button, .zoom-button, .delete-button {
     z-index: 2;
     position: absolute;
 
-}
+  }
 
-.crop-button {
+  .crop-button {
     left: 10px;
     bottom: 20px;
-}
+  }
 
-.zoom-button {
+  .zoom-button {
     left: 45px;
     bottom: 20px;
-}
+  }
 
-.delete-button {
+  .delete-button {
     left: 10px;
     top: 20px;
-}
+  }
 
-.zoom-slider, .ratio-menu {
+  .zoom-slider, .ratio-menu {
     position: relative;
     z-index: 1;
     border-radius: 10px;
     height: fit-content;
     transition: all ease-out 300ms;
-}
+  }
 
-.zoom-slider {
+  .zoom-slider {
     width: 40%;
 
-}
+  }
 
-.ratio-menu {
+  .ratio-menu {
     width: 20%;
+  }
+
+  .swiper-button-next:hover, .swiper-button-prev:hover {
+    opacity: 0.5 !important;
+  }
 }
 
-.swiper-button-next:hover, .swiper-button-prev:hover {
-    opacity: 0.5 !important;
-}
 </style>

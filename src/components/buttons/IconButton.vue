@@ -1,7 +1,7 @@
 <template>
   <div :style="buttonStyle" class="button-container" draggable="false">
     <div :style="iconStyle" class="icon-container" draggable="false">
-      <img :src="props.src" :style="imgStyle" alt="" @drag.stop @copy.stop>
+      <img :src="props.src" :style="imgStyle" alt="">
     </div>
   </div>
 </template>

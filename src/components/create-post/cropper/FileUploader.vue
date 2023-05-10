@@ -17,7 +17,7 @@
         type="file"
         @change="onChange"
       />
-      <img alt="" src="@/assets/icons/drop.svg">
+      <img alt="" src="../../../assets/icons/drop.svg">
       <span>Перетащите сюда немного картинок.</span>
     </div>
   </div>
@@ -67,13 +67,12 @@ function onChange(e) {
 
 .dropzone {;
     background-color: transparent;
-    height: 70%;
-    width: 70%;
+    height: 50%;
+    width: 50%;
     border: #555555 dashed 3px;
     border-radius: 10px;
-    padding: 20%;
+    padding: 10%;
     text-align: center;
-    font-family: "Open Sans", sans-serif;
 }
 
 </style>
