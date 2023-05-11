@@ -54,9 +54,10 @@ onMounted(() => {
     onPositionLost: "close"
   });
   picker.addEventListener("emoji:select", (selection) => {
-    text.value += selection.emoji;
+    let i = textarea.value.selectionStart;
+    text.value = text.value.slice(0, i) + selection.emoji + text.value.slice(i);
+    textarea.value.selectionStart += 1;
   });
-
 });
 </script>
 

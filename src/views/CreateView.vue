@@ -1,19 +1,19 @@
 <script setup>
-import TemplatePage from "@/pages/BasePage.vue";
+import BaseView from "@/views/BaseView.vue";
 import NavigationBar from "@/components/NavigationBar.vue";
 import CreatePost from "@/components/create-post/CreatePost.vue";
 </script>
 
 
 <template>
-  <TemplatePage>
-    <template v-slot:header>
+  <BaseView>
+    <template #header>
       <NavigationBar/>
     </template>
-    <template v-slot:main>
+    <template #main>
       <CreatePost/>
     </template>
-    <template v-slot:footer></template>
-  </TemplatePage>
+    <template #footer></template>
+  </BaseView>
 </template>
 

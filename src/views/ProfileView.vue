@@ -1,16 +1,17 @@
 <script setup>
 import NavigationHeader from "@/components/NavigationBar.vue";
-import TemplatePage from "@/pages/BasePage.vue";
+import BaseView from "@/views/BaseView.vue";
 </script>
 
 <template>
-  <TemplatePage>
-    <template v-slot:header>
-      <NavigationHeader :is-profile="true" />
+  <BaseView>
+    <template #header>
+      <NavigationHeader />
     </template>
-    <template v-slot:main>
+    <template #main>
+      Профиль
     </template>
-    <template v-slot:footer>
+    <template #footer>
     </template>
-  </TemplatePage>
+  </BaseView>
 </template>

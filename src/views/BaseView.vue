@@ -1,13 +1,13 @@
 <template>
   <div class="page">
     <header>
-      <slot name="header"></slot>
+      <slot class="page--header" name="header"></slot>
     </header>
     <main>
-      <slot name="main"></slot>
+      <slot class="page--main" name="main"></slot>
     </main>
     <footer>
-      <slot name="footer"></slot>
+      <slot class="page--footer" name="footer"></slot>
     </footer>
   </div>
 </template>
@@ -23,9 +23,9 @@
   min-height: 100vh;
   grid-template-columns: 100%;
   grid-template-rows: auto 100% auto;
-  background-color: gainsboro;
+  background-color: var(--background-color);
 
-  header {
+  &--header {
     display: grid;
     position: sticky;
     top: 0;
@@ -34,14 +34,12 @@
     align-content: start;
   }
 
-  main {
+  &--main {
     display: block;
-    //background-color: gold;
     width: 100%;
-    background-color: var(--background-color);
   }
 
-  footer {
+  &--footer {
     display: grid;
   }
 

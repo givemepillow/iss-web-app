@@ -26,10 +26,10 @@
 
 <script setup>
 import CropperCarousel from "@/components/create-post/cropper/CropperCarousel.vue";
-import DescriptionInput from "@/components/create-post/DescriprionInput.vue";
+import DescriptionInput from "@/components/create-post/CreatePostDescriprion.vue";
 import TextButton from "@/components/buttons/TextButton.vue";
-import UserLabel from "@/components/create-post/UserLabel.vue";
-import TitleInput from "@/components/create-post/TitleInput.vue";
+import UserLabel from "@/components/create-post/CreatePostUser.vue";
+import TitleInput from "@/components/create-post/CreatePostTitle.vue";
 </script>
 
 <style lang="scss" scoped>

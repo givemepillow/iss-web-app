@@ -8,15 +8,16 @@
       />
       <div class="swiper-wrapper">
         <div v-for="[i, v] of links.entries()" :key="v.index" class="swiper-slide" @click="hideTools">
-          <PictureCropper :ref="(el) => {croppers[i] = el }" :index="v.index" :ratio="ratio" :src="v.file" />
+          <CropperCarouselItem :ref="(el) => {croppers[i] = el }" :index="v.index" :ratio="ratio" :src="v.file" />
         </div>
         <div v-if="links.length < 3" class="swiper-slide">
-          <PictureUploader @mouseover="hideTools" @upload="onUpload" />
+          <CropperCarouselFileUploader @mouseover="hideTools" @upload="onUpload" />
         </div>
       </div>
       <div class="swiper-pagination" @click="hideTools"></div>
       <PrevButton :size="26" :style="prevButtonStyle" class="swiper-button-prev" />
       <NextButton :size="26" :style="nextButtonStyle" class="swiper-button-next" />
+
       <CropButton
         :size="28" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
         class="crop-button"
@@ -27,13 +28,13 @@
         class="zoom-button"
         @click="sliderShowed = !sliderShowed; cropMenuShowed = false"
       />
-      <ZoomSlider
+      <CropperCarouselZoomSlider
         :style="sliderShowed ? sliderShowStyle : sliderHideStyle"
         :value="current?.currentZoom ? current.currentZoom : 0"
         class="zoom-slider"
         @zoom="current?.zoomPicture"
       />
-      <CropRatioMenu
+      <CropperCarouselRatioMenu
         :style=" cropMenuShowed ? cropMenuShowStyle : cropMenuHideStyle"
         class="ratio-menu"
         @ratioChange="onRationChange"
@@ -45,14 +46,14 @@
 <script setup>
 import { onMounted, onUpdated, reactive, ref } from "vue";
 import Swiper, { Pagination, Navigation } from "swiper";
-import PictureCropper from "@/components/create-post/cropper/CropperItem.vue";
+import CropperCarouselItem from "@/components/create-post/cropper/CropperCarouselItem.vue";
+import CropperCarouselZoomSlider from "@/components/create-post/cropper/CropperCarouselZoomSlider.vue";
+import CropperCarouselRatioMenu from "@/components/create-post/cropper/CropperCarouselRatioMenu.vue";
+import CropperCarouselFileUploader from "@/components/create-post/cropper/CropperCarouselFileUploader.vue";
 import NextButton from "@/components/buttons/NextButton.vue";
 import PrevButton from "@/components/buttons/PrevButton.vue";
 import CropButton from "@/components/buttons/CropButton.vue";
 import ZoomButton from "@/components/buttons/ZoomButton.vue";
-import ZoomSlider from "@/components/create-post/cropper/ZoomSlider.vue";
-import CropRatioMenu from "@/components/create-post/cropper/CropMenu.vue";
-import PictureUploader from "@/components/create-post/cropper/FileUploader.vue";
 import DeleteButton from "@/components/buttons/DeleteButton.vue";
 
 const swiperItem = ref(null);
@@ -168,8 +169,6 @@ onMounted(() => {
   height: 100%;
   width: 100%;
   user-select: none;
-  //background-color: #3399ff;
-
 
   .crop-button, .zoom-button, .delete-button {
     z-index: 2;
@@ -207,10 +206,6 @@ onMounted(() => {
 
   .ratio-menu {
     width: 20%;
-  }
-
-  .swiper-button-next:hover, .swiper-button-prev:hover {
-    opacity: 0.5 !important;
   }
 }
 

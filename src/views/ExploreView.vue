@@ -1,18 +1,18 @@
 <script setup>
 import WallFeed from "@/components/wall/WallFeed.vue";
-import TemplatePage from "@/pages/BasePage.vue";
+import BaseView from "@/views/BaseView.vue";
 import NavigationBar from "@/components/NavigationBar.vue";
 </script>
 
 
 <template>
-  <TemplatePage>
-    <template v-slot:header>
+  <BaseView>
+    <template #header>
       <NavigationBar/>
     </template>
-    <template v-slot:main>
+    <template #main>
       <WallFeed />
     </template>
-    <template v-slot:footer></template>
-  </TemplatePage>
+    <template #footer></template>
+  </BaseView>
 </template>
