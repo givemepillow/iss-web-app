@@ -8,7 +8,7 @@
 import { NSlider } from "naive-ui";
 
 
-const emit = defineEmits(["zoom"]);
+const emit = defineEmits(["zoomChange"]);
 const props = defineProps({
   value: {
     type: Number,
@@ -17,7 +17,7 @@ const props = defineProps({
 });
 
 function zoom(v) {
-  emit("zoom", v);
+  emit("zoomChange", v);
 }
 </script>
 

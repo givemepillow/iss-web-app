@@ -1,7 +1,7 @@
 <template>
-  <div ref="container" class="cropper-container">
-    <div ref="canvas" class="cropper-canvas">
-      <img ref="image" :src="src" alt="" @load="onLoad">
+  <div ref="cropperElement" class="cropper-carousel-item">
+    <div ref="canvasElement" class="cropper-carousel-item__canvas cropper-canvas">
+      <img ref="imageElement" :src="src" alt="" class="cropper-carousel-item__image">
     </div>
     <a ref="a" style="display:none;position: absolute"></a>
   </div>
@@ -9,15 +9,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted, onUnmounted } from "vue";
 import Cropper from "cropperjs";
 
 const a = ref(null);
 const props = defineProps({
-  index: {
-    type: Number,
-    required: true
-  },
   src: {
     type: String,
     required: true
@@ -28,17 +24,12 @@ const props = defineProps({
     default: 0
   }
 });
-
+const canvasElement = ref(null);
+const cropperElement = ref(null);
+const imageElement = ref(null);
 const cropper = ref(null);
-const canvas = ref(null);
-const image = ref(null);
-const container = ref(null);
 const currentZoom = ref(0);
 const zoomStep = 100;
-
-function destroy() {
-  cropper.value.destroy();
-}
 
 function save() {
   cropper.value.getCroppedCanvas({
@@ -46,13 +37,17 @@ function save() {
     imageSmoothingQuality: "high"
   }).toBlob((b) => {
     a.value.href = window.URL.createObjectURL(b);
-    a.value.download = props.index + ".png";
+    a.value.download = "picture.png";
     a.value.click();
     window.URL.revokeObjectURL(a.value.href);
   }, "image/png", 1);
 }
 
-function zoomPicture(v) {
+function rotate() {
+  cropper.value.rotate(90);
+}
+
+function zoom(v) {
   if (cropper.value === null) return;
   const containerData = cropper.value.getContainerData();
   const canvasData = cropper.value.getCanvasData();
@@ -69,17 +64,38 @@ function getPictureRatio() {
 }
 
 defineExpose({
-  zoomPicture,
-  getPictureRatio,
-  destroy,
-  save,
-  currentZoom
+  zoom,
+  rotate,
+  save
 });
 
-function onLoad() {
-  cropper.value = new Cropper(image.value, {
+function scaleCropper(ratio) {
+  cropper.value.reset();
+  const image = cropper.value.getImageData();
+  cropper.value.setAspectRatio(ratio !== 0 ? ratio : image.width / image.height);
+  const box = cropper.value.getCropBoxData(); // Порядок важен!
+  let scale = canvasElement.value.offsetHeight;
+  scale /= (box.height > box.width ? box.height : box.width);
+  cropper.value.scale(scale, scale);
+  cropper.value.setCropBoxData({
+    left: scale !== 1 ? (image.width - box.width * scale) / 2 : box.left,
+    top: scale !== 1 ? (image.height - box.height * scale) / 2 : box.top,
+    height: box.height * scale,
+    width: box.width * scale
+  });
+  const canvasData = cropper.value.getCanvasData();
+  cropper.value.zoomTo((canvasData.width / canvasData.naturalWidth) + (currentZoom.value / zoomStep));
+}
+
+watch(props, () => {
+  if (cropper.value === null) return;
+  scaleCropper(props.ratio);
+});
+
+onMounted(() => {
+  cropper.value = new Cropper(imageElement.value, {
     checkCrossOrigin: false,
-    initialAspectRatio: image.width / image.height,
+    initialAspectRatio: imageElement.width / imageElement.height,
     viewMode: 1,
     dragMode: "move",
     toggleDragModeOnDblclick: false,
@@ -99,49 +115,28 @@ function onLoad() {
     cropBoxMovable: false,
     ready(_) {
       scaleCropper(props.ratio);
-      container.value.style.opacity = 1;
+      cropperElement.value.style.opacity = 1;
     }
   });
-}
+});
 
-function scaleCropper(ratio) {
-  cropper.value.reset();
-  const image = cropper.value.getImageData();
-  cropper.value.setAspectRatio(ratio !== 0 ? ratio : image.width / image.height);
-  const box = cropper.value.getCropBoxData(); // Порядок важен!
-  let scale = canvas.value.offsetHeight;
-  scale /= (box.height > box.width ? box.height : box.width);
-  cropper.value.scale(scale, scale);
-  cropper.value.setCropBoxData({
-    left: scale !== 1 ? (image.width - box.width * scale) / 2 : box.left,
-    top: scale !== 1 ? (image.height - box.height * scale) / 2 : box.top,
-    height: box.height * scale,
-    width: box.width * scale
-  });
-  const canvasData = cropper.value.getCanvasData();
-  cropper.value.zoomTo((canvasData.width / canvasData.naturalWidth) + (currentZoom.value / zoomStep));
-}
-
-watch(props, async () => {
-  if (cropper.value === null) return;
-  scaleCropper(props.ratio);
+onUnmounted(() => {
+  cropper.value.destroy();
 });
 
 </script>
 
 <style lang="scss" scoped>
-.cropper-container {
+.cropper-carousel-item {
   width: 100%;
   height: 100%;
   opacity: 0;
   user-select: none;
   transition: opacity ease-out 0.5s;
 
-  .cropper-canvas {
-    img {
-      display: block;
-      max-width: 100%;
-    }
+  &__image {
+    display: block;
+    max-width: 100%;
   }
 }
 </style>

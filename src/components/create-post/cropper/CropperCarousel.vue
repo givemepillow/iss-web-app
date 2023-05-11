@@ -1,42 +1,80 @@
 <template>
-  <div class="cropper-carousel-container" @mouseleave="hideNavigation" @mouseover="showNavigation">
-    <div ref="swiperItem" class="swiper">
+  <div class="cropper-carousel">
+    <div
+      class="cropper-carousel__tools cropper-carousel__tools--top"
+    >
       <DeleteButton
-        :size="30" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
-        class="delete-button"
-        @click="onDelete"
+        :size="30"
+        class="cropper-carousel__delete-button"
+        @click="onClickDelete"
       />
-      <div class="swiper-wrapper">
-        <div v-for="[i, v] of links.entries()" :key="v.index" class="swiper-slide" @click="hideTools">
-          <CropperCarouselItem :ref="(el) => {croppers[i] = el }" :index="v.index" :ratio="ratio" :src="v.file" />
-        </div>
-        <div v-if="links.length < 3" class="swiper-slide">
-          <CropperCarouselFileUploader @mouseover="hideTools" @upload="onUpload" />
+      <SaveButton
+        :size="30"
+        class="cropper-carousel__save-button"
+        @click="onClickSave"
+      />
+    </div>
+    <div ref="swiperElement" class="cropper-carousel__swiper swiper">
+      <div class="cropper-carousel__swiper-wrapper swiper-wrapper">
+        <CropperCarouselItem
+          v-for="[_, v] of links.entries()"
+          :key="v.key"
+          ref="croppers"
+          :ratio="currentRatio"
+          :src="v.file"
+          class="cropper-carousel__swiper-slide swiper-slide"
+        />
+        <div
+          v-if="links.length < props.maxlength"
+          class="cropper-carousel__swiper-slide swiper-slide">
+          <CropperCarouselFileUploader
+            @upload="onUpload" />
         </div>
       </div>
-      <div class="swiper-pagination" @click="hideTools"></div>
-      <PrevButton :size="26" :style="prevButtonStyle" class="swiper-button-prev" />
-      <NextButton :size="26" :style="nextButtonStyle" class="swiper-button-next" />
-
+      <div class="swiper-pagination"></div>
+      <PrevButton
+        :size="26"
+        class="cropper-carousel__swiper-button-prev swiper-button-prev"
+      />
+      <NextButton
+        :size="26"
+        class=" cropper-carousel__swiper-button-next swiper-button-next"
+      />
+    </div>
+    <div
+      class="cropper-carousel__tools cropper-carousel__tools--bottom"
+    >
+      <RotateButton
+        :size="30"
+        class="cropper-carousel__rotate-button"
+        @click="onClickRotate"
+      />
       <CropButton
-        :size="28" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
-        class="crop-button"
-        @click="cropMenuShowed = !cropMenuShowed; sliderShowed = false"
+        :size="30"
+        class="cropper-carousel__crop-button"
+        @click="onClickCrop"
       />
       <ZoomButton
-        :size="28" :style="{display: swiper?.realIndex === links.length ? 'none' : 'block'}"
-        class="zoom-button"
-        @click="sliderShowed = !sliderShowed; cropMenuShowed = false"
+        :size="30"
+        class="cropper-carousel__zoom-button"
+        @click="onClickZoom"
+      />
+      <MoveLeftButton
+        :size="30"
+        class="cropper-carousel__move-left"
+        @click="onClickMoveLeft"
+      />
+      <MoveRightButton
+        :size="30"
+        class="cropper-carousel__move-right"
+        @click="onClickMoveRight"
       />
       <CropperCarouselZoomSlider
-        :style="sliderShowed ? sliderShowStyle : sliderHideStyle"
-        :value="current?.currentZoom ? current.currentZoom : 0"
-        class="zoom-slider"
-        @zoom="current?.zoomPicture"
+        class="cropper-carousel__zoom-slider"
+        @zoomChange="onZoomChange"
       />
       <CropperCarouselRatioMenu
-        :style=" cropMenuShowed ? cropMenuShowStyle : cropMenuHideStyle"
-        class="ratio-menu"
+        class="cropper-carousel__ratio-menu"
         @ratioChange="onRationChange"
       />
     </div>
@@ -44,7 +82,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUpdated, reactive, ref } from "vue";
+import { onMounted, onUpdated, ref } from "vue";
 import Swiper, { Pagination, Navigation } from "swiper";
 import CropperCarouselItem from "@/components/create-post/cropper/CropperCarouselItem.vue";
 import CropperCarouselZoomSlider from "@/components/create-post/cropper/CropperCarouselZoomSlider.vue";
@@ -55,85 +93,77 @@ import PrevButton from "@/components/buttons/PrevButton.vue";
 import CropButton from "@/components/buttons/CropButton.vue";
 import ZoomButton from "@/components/buttons/ZoomButton.vue";
 import DeleteButton from "@/components/buttons/DeleteButton.vue";
+import RotateButton from "@/components/buttons/RotateButton.vue";
+import MoveLeftButton from "@/components/buttons/MoveLeftButton.vue";
+import MoveRightButton from "@/components/buttons/MoveRightButton.vue";
+import SaveButton from "@/components/buttons/SaveButton.vue";
 
-const swiperItem = ref(null);
-const count = ref(0);
-const index = ref(0);
+const props = defineProps({
+  maxlength: {
+    type: Number,
+    required: false,
+    default: 10
+  }
+});
+
 const links = ref([]);
+const swiperElement = ref(null);
+const croppers = ref([]);
 const swiper = ref(null);
-const ratio = ref(1);
-const croppers = ref({});
-const current = ref(null);
-let sliderShowed = ref(false);
-let cropMenuShowed = ref(false);
+const currentRatio = ref(1);
+let index = 0;
+
+function onClickRotate() {
+  croppers.value[swiper.value.realIndex].rotate();
+}
+
+function onClickZoom(v) {
+
+}
+
+function onClickCrop() {
+
+}
+
+function onClickMoveLeft() {
+
+}
+
+function onClickMoveRight() {
+
+}
+
+function onClickDelete() {
+  links.value.splice(swiper.value.realIndex, 1);
+}
 
 
-const prevButtonStyle = reactive({ opacity: 0 });
-const nextButtonStyle = reactive({ opacity: 0 });
-const sliderShowStyle = { bottom: "95px", left: "70px" };
-const sliderHideStyle = { bottom: 0, left: "0px" };
-const cropMenuShowStyle = { bottom: "295px", left: "30px" };
-const cropMenuHideStyle = { bottom: 0, left: "-130px" };
+function onClickSave() {
+  croppers.value[swiper.value.realIndex].save();
+}
 
-function getIndex() {
-  return count.value++;
+
+function onRationChange(r) {
+
+}
+
+function onZoomChange(v) {
+  croppers.value[swiper.value.realIndex].zoom(v);
 }
 
 function onUpload(files) {
   Array.from(files).forEach((f) => {
-    if (links.value.length > 2) return;
-    links.value.push({ index: getIndex(), file: URL.createObjectURL(f) });
+    if (links.value.length >= props.maxlength) return;
+    links.value.push({
+      key: index++,
+      file: URL.createObjectURL(f)
+    });
   });
 }
 
-function onSave() {
-  for (const [_, c] of Object.entries(croppers.value)) {
-    c.save();
-  }
-}
-
-onUpdated(() => {
-  swiper.value.update();
-});
-
-function onDelete() {
-  links.value.splice(swiper.value.realIndex, 1);
-  let i = 0;
-  for (const [key, _] of Object.entries(croppers.value)) {
-    if (i === swiper.value.realIndex) {
-      croppers.value[key].destroy();
-      delete croppers.value[key];
-      return;
-    }
-  }
-}
-
-function onRationChange(r) {
-  if (ratio.value === r || ratio.value === null) return;
-  if (r === 0) {
-    ratio.value = current.value.getPictureRatio();
-  } else {
-    ratio.value = r;
-  }
-}
-
-function showNavigation() {
-  prevButtonStyle.opacity = swiper.value.realIndex === 0 ? 0 : 1;
-  nextButtonStyle.opacity = swiper.value.realIndex === swiper.value.slides?.length - 1 ? 0 : 1;
-}
-
-function hideNavigation() {
-  prevButtonStyle.opacity = 0;
-  nextButtonStyle.opacity = 0;
-}
-
-function hideTools() {
-  cropMenuShowed.value = false;
-  sliderShowed.value = false;
-}
-
 onMounted(() => {
-  swiper.value = new Swiper(swiperItem.value, {
+  swiper.value = new Swiper(swiperElement.value, {
+    observer: true,
     modules: [Navigation, Pagination],
     direction: "horizontal",
     loop: false,
@@ -148,65 +178,63 @@ onMounted(() => {
     navigation: {
       nextEl: ".swiper-button-next",
       prevEl: ".swiper-button-prev"
-    },
-    on: {
-      update: () => {
-        current.value = croppers.value[swiper.value.realIndex];
-      },
-      slideChange: () => {
-        current.value = croppers.value[swiper.value.realIndex];
-        showNavigation();
-      }
     }
   });
 });
 
+onUpdated(() => {
+  swiper.value.update();
+});
 
 </script>
 
 <style lang="scss" scoped>
-.cropper-carousel-container {
+.cropper-carousel {
   height: 100%;
   width: 100%;
   user-select: none;
 
-  .crop-button, .zoom-button, .delete-button {
+  &__swiper-button-prev, &__swiper-button-next {
+    transition: all ease-in-out 150ms;
+  }
+
+  &__tools, {
+    $tools-height: 10%;
     z-index: 2;
+    width: 100%;
+    height: $tools-height;
     position: absolute;
+    display: flex;
+    align-items: center;
+    row-gap: 1rem;
+    padding: 1.5rem;
+    column-gap: 0.7rem;
 
+    &--top {
+      bottom: calc(100% - $tools-height);
+    }
+
+    &--bottom {
+      bottom: 0;
+    }
   }
 
-  .crop-button {
-    left: 10px;
-    bottom: 20px;
+  &__move-left, &__save-button {
+    margin-left: auto;
   }
 
-  .zoom-button {
-    left: 45px;
-    bottom: 20px;
+  &__zoom-slider, &__ratio-menu {
+    display: none;
+    position: absolute;
   }
 
-  .delete-button {
-    left: 10px;
-    top: 20px;
-  }
 
-  .zoom-slider, .ratio-menu {
-    position: relative;
-    z-index: 1;
-    border-radius: 10px;
-    height: fit-content;
-    transition: all ease-out 300ms;
-  }
+  &__crop-button, &__zoom-button, &__rotate-button {
+    transition: all ease-in-out 300ms;
 
-  .zoom-slider {
-    width: 40%;
-
-  }
-
-  .ratio-menu {
-    width: 20%;
+    &:hover {
+      transform: rotate(360deg);
+    }
   }
 }
-
 </style>
