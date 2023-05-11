@@ -71,6 +71,7 @@ import TitleInput from "@/components/create-post/CreatePostTitle.vue";
   }
 }
 
+
 .create-post-container {
   margin: 1em auto;
   display: grid;

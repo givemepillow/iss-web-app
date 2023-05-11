@@ -22,7 +22,3 @@ const editedTheme = computed(() => {
     </n-dialog-provider>
   </n-config-provider>
 </template>
-
-<style>
-
-</style>
