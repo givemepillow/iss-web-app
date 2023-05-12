@@ -12,7 +12,8 @@ const emit = defineEmits(["zoomChange"]);
 const props = defineProps({
   value: {
     type: Number,
-    default: 0
+    default: 0,
+    required: false
   }
 });
 
@@ -23,8 +24,7 @@ function zoom(v) {
 
 <style scoped>
 .container {
-    height: fit-content;
-    padding: 7px;
-    background-color:rgba(0, 0, 0, 0.6);
+    padding: 6px;
+    background-color:rgba(0, 0, 0, 0.3);
 }
 </style>

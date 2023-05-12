@@ -1,13 +1,20 @@
 <template>
-  <div :style="buttonStyle" class="button-container">
-    <div class="text-container">{{ props.text }}</div>
+  <div :style="buttonStyle" class="button-container" draggable="false">
+    <span> {{ props.text}}</span>
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
-  src: String,
   text: String,
+  padding: {
+    type: Number,
+    default: 0
+  },
+  size: {
+    type: Number,
+    default: 30
+  },
   alpha: {
     type: Number,
     default: 0.4
@@ -16,25 +23,44 @@ const props = defineProps({
 
 
 const buttonStyle = {
-  "background-color": "rgba(0, 0, 0, " + props.alpha + ")"
+  width: props.size + "px",
+  height: props.size + "px",
+  "border-radius": props.size + "px"
+};
+
+const imgStyle = {
+  width: (props.size - (props.padding * 2)) + "px",
+  height: (props.size - (props.padding * 2)) + "px"
 };
 
 </script>
 
 <style lang="scss" scoped>
-.text-container {
-  text-align: center;
-}
-
 .button-container {
   user-select: none;
+  -webkit-user-drag: none;
+  display: flex;
+  //justify-content: center;
+  //align-content: center;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 0.7em;
-  border-radius: 10px;
-  transition: opacity ease-in 0.15s;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: background-color ease-in 0.15s;
+  span {
+    user-select: none;
+    font-size: 9pt;
+  }
 }
 
 .button-container:hover {
-  opacity: 0.5;
+  background-color: rgba(0, 0, 0, 0.65)
 }
+
+.button-container:active {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+
 </style>

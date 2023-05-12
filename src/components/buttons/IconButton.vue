@@ -25,7 +25,6 @@ const props = defineProps({
 const buttonStyle = {
   width: props.size + "px",
   height: props.size + "px",
-  padding: props.padding + "px",
   "border-radius": props.size + "px"
 };
 
@@ -41,14 +40,17 @@ const imgStyle = {
   user-select: none;
   -webkit-user-drag: none;
   display: flex;
+  //justify-content: center;
+  //align-content: center;
+  align-items: center;
   justify-content: center;
-  align-content: center;
   cursor: pointer;
   padding: 0;
   background-color: rgba(0, 0, 0, 0.3);
   transition: background-color ease-in 0.15s;
-
   img {
+    display: block;
+    //box-sizing: content-box;
     -webkit-user-drag: none;
     user-select: none;
   }

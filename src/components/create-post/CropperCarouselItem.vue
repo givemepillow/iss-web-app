@@ -29,9 +29,11 @@ const cropperElement = ref(null);
 const imageElement = ref(null);
 const cropper = ref(null);
 const currentZoom = ref(0);
+const isOriginalSaved = ref(false);
 const zoomStep = 100;
 
 function save() {
+  isOriginalSaved.value = !isOriginalSaved.value
   cropper.value.getCroppedCanvas({
     imageSmoothingEnabled: false,
     imageSmoothingQuality: "high"
@@ -58,15 +60,17 @@ function zoom(v) {
   currentZoom.value = v;
 }
 
-function getPictureRatio() {
-  if (cropper.value === null) return;
+function naturalRatio() {
   return cropper.value.getImageData().aspectRatio;
 }
 
 defineExpose({
   zoom,
   rotate,
-  save
+  save,
+  naturalRatio,
+  currentZoom,
+  isOriginalSaved
 });
 
 function scaleCropper(ratio) {
@@ -133,6 +137,9 @@ onUnmounted(() => {
   opacity: 0;
   user-select: none;
   transition: opacity ease-out 0.5s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &__image {
     display: block;

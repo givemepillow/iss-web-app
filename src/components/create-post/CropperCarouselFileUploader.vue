@@ -17,7 +17,7 @@
         type="file"
         @change="onChange"
       />
-      <img alt="" src="../../../assets/icons/drop.svg">
+      <img alt="" src="../../assets/icons/drop.svg">
       <span>Перетащите сюда немного картинок.</span>
     </div>
   </div>
