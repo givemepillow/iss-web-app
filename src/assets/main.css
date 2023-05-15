@@ -1,9 +1,15 @@
 :root {
     --text-color: whitesmoke;
-    --background-color: #546457;
+    --background-color: #403d39;
+    --secondary-color: #363636;
     --block-color: #242424;
     --scrollbar-width: 0.75em;
     --border-radius: 5px;
+    --default-color: #282828;
+    --small-screen: 480px;
+    --medium-screen: 640px;
+    --large-screen: 960px;
+    --default-box-shdow: rgba(0, 0, 0, 0.12) 0 1px 3px, rgba(0, 0, 0, 0.24) 0 1px 2px;
 }
 
 *,
@@ -16,6 +22,7 @@
 }
 
 body {
+    min-width: 280px;
     color: var(--text-color);
     background: var(--background-color);
     transition: color 0.5s, background-color 0.5s;
@@ -34,7 +41,7 @@ body {
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: var(--background-color);
+    background: var(--secondary-color);
 }
 
 /* Handle */

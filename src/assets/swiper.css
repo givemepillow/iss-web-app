@@ -288,16 +288,15 @@ swiper-container:not(.swiper-watch-progress) .swiper-lazy-preloader,
 .swiper-button-prev,
 .swiper-button-next {
     position: absolute;
-    top: var(--swiper-navigation-top-offset, 50%);
-    width: calc(var(--swiper-navigation-size) / 44 * 27);
-    height: var(--swiper-navigation-size);
-    margin-top: calc(0px - (var(--swiper-navigation-size) / 2));
+    top: calc((100% - 2rem) / 2);
+    width: 0;
+    height: 0;
     z-index: 10;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--swiper-navigation-color, var(--swiper-theme-color));
+    opacity: 0.75;
 }
 
 .swiper-button-prev.swiper-button-disabled,
@@ -321,7 +320,6 @@ swiper-container:not(.swiper-watch-progress) .swiper-lazy-preloader,
 
 .swiper-button-prev:after,
 .swiper-button-next:after {
-    font-family: swiper-icons;
     font-size: var(--swiper-navigation-size);
     text-transform: none !important;
     letter-spacing: 0;

@@ -5,13 +5,13 @@
       class="cropper-carousel__tools cropper-carousel__tools--top"
     >
       <DeleteButton
-        :size="30"
+        :size="2"
         class="cropper-carousel__delete-button"
         @click="onClickDelete"
       />
       <SaveButton
         :class="{'original-saved': croppers[swiper?.realIndex]?.isOriginalSaved}"
-        :size="30"
+        :size="2"
         class="cropper-carousel__save-button"
         @click="onClickSave"
       />
@@ -35,11 +35,11 @@
       </div>
       <div class="swiper-pagination"></div>
       <PrevButton
-        :size="26"
+        :size="2"
         class="cropper-carousel__swiper-button-prev swiper-button-prev"
       />
       <NextButton
-        :size="26"
+        :size="2"
         class=" cropper-carousel__swiper-button-next swiper-button-next"
       />
     </div>
@@ -49,17 +49,19 @@
       class="cropper-carousel__tools cropper-carousel__tools--bottom"
     >
       <RotateButton
-        :size="30"
+        :size="2"
         class="cropper-carousel__rotate-button"
         @click="onClickRotate"
       />
-      <CropButton
-        :size="30"
-        class="cropper-carousel__crop-button"
+      <RatioButton
+        :class="{'ratio-showed': isRatioToolsShowed}"
+        :size="2"
+        class="cropper-carousel__ratio-button"
         @click="onClickCrop"
       />
       <ZoomButton
-        :size="30"
+        :class="{'zoom-showed': isZoomSliderShowed}"
+        :size="2"
         class="cropper-carousel__zoom-button"
         @click="onClickZoom"
       />
@@ -71,43 +73,79 @@
       />
       <MoveLeftButton
         :class="{disabled: !isMoveLeftShowed}"
-        :size="30"
+        :size="2"
         class="cropper-carousel__move-left"
         @click="onClickMoveLeft"
       />
       <MoveRightButton
         :class="{disabled: !isMoveRightShowed}"
-        :size="30"
+        :size="2"
         class="cropper-carousel__move-right"
         @click="onClickMoveRight"
       />
 
     </div>
     <div
-      :class="{
-      'hidden-bottom-tools': !isRatioToolsShowed,
-      'hidden-tools': !isRatioToolsShowed
-    }"
-      class="cropper-carousel__tools cropper-carousel__tools--vertical-ratio">
-      <OriginalRatioButton @click="onClickRatio(null)" />
-      <TextButton text="2:3" @click="onClickRatio(2/3)" />
-      <TextButton text="4:5" @click="onClickRatio(4/5)" />
-      <TextButton text="9:16" @click="onClickRatio(9/16)" />
-      <TextButton text="9:18" @click="onClickRatio(9/18)" />
-      <TextButton text="9:21" @click="onClickRatio(9/21)" />
-    </div>
-    <div
-      :class="{
-      'hidden-bottom-tools': !isRatioToolsShowed,
-      'hidden-tools': !isRatioToolsShowed
-    }"
-      class="cropper-carousel__tools cropper-carousel__tools--horizontal-ratio">
-      <SquareRatioButton @click="onClickRatio(1)" />
-      <TextButton text="3:2" @click="onClickRatio(3/2)" />
-      <TextButton text="4:3" @click="onClickRatio(4/3)" />
-      <TextButton text="5:4" @click="onClickRatio(5/4)" />
-      <TextButton text="16:9" @click="onClickRatio(16/9)" />
-      <TextButton text="21:9" @click="onClickRatio(21/9)" />
+      :class="{'hidden-ratio-tools': !isRatioToolsShowed}"
+      class="cropper-carousel__ratio-tools">
+      <SquareRatioButton
+        :class="{'ratio-selected': 1 === currentRatio && !isNaturalRatio}"
+        @click="onClickRatio(1)"
+      />
+
+      <OriginalRatioButton
+        :class="{'ratio-selected': isNaturalRatio}"
+        @click="onClickRatio(null)"
+      />
+
+
+      <TextButton
+        :class="{'ratio-selected': 5/4 === currentRatio && !isNaturalRatio}"
+        text="5:4"
+        @click="onClickRatio(5/4)"
+      />
+
+
+      <TextButton
+        :class="{'ratio-selected': 4/5 === currentRatio && !isNaturalRatio}"
+        text="4:5"
+        @click="onClickRatio(4/5)"
+      />
+      <TextButton
+        :class="{'ratio-selected': 4/3 === currentRatio && !isNaturalRatio}"
+        text="4:3"
+        @click="onClickRatio(4/3)"
+      />
+
+      <TextButton
+        :class="{'ratio-selected': 9/16 === currentRatio && !isNaturalRatio}"
+        text="9:16"
+        @click="onClickRatio(9/16)"
+      />
+
+
+      <TextButton
+        :class="{'ratio-selected': 16/9 === currentRatio && !isNaturalRatio}"
+        text="16:9"
+        @click="onClickRatio(16/9)"
+      />
+      <TextButton
+        :class="{'ratio-selected': 9/18 === currentRatio && !isNaturalRatio}"
+        text="9:18"
+        @click="onClickRatio(9/18)"
+      />
+      <TextButton
+        :class="{'ratio-selected': 21/9 === currentRatio && !isNaturalRatio}"
+        text="21:9"
+        @click="onClickRatio(21/9)"
+      />
+
+      <TextButton
+        :class="{'ratio-selected': 9/21 === currentRatio && !isNaturalRatio}"
+        text="9:21"
+        @click="onClickRatio(9/21)"
+      />
+
     </div>
   </div>
 </template>
@@ -115,12 +153,12 @@
 <script setup>
 import { onMounted, onUpdated, ref } from "vue";
 import Swiper, { Pagination, Navigation } from "swiper";
-import CropperCarouselItem from "@/components/create-post/CropperCarouselItem.vue";
-import CropperCarouselZoomSlider from "@/components/create-post/CropperCarouselZoomSlider.vue";
-import CropperCarouselFileUploader from "@/components/create-post/CropperCarouselFileUploader.vue";
+import CropperCarouselItem from "@/components/editor/PostEditorCropper.vue";
+import CropperCarouselZoomSlider from "@/components/editor/PostEditorZoomSlider.vue";
+import CropperCarouselFileUploader from "@/components/editor/PostEditorFileUploader.vue";
 import NextButton from "@/components/buttons/NextButton.vue";
 import PrevButton from "@/components/buttons/PrevButton.vue";
-import CropButton from "@/components/buttons/CropButton.vue";
+import RatioButton from "@/components/buttons/RatioButton.vue";
 import ZoomButton from "@/components/buttons/ZoomButton.vue";
 import DeleteButton from "@/components/buttons/DeleteButton.vue";
 import RotateButton from "@/components/buttons/RotateButton.vue";
@@ -144,7 +182,6 @@ const swiperElement = ref(null);
 const croppers = ref([]);
 const swiper = ref(null);
 const currentRatio = ref(1);
-const currentZoom = ref(0);
 let index = 0;
 
 const isRatioToolsShowed = ref(false);
@@ -152,6 +189,11 @@ const isToolsShowed = ref(false);
 const isMoveRightShowed = ref(false);
 const isMoveLeftShowed = ref(false);
 const isZoomSliderShowed = ref(false);
+const isNaturalRatio = ref(false);
+
+defineExpose({
+  links
+});
 
 function toggle(isShowed) {
   isShowed.value = !isShowed.value;
@@ -172,7 +214,8 @@ function isLastPictureSlide() {
 }
 
 function onClickRatio(r) {
-  if (r == null) {
+  isNaturalRatio.value = r === null;
+  if (r === null) {
     let naturalRatio = croppers.value[swiper.value.realIndex].naturalRatio();
     currentRatio.value = naturalRatio > 2 ? 21 / 9 : naturalRatio;
   } else {
@@ -285,46 +328,50 @@ onUpdated(() => {
 <style lang="scss" scoped>
 .cropper-carousel {
   height: 100%;
-  width: 100%;
+  min-width: 280px;
+  min-height: 280px;
   user-select: none;
+  border-radius: var(--border-radius);
+  overflow: clip;
 
   &__swiper-button-prev, &__swiper-button-next {
     transition: all ease-in-out 150ms;
   }
 
-  &__tools, {
-    $indent: 7%;
+  &__tools {
     z-index: 2;
     width: 100%;
-    height: 0;
+    height: 0.75rem;
     position: absolute;
     display: flex;
     align-items: center;
     padding: 0 1.5rem 0 1.5rem;
-    column-gap: 0.75rem;
-    transition: all ease-in-out 200ms;
+    column-gap: 3%;
+    transition: all ease-in-out 150ms;
 
     &--top {
-      top: calc($indent);
+      top: 1.5em;
     }
 
     &--bottom {
-      bottom: calc($indent);
+      bottom: 2.5em;
     }
 
-    &--vertical-ratio, &--horizontal-ratio {
-      justify-content: center;
-      column-gap: 0.75rem;
-    }
+  }
 
-    &--vertical-ratio {
-      bottom: calc($indent * 2);
-    }
-
-    &--horizontal-ratio {
-      bottom: calc($indent * 3);
-    }
-
+  &__ratio-tools {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    grid-template-rows: 1fr 1fr;
+    z-index: 2;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+    grid-auto-flow: column;
+    bottom: 5em;
+    grid-gap: 0.5em;
+    transition: all ease-in-out 150ms;
   }
 
   &__move-left, &__save-button {
@@ -334,27 +381,35 @@ onUpdated(() => {
 
 
   &__move-left, &__move-right {
-    transition: all ease-in-out 200ms;
+    transition: all ease-in-out 150ms;
   }
 
   &__zoom-slider {
+
+    @media only screen and (max-width: 960px) {
+      position: absolute;
+      bottom: 2rem;
+    };
+
     width: 50%;
     border-radius: 30px;
-    transition: all ease-in-out 300ms;
+    transition: all ease-in-out 150ms;
   }
 
+  &__save-button:hover {
+    background-color: rgba(3, 148, 252, 0.75);
+  }
 
   &__rotate-button {
     transition: all ease-in-out 300ms;
-
 
     &:hover {
       transform: rotate(90deg);
     }
   }
 
-  &__zoom-button {
-    transition: all ease-in-out 300ms;
+  &__zoom-button, &__ratio-button {
+    transition: all ease-in-out 150ms;
 
     &:hover {
       transform: rotate(45deg);
@@ -376,6 +431,13 @@ onUpdated(() => {
   column-gap: 0;
 }
 
+.hidden-ratio-tools {
+  opacity: 0;
+  pointer-events: none;
+  cursor: none;
+  grid-gap: 0;
+}
+
 .hidden-top-tools {
   top: 3%;
 }
@@ -389,7 +451,18 @@ onUpdated(() => {
   opacity: 0;
 }
 
-.original-saved {
-  background-color: rgba(81, 235, 9, 0.75);
+.original-saved, .original-saved:hover {
+  background-color: rgba(3, 148, 252, 0.75);
 }
+
+.ratio-showed, .ratio-showed:hover, .zoom-showed, .zoom-showed:hover {
+  transform: rotate(45deg);
+}
+
+.ratio-showed, .ratio-showed:hover,
+.zoom-showed, .zoom-showed:hover,
+.ratio-selected, .ratio-selected:hover {
+  background-color: rgba(247, 247, 247, 0.55);
+}
+
 </style>

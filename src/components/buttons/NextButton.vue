@@ -1,5 +1,5 @@
 <template>
-  <IconButton :padding="3" :size="props.size" :src="nextIcon" />
+  <IconButton :padding="0" :size="props.size" :src="nextIcon" />
 </template>
 
 <script setup>

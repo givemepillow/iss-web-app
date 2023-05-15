@@ -1,14 +1,13 @@
 <script setup>
 import BaseView from "@/views/BaseView.vue";
-import NavigationBar from "@/components/NavigationBar.vue";
-import CreatePost from "@/components/create-post/CreatePost.vue";
+import CreatePost from "@/components/editor/PostEditor.vue";
 </script>
 
 
 <template>
   <BaseView>
     <template #header>
-      <NavigationBar/>
+<!--      <NavigationBar/>-->
     </template>
     <template #main>
       <CreatePost/>

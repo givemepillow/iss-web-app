@@ -5,10 +5,10 @@ import { computed } from "vue";
 
 
 const editedTheme = computed(() => {
-  darkTheme.common.primaryColor = "#bbd0ff";
-  darkTheme.common.primaryColorHover = "#ffd6ff";
-  darkTheme.common.primaryColorPressed = "#c8b6ff";
-  darkTheme.common.primaryColorSuppl = "#e7c6ff";
+  darkTheme.common.primaryColor = "#ffffff";
+  darkTheme.common.primaryColorHover = "#ffffff";
+  darkTheme.common.primaryColorPressed = "#ffffff";
+  darkTheme.common.primaryColorSuppl = "#ffffff";
   return darkTheme;
 });
 
@@ -22,3 +22,8 @@ const editedTheme = computed(() => {
     </n-dialog-provider>
   </n-config-provider>
 </template>
+
+<style lang="scss">
+
+
+</style>

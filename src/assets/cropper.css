@@ -58,7 +58,7 @@
 }
 
 .cropper-modal {
-    background-color: #242424;
+    background-color: var(--default-color);
     opacity: 1;
 }
 

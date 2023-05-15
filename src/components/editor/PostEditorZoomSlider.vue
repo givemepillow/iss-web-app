@@ -26,5 +26,6 @@ function zoom(v) {
 .container {
     padding: 6px;
     background-color:rgba(0, 0, 0, 0.3);
+    box-shadow: rgba(0, 0, 0, 0.16) 0 1px 4px;
 }
 </style>

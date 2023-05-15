@@ -13,7 +13,7 @@ const props = defineProps({
   },
   size: {
     type: Number,
-    default: 30
+    default: 2
   },
   alpha: {
     type: Number,
@@ -23,14 +23,8 @@ const props = defineProps({
 
 
 const buttonStyle = {
-  width: props.size + "px",
-  height: props.size + "px",
-  "border-radius": props.size + "px"
-};
-
-const imgStyle = {
-  width: (props.size - (props.padding * 2)) + "px",
-  height: (props.size - (props.padding * 2)) + "px"
+  width: props.size + "rem",
+  height: props.size + "rem",
 };
 
 </script>
@@ -45,9 +39,10 @@ const imgStyle = {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 0;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.6);
   transition: background-color ease-in 0.15s;
+  box-shadow: rgba(0, 0, 0, 0.16) 0 1px 4px;
+  border-radius: 100%;
   span {
     user-select: none;
     font-size: 9pt;
@@ -55,7 +50,7 @@ const imgStyle = {
 }
 
 .button-container:hover {
-  background-color: rgba(0, 0, 0, 0.65)
+  background-color: rgba(0, 0, 0, 0.3)
 }
 
 .button-container:active {

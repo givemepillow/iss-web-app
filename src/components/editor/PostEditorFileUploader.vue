@@ -17,8 +17,7 @@
         type="file"
         @change="onChange"
       />
-      <img alt="" src="../../assets/icons/drop.svg">
-      <span>Перетащите сюда немного картинок.</span>
+      <img alt="" src="../../assets/icons/images.svg">
     </div>
   </div>
 </template>
@@ -65,14 +64,17 @@ function onChange(e) {
     user-select: none;
 }
 
-.dropzone {;
+.dropzone {
     background-color: transparent;
     height: 50%;
     width: 50%;
     border: #555555 dashed 3px;
     border-radius: 10px;
-    padding: 10%;
-    text-align: center;
+    padding: 2rem;
+}
+
+img {
+    -webkit-user-drag: none;
 }
 
 </style>

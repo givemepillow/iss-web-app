@@ -29,11 +29,12 @@ const cropperElement = ref(null);
 const imageElement = ref(null);
 const cropper = ref(null);
 const currentZoom = ref(0);
+
 const isOriginalSaved = ref(false);
 const zoomStep = 100;
 
 function save() {
-  isOriginalSaved.value = !isOriginalSaved.value
+  isOriginalSaved.value = !isOriginalSaved.value;
   cropper.value.getCroppedCanvas({
     imageSmoothingEnabled: false,
     imageSmoothingQuality: "high"
@@ -46,7 +47,7 @@ function save() {
 }
 
 function rotate() {
-  cropper.value.rotate(90);
+  // cropper.value.rotate(90);
 }
 
 function zoom(v) {
@@ -97,6 +98,9 @@ watch(props, () => {
 });
 
 onMounted(() => {
+
+  let maxZoom = 0;
+  let minZoom = 0;
   cropper.value = new Cropper(imageElement.value, {
     checkCrossOrigin: false,
     initialAspectRatio: imageElement.width / imageElement.height,
@@ -104,7 +108,7 @@ onMounted(() => {
     dragMode: "move",
     toggleDragModeOnDblclick: false,
     zoomOnWheel: false,
-    zoomOnTouch: false,
+    zoomOnTouch: true,
     responsive: true,
     restore: true,
     guides: true,
@@ -120,6 +124,18 @@ onMounted(() => {
     ready(_) {
       scaleCropper(props.ratio);
       cropperElement.value.style.opacity = 1;
+      const canvasData = cropper.value.getCanvasData();
+      minZoom = (canvasData.width / canvasData.naturalWidth);
+      maxZoom = (canvasData.width / canvasData.naturalWidth) + (100 / zoomStep);
+      currentZoom.value = 0;
+    },
+    zoom(event) {
+      if (maxZoom < event.detail.ratio) {
+        event.preventDefault();
+        return;
+      }
+      const delta = (event.detail.ratio - minZoom);
+      currentZoom.value = Math.floor(delta / (1 / zoomStep));
     }
   });
 });

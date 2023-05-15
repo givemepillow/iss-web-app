@@ -1,5 +1,5 @@
 <template>
-  <IconButton :padding="4" :alpha=0 :size="props.size" :src="emojiIcon" />
+  <IconButton :padding="0" :alpha="0" :size="props.size" :src="emojiIcon" />
 </template>
 
 <script setup>
