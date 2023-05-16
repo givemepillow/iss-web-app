@@ -1,18 +1,22 @@
 <template>
   <div class="editor">
     <div class="editor__cropper">
-      <CropperCarousel ref="cropper" />
+      <PostEditorCarousel ref="cropperCarouselElement" />
     </div>
     <div class="editor__info">
       <div class="editor__info--header">
-        <PostEditorUser />
-        <PostEditorTitle :maxlength="25" placeholder="Придумайте название..." />
+        <UserLabel :user="user" />
+        <PostEditorTitle ref="titleElement" :maxlength="25" placeholder="Придумайте название..." />
       </div>
       <div class="editor__info--middle">
-        <PostEditorDescription :maxlength="500" placeholder="Добавьте описание..." />
+        <PostEditorDescription ref="descriptionElement" :maxlength="500" placeholder="Добавьте описание..." />
       </div>
       <div class="editor__info--bottom">
-        <CreatePostSubmitItem :disabled="cropper?.links?.length === 0" />
+        <CreatePostSubmit
+          :disabled="!(cropperCarouselElement?.isReadyToPost ?? false)"
+          :pending="isPostPending"
+          @click="onCreatePost"
+        />
       </div>
     </div>
   </div>
@@ -20,14 +24,35 @@
 
 <script setup>
 import { ref } from "vue";
-import CropperCarousel from "@/components/editor/PostEditorCarousel.vue";
-import CreatePostSubmitItem from "@/components/editor/PostEditorSubmit.vue";
+import PostEditorCarousel from "@/components/editor/PostEditorCarousel.vue";
+import CreatePostSubmit from "@/components/editor/PostEditorSubmit.vue";
 import PostEditorDescription from "@/components/editor/PostEditorDescription.vue";
 import PostEditorTitle from "@/components/editor/PostEditorTitle.vue";
-import PostEditorUser from "@/components/common/UserLabel.vue";
+import UserLabel from "@/components/common/UserLabel.vue";
+import { user, examples } from "@/models/examples";
+import Post from "@/models/post";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const cropperCarouselElement = ref(null);
+const descriptionElement = ref(null);
+const titleElement = ref(null);
 
+const isPostPending = ref(false);
+const isPostCreated = ref(false);
 
-const cropper = ref(null);
+async function onCreatePost() {
+  isPostPending.value = true;
+  let post = new Post({
+    id: Math.floor(Math.random() * 10000),
+    title: titleElement.value.value,
+    description: descriptionElement.value.value,
+    pictures: await cropperCarouselElement.value.getPictures()
+  });
+  examples[post.id] = post;
+  isPostPending.value = false;
+  isPostCreated.value = true;
+  await router.push({ path: "/posts" })
+}
 
 </script>
 
@@ -41,6 +66,7 @@ $padding: 0.5rem;
   display: grid;
   grid-gap: $gap;
   overflow: clip;
+  opacity: 1;
 
   @media only screen and (min-width: 980px) {
     grid-template-columns: 550px 20rem;

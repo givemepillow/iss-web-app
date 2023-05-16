@@ -4,14 +4,16 @@
       :class="{'hidden-top-tools': !isToolsShowed, 'hidden-tools': !isToolsShowed}"
       class="cropper-carousel__tools cropper-carousel__tools--top"
     >
-      <DeleteButton
+      <IconButton
         :size="2"
+        :src="deleteIcon"
         class="cropper-carousel__delete-button"
         @click="onClickDelete"
       />
-      <SaveButton
-        :class="{'original-saved': croppers[swiper?.realIndex]?.isOriginalSaved}"
+      <IconButton
+        :class="{'original-saved': cropperElements[swiper?.realIndex]?.isOriginalSaved}"
         :size="2"
+        :src="saveIcon"
         class="cropper-carousel__save-button"
         @click="onClickSave"
       />
@@ -21,10 +23,11 @@
         <CropperCarouselItem
           v-for="[_, v] of links.entries()"
           :key="v.key"
-          ref="croppers"
+          ref="cropperElements"
           :ratio="currentRatio"
           :src="v.file"
           class="cropper-carousel__swiper-slide swiper-slide"
+          @created="onCreated"
         />
         <div
           v-if="links.length < props.maxlength"
@@ -34,53 +37,62 @@
         </div>
       </div>
       <div class="swiper-pagination"></div>
-      <PrevButton
+      <IconButton
         :size="2"
+        :src="nextIcon"
         class="cropper-carousel__swiper-button-prev swiper-button-prev"
+        style="transform: rotate(180deg)"
       />
-      <NextButton
+      <IconButton
         :size="2"
+        :src="nextIcon"
         class=" cropper-carousel__swiper-button-next swiper-button-next"
       />
     </div>
-
     <div
       :class="{'hidden-bottom-tools': !isToolsShowed, 'hidden-tools': !isToolsShowed}"
       class="cropper-carousel__tools cropper-carousel__tools--bottom"
     >
-      <RotateButton
+      <IconButton
         :size="2"
+        :src="rotateIcon"
         class="cropper-carousel__rotate-button"
         @click="onClickRotate"
       />
-      <RatioButton
+      <IconButton
         :class="{'ratio-showed': isRatioToolsShowed}"
         :size="2"
+        :src="ratioIcon"
         class="cropper-carousel__ratio-button"
         @click="onClickCrop"
       />
-      <ZoomButton
+      <IconButton
         :class="{'zoom-showed': isZoomSliderShowed}"
         :size="2"
+        :src="zoomIcon"
         class="cropper-carousel__zoom-button"
         @click="onClickZoom"
       />
       <CropperCarouselZoomSlider
         :class="{'hidden-zoom-slider': !isZoomSliderShowed    }"
-        :value="croppers[swiper?.realIndex]?.currentZoom ?? 0"
+        :value="cropperElements[swiper?.realIndex]?.currentZoom ?? 0"
         class="cropper-carousel__zoom-slider"
         @zoomChange="onZoomChange"
       />
-      <MoveLeftButton
+      <IconButton
         :class="{disabled: !isMoveLeftShowed}"
         :size="2"
+        :src="moveIcon"
         class="cropper-carousel__move-left"
+        style="transform: rotate(90deg) scale(1, -1)"
         @click="onClickMoveLeft"
       />
-      <MoveRightButton
+      <IconButton
         :class="{disabled: !isMoveRightShowed}"
         :size="2"
+        :src="moveIcon"
         class="cropper-carousel__move-right"
+        style="transform: rotate(90deg)"
         @click="onClickMoveRight"
       />
 
@@ -88,24 +100,21 @@
     <div
       :class="{'hidden-ratio-tools': !isRatioToolsShowed}"
       class="cropper-carousel__ratio-tools">
-      <SquareRatioButton
+      <IconButton
         :class="{'ratio-selected': 1 === currentRatio && !isNaturalRatio}"
+        :src="squareIcon"
         @click="onClickRatio(1)"
       />
-
-      <OriginalRatioButton
+      <IconButton
         :class="{'ratio-selected': isNaturalRatio}"
+        :src="originalIcon"
         @click="onClickRatio(null)"
       />
-
-
       <TextButton
         :class="{'ratio-selected': 5/4 === currentRatio && !isNaturalRatio}"
         text="5:4"
         @click="onClickRatio(5/4)"
       />
-
-
       <TextButton
         :class="{'ratio-selected': 4/5 === currentRatio && !isNaturalRatio}"
         text="4:5"
@@ -116,14 +125,11 @@
         text="4:3"
         @click="onClickRatio(4/3)"
       />
-
       <TextButton
         :class="{'ratio-selected': 9/16 === currentRatio && !isNaturalRatio}"
         text="9:16"
         @click="onClickRatio(9/16)"
       />
-
-
       <TextButton
         :class="{'ratio-selected': 16/9 === currentRatio && !isNaturalRatio}"
         text="16:9"
@@ -139,13 +145,11 @@
         text="21:9"
         @click="onClickRatio(21/9)"
       />
-
       <TextButton
         :class="{'ratio-selected': 9/21 === currentRatio && !isNaturalRatio}"
         text="9:21"
         @click="onClickRatio(9/21)"
       />
-
     </div>
   </div>
 </template>
@@ -156,18 +160,18 @@ import Swiper, { Pagination, Navigation } from "swiper";
 import CropperCarouselItem from "@/components/editor/PostEditorCropper.vue";
 import CropperCarouselZoomSlider from "@/components/editor/PostEditorZoomSlider.vue";
 import CropperCarouselFileUploader from "@/components/editor/PostEditorFileUploader.vue";
-import NextButton from "@/components/buttons/NextButton.vue";
-import PrevButton from "@/components/buttons/PrevButton.vue";
-import RatioButton from "@/components/buttons/RatioButton.vue";
-import ZoomButton from "@/components/buttons/ZoomButton.vue";
-import DeleteButton from "@/components/buttons/DeleteButton.vue";
-import RotateButton from "@/components/buttons/RotateButton.vue";
-import MoveLeftButton from "@/components/buttons/MoveLeftButton.vue";
-import MoveRightButton from "@/components/buttons/MoveRightButton.vue";
-import SaveButton from "@/components/buttons/SaveButton.vue";
-import OriginalRatioButton from "@/components/buttons/OriginalRatioButton.vue";
+import saveIcon from "@/assets/icons/save.svg";
+import deleteIcon from "@/assets/icons/delete.svg";
+import nextIcon from "@/assets/icons/next.svg";
+import ratioIcon from "@/assets/icons/crop.svg";
+import rotateIcon from "@/assets/icons/rotate.svg";
+import zoomIcon from "@/assets/icons/zoom.svg";
+import moveIcon from "@/assets/icons/move.svg";
+import squareIcon from "@/assets/icons/square.svg";
+import originalIcon from "@/assets/icons/original.svg";
 import TextButton from "@/components/buttons/TextButton.vue";
-import SquareRatioButton from "@/components/buttons/SquareRatioButton.vue";
+import IconButton from "@/components/buttons/IconButton.vue";
+import Picture from "@/models/picture";
 
 const props = defineProps({
   maxlength: {
@@ -179,7 +183,7 @@ const props = defineProps({
 
 const links = ref([]);
 const swiperElement = ref(null);
-const croppers = ref([]);
+const cropperElements = ref([]);
 const swiper = ref(null);
 const currentRatio = ref(1);
 let index = 0;
@@ -190,13 +194,36 @@ const isMoveRightShowed = ref(false);
 const isMoveLeftShowed = ref(false);
 const isZoomSliderShowed = ref(false);
 const isNaturalRatio = ref(false);
+const isReadyToPost = ref(false);
+
+function onCreated(url) {
+
+}
+
+async function getPictures() {
+  let pictures = [];
+  for (const key in cropperElements.value) {
+    pictures.push(
+      new Picture({
+        id: Math.floor(Math.random() * 10000),
+        url: URL.createObjectURL(await cropperElements.value[key].getBlob())
+      })
+    );
+  }
+  return pictures;
+}
 
 defineExpose({
-  links
+  isReadyToPost,
+  getPictures
 });
 
 function toggle(isShowed) {
   isShowed.value = !isShowed.value;
+}
+
+function isCropperReady() {
+  return cropperElements.value[swiper.value?.realIndex]?.isReady ?? false;
 }
 
 function isPictureSlide() {
@@ -216,7 +243,7 @@ function isLastPictureSlide() {
 function onClickRatio(r) {
   isNaturalRatio.value = r === null;
   if (r === null) {
-    let naturalRatio = croppers.value[swiper.value.realIndex].naturalRatio();
+    let naturalRatio = cropperElements.value[swiper.value.realIndex].naturalRatio();
     currentRatio.value = naturalRatio > 2 ? 21 / 9 : naturalRatio;
   } else {
     currentRatio.value = r;
@@ -225,7 +252,7 @@ function onClickRatio(r) {
 
 
 function onClickRotate() {
-  croppers.value[swiper.value.realIndex].rotate();
+  cropperElements.value[swiper.value.realIndex].rotate();
 }
 
 function onClickZoom() {
@@ -239,18 +266,18 @@ function onClickCrop() {
 }
 
 function onClickMoveLeft() {
-  let temp = croppers.value[swiper.value.realIndex];
-  croppers.value[swiper.value.realIndex] = croppers.value[swiper.value.realIndex - 1];
-  croppers.value[swiper.value.realIndex - 1] = temp;
+  let temp = cropperElements.value[swiper.value.realIndex];
+  cropperElements.value[swiper.value.realIndex] = cropperElements.value[swiper.value.realIndex - 1];
+  cropperElements.value[swiper.value.realIndex - 1] = temp;
   let elements = links.value.splice(swiper.value.realIndex, 1);
   links.value.splice(swiper.value.realIndex - 1, 0, elements[0]);
   swiper.value.slidePrev(0);
 }
 
 function onClickMoveRight() {
-  let temp = croppers.value[swiper.value.realIndex];
-  croppers.value[swiper.value.realIndex] = croppers.value[swiper.value.realIndex + 1];
-  croppers.value[swiper.value.realIndex + 1] = temp;
+  let temp = cropperElements.value[swiper.value.realIndex];
+  cropperElements.value[swiper.value.realIndex] = cropperElements.value[swiper.value.realIndex + 1];
+  cropperElements.value[swiper.value.realIndex + 1] = temp;
   let elements = links.value.splice(swiper.value.realIndex, 1);
   links.value.splice(swiper.value.realIndex + 1, 0, elements[0]);
   swiper.value.slideNext(0);
@@ -266,19 +293,20 @@ function onClickDelete() {
 
 
 function onClickSave() {
-  croppers.value[swiper.value.realIndex].save();
+  cropperElements.value[swiper.value.realIndex].save();
 }
 
 function onZoomChange(v) {
-  croppers.value[swiper.value.realIndex].zoom(v);
+  cropperElements.value[swiper.value.realIndex].zoom(v);
 }
 
 function updateTools() {
-  isToolsShowed.value = isPictureSlide();
+  isToolsShowed.value = isPictureSlide() && isCropperReady();
   isMoveLeftShowed.value = !isFirstPictureSlide() && isPictureSlide();
   isMoveRightShowed.value = !isLastPictureSlide() && isPictureSlide();
   isRatioToolsShowed.value = isPictureSlide() && isRatioToolsShowed.value;
   isZoomSliderShowed.value = isPictureSlide() && isZoomSliderShowed.value;
+  isReadyToPost.value = links.value.length > 0;
 }
 
 function onFileUpload(files) {

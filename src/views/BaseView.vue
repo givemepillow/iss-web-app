@@ -20,19 +20,17 @@
 .page {
   display: grid;
   width: calc(100%);
-  //min-height: 100vh;
   grid-template-columns: calc(100%);
-  grid-template-rows: auto calc(100%) auto;
+  grid-template-rows: auto 100% auto;
   background-color: var(--background-color);
 
   header {
+    z-index: 999;
     display: grid;
     position: sticky;
     top: 0;
-    z-index: 999;
-    align-items: start;
-    align-content: start;
     width: calc(100%);
+    border-bottom: #333333 solid 1px;
   }
 
   main {
@@ -41,6 +39,8 @@
   }
 
   footer {
+    margin-top: 4rem;
+    z-index: 1;
     display: grid;
     width: calc(100%);
   }

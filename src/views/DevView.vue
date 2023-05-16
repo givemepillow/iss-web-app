@@ -1,6 +1,6 @@
 <script setup>
-import PostItem from "@/components/post/PostItem.vue";
-import WallFeed from "@/components/wall/WallFeed.vue";
+import PostItem from "@/components/observer/PostObserver.vue";
+import WallFeed from "@/components/wall/TheWall.vue";
 import BaseView from "@/views/BaseView.vue";
 </script>
 

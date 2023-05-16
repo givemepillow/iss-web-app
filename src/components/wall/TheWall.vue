@@ -1,49 +1,7 @@
 <template>
   <div ref="container" class="wall">
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost :post="post" />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
-    </div>
-    <div class="wall__post">
-      <WallPost />
+    <div v-for="post in posts" :key="post.id" class="wall__post">
+      <WallPost :post="post"/>
     </div>
   </div>
 </template>
@@ -52,28 +10,37 @@
 
 import WallPost from "@/components/wall/WallPost.vue";
 import { ref } from "vue";
-import Post from "@/models/post";
-import Picture from "@/models/picture";
+
+import { examples } from "@/models/examples";
 
 const container = ref(null);
-let post = new Post({
-  pictures: [new Picture({
-    url: 'https://i.pinimg.com/564x/b7/ee/a5/b7eea5a239b31fc678e5b674a92f8a1d.jpg'
-  })]
-})
+let posts = examples;
 </script>
 
 <style lang="scss" scoped>
 
-@media (max-width: 650px) {
+@media (max-width: 480px) {
   .wall {
     columns: 2;
   }
 }
 
-@media (min-width: 650px) {
+@media (min-width: 480px) {
   .wall {
-    columns: 5;
+    columns: 3;
+  }
+}
+
+
+@media (min-width: 640px) {
+  .wall {
+    columns: 4;
+  }
+}
+
+@media (min-width: 960px) {
+  .wall {
+    columns: 6;
   }
 }
 

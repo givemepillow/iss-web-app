@@ -1,10 +1,12 @@
 export default class User {
   constructor(
-    id = 0,
-    name = "",
-    username = "",
-    registeredAt = "",
-    avatarUrl = ""
+    {
+      id = 0,
+      name = "",
+      username = "",
+      registeredAt = "",
+      avatarUrl = ""
+    } = {}
   ) {
     this.id = id;
     this.name = name;

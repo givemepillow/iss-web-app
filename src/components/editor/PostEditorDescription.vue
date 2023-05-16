@@ -37,6 +37,11 @@ const props = defineProps({
 const emojiButton = ref(null);
 const value = ref("");
 
+defineExpose({
+  value
+});
+
+
 onMounted(() => {
   const picker = createPopup({
     emojisPerRow: 6,

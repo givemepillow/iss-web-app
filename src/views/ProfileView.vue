@@ -1,5 +1,5 @@
 <script setup>
-import NavigationHeader from "@/components/NavigationBar.vue";
+import NavigationHeader from "@/components/DesktopNavigation.vue";
 import BaseView from "@/views/BaseView.vue";
 </script>
 

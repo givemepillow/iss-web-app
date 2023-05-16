@@ -13,14 +13,19 @@ const props = defineProps({
   },
   alpha: {
     type: Number,
-    default: 0.4
+    default: 0.6
+  },
+  shadow: {
+    type: Boolean,
+    default: true
   }
 });
-
 
 const buttonStyle = {
   width: props.size + "rem",
   height: props.size + "rem",
+  "background-color": `rgba(0, 0, 0, ${props.alpha})`,
+  "box-shadow": props.shadow ? "rgba(0, 0, 0, 0.16) 0 1px 4px" : "none"
 };
 
 </script>
@@ -34,10 +39,9 @@ const buttonStyle = {
   justify-content: center;
   cursor: pointer;
   padding: 0.25rem;
-  background-color: rgba(0, 0, 0, 0.6);
   transition: background-color ease-in 0.15s;
-  box-shadow: rgba(0, 0, 0, 0.16) 0 1px 4px;
   border-radius: 100%;
+
   img {
     display: block;
     -webkit-user-drag: none;

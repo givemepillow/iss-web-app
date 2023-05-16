@@ -1,7 +1,7 @@
 <template>
-  <div ref="cropperElement" class="cropper-carousel-item">
-    <div ref="canvasElement" class="cropper-carousel-item__canvas cropper-canvas">
-      <img ref="imageElement" :src="src" alt="" class="cropper-carousel-item__image">
+  <div ref="cropperElement" :class="{'post-cropper--ready': isReady}" class="post-cropper">
+    <div ref="canvasElement" class="post-cropper__canvas cropper-canvas">
+      <img ref="imageElement" :src="src" alt="" class="post-cropper__image">
     </div>
     <a ref="a" style="display:none;position: absolute"></a>
   </div>
@@ -24,11 +24,14 @@ const props = defineProps({
     default: 0
   }
 });
+
+const emits = defineEmits(["created"]);
 const canvasElement = ref(null);
 const cropperElement = ref(null);
 const imageElement = ref(null);
 const cropper = ref(null);
 const currentZoom = ref(0);
+const isReady = ref(false);
 
 const isOriginalSaved = ref(false);
 const zoomStep = 100;
@@ -44,6 +47,15 @@ function save() {
     a.value.click();
     window.URL.revokeObjectURL(a.value.href);
   }, "image/png", 1);
+}
+
+async function getBlob() {
+  return await new Promise(resolve => {
+    cropper.value.getCroppedCanvas({
+      imageSmoothingEnabled: false,
+      imageSmoothingQuality: "high"
+    }).toBlob(resolve, "image/png", 1);
+  });
 }
 
 function rotate() {
@@ -70,8 +82,10 @@ defineExpose({
   rotate,
   save,
   naturalRatio,
+  getBlob,
   currentZoom,
-  isOriginalSaved
+  isOriginalSaved,
+  isReady
 });
 
 function scaleCropper(ratio) {
@@ -98,7 +112,6 @@ watch(props, () => {
 });
 
 onMounted(() => {
-
   let maxZoom = 0;
   let minZoom = 0;
   cropper.value = new Cropper(imageElement.value, {
@@ -123,11 +136,11 @@ onMounted(() => {
     cropBoxMovable: false,
     ready(_) {
       scaleCropper(props.ratio);
-      cropperElement.value.style.opacity = 1;
       const canvasData = cropper.value.getCanvasData();
       minZoom = (canvasData.width / canvasData.naturalWidth);
       maxZoom = (canvasData.width / canvasData.naturalWidth) + (100 / zoomStep);
       currentZoom.value = 0;
+      isReady.value = true;
     },
     zoom(event) {
       if (maxZoom < event.detail.ratio) {
@@ -147,15 +160,17 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.cropper-carousel-item {
-  width: 100%;
-  height: 100%;
+.post-cropper {
   opacity: 0;
   user-select: none;
-  transition: opacity ease-out 0.5s;
+  transition: opacity ease-out 0.25s;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &--ready {
+    opacity: 1;
+  }
 
   &__image {
     display: block;

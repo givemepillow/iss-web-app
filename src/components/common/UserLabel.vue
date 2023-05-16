@@ -1,10 +1,10 @@
 <template>
   <div class="user-label">
     <div class="user-label__avatar">
-      <img :alt="props.name" :src="avatar" class="">
+      <img :alt="props.user?.username ?? 'default'" :src="props.user?.avatarUrl ?? avatar" class="">
     </div>
     <span class="user-label__name">
-      {{ name }}
+      {{ props.user?.username ?? 'default' }}
     </span>
   </div>
 </template>
@@ -14,9 +14,9 @@ import avatar from "@/assets/avatars/batman.svg";
 
 
 const props = defineProps({
-  name: {
-    type: String,
-    default: "kirilllapushinskiy"
+  user: {
+    type: Object,
+    required: true
   }
 });
 </script>
@@ -35,9 +35,13 @@ const props = defineProps({
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 100%;
+    overflow: hidden;
 
     img {
       display: block;
+      height: 2rem;
+      width: 2rem;
       -webkit-user-drag: none;
       user-select: none;
     }

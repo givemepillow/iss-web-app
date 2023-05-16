@@ -1,11 +1,11 @@
 :root {
     --text-color: whitesmoke;
-    --background-color: #403d39;
+    --background-color: #242424;
     --secondary-color: #363636;
-    --block-color: #242424;
+    --block-color:#363636 ;
     --scrollbar-width: 0.75em;
     --border-radius: 5px;
-    --default-color: #282828;
+    --default-color: #313131;
     --small-screen: 480px;
     --medium-screen: 640px;
     --large-screen: 960px;

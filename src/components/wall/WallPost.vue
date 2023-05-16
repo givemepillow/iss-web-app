@@ -2,14 +2,16 @@
   <div class="wall-post">
     <div class="wall-post__header">
       <div class="wall-post__user">
-        <UserLabel />
+        <UserLabel :user="props.post.user" />
       </div>
     </div>
-    <div class="wall-post__middle">
-      <div class="wall-post__carousel">
-        <WallPostCarousel :pictures="props.post.pictures" />
+    <RouterLink :to="'/posts/' + post.id">
+      <div class="wall-post__middle">
+        <div class="wall-post__carousel">
+          <WallPostCarousel :pictures="props.post.pictures" />
+        </div>
       </div>
-    </div>
+    </RouterLink>
     <div class="wall-post__bottom">
       <div class="wall-post__statistics">
         <PostObserverStatistics />
@@ -52,7 +54,7 @@ const props = defineProps({
   }
 
   &__middle {
-
+    width: 100%;
   }
 
   &__bottom {

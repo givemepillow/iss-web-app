@@ -57,7 +57,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 
 .wall-post-carousel {
-  background-color: #3399ff;
+  //background-color: #3399ff;
   width: 100%;
 }
 

@@ -32,6 +32,11 @@ const props = defineProps({
 
 const value = ref("");
 
+defineExpose({
+  value
+});
+
+
 </script>
 
 <style lang="scss" scoped>
