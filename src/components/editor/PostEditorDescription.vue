@@ -92,14 +92,14 @@ onMounted(() => {
     color: whitesmoke;
     font-size: 12pt;
     font-weight: normal;
-    background-color: var(--default-color);
+    background-color: var(--app-default-color);
   }
 
   &__bottom {
     margin: 0;
     padding: 0;
     display: flex;
-    background-color: var(--default-color);
+    background-color: var(--app-default-color);
     //align-self: end;
   }
 

@@ -22,7 +22,6 @@
   width: calc(100%);
   grid-template-columns: calc(100%);
   grid-template-rows: auto 100% auto;
-  background-color: var(--background-color);
 
   header {
     z-index: 999;

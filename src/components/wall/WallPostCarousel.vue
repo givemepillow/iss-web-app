@@ -1,5 +1,8 @@
 <template>
   <div ref="container" class="wall-post-carousel">
+    <div class="number">
+      <TextLabel v-if="numberLabel" :size="10" :text="numberLabel" />
+    </div>
     <div ref="swiperContainer" class="swiper">
       <div class="swiper-wrapper">
         <img
@@ -12,16 +15,17 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
 import Swiper, { Pagination, Autoplay } from "swiper";
 import Picture from "@/models/picture";
+import TextLabel from "@/components/common/TextLabel.vue";
 
 const container = ref(null);
 const image = ref(null);
-
 
 const swiperContainer = ref(null);
 const swiper = ref(null);
@@ -31,6 +35,16 @@ const props = defineProps({
     required: true
   }
 });
+
+const numberLabel = ref("");
+
+function updateNumberLabel() {
+  if (swiper.value?.slides?.length > 1) {
+    numberLabel.value = `${(swiper.value?.realIndex ?? 0) + 1}/${swiper.value?.slides?.length}`;
+  } else {
+    numberLabel.value = "";
+  }
+}
 
 onMounted(() => {
   swiper.value = new Swiper(swiperContainer.value, {
@@ -49,6 +63,14 @@ onMounted(() => {
     },
     autoplay: {
       delay: Math.random() * (10000 - 3000) + 3000
+    },
+    on: {
+      update: () => {
+        updateNumberLabel();
+      },
+      slideChange: () => {
+        updateNumberLabel();
+      }
     }
   });
 });
@@ -57,8 +79,16 @@ onMounted(() => {
 <style lang="scss" scoped>
 
 .wall-post-carousel {
-  //background-color: #3399ff;
   width: 100%;
+}
+
+.number {
+  position: absolute;
+  top: 0.5rem;
+  z-index: 2;
+  color: whitesmoke;
+  right: 0.5rem;
+  opacity: 0.75;
 }
 
 

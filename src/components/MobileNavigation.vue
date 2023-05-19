@@ -32,7 +32,7 @@ nav {
   justify-items: center;
   gap: 1em;
   padding: 0.5rem;
-  background-color: var(--background-color);
+  background-color: var(--app-background-color);
 }
 
 </style>

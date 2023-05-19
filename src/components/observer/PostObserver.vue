@@ -31,19 +31,19 @@
             <PostDescription :description="post.description" />
           </div>
         </div>
-        <div class="post__card" @click="isDescription = !isDescription">
-          <div
+        <div class="post__card">
+          <BaseButton
             :class="{'post__button--on': isDescription}"
             class="post__button post__button--description"
-          >
-            Описание
-          </div>
-          <div
+            text="Описание"
+            @click="isDescription = !isDescription"
+          />
+          <BaseButton
             :class="{'post__button--on': !isDescription}"
             class="post__button post__button--discussion"
-          >
-            Обсуждение
-          </div>
+            text="Обсуждение"
+            @click="isDescription = !isDescription"
+          />
         </div>
       </div>
     </div>
@@ -59,6 +59,7 @@ import PostDescription from "@/components/observer/PostDescription.vue";
 import PostTitle from "@/components/observer/PostObserverTitle.vue";
 import PostStatistics from "@/components/observer/PostObserverStatistics.vue";
 import { examples } from "@/models/examples";
+import BaseButton from "@/components/buttons/AppButton.vue";
 
 const postElement = ref(null);
 const isPostLoaded = ref(false);
@@ -116,10 +117,11 @@ $padding: 0.5rem;
   justify-content: center;
 
   &__card {
-    background-color: var(--default-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--default-box-shdow);
+    background-color: var(--app-default-color);
+    border-radius: var(--app-border-radius);
+    box-shadow: var(--app-default-shadow);
     overflow: clip;
+    border: var(--app-default-border);
   }
 
   @media only screen and (min-width: 960px) {
@@ -136,7 +138,6 @@ $padding: 0.5rem;
     grid-template-columns: calc(85% - 2 * $padding);
     grid-template-rows: none;
   };
-
 
   @media only screen and ((max-width: 480px) or (max-device-width: 640px)) {
     grid-template-columns: calc(100% - 2 * $padding);
@@ -156,19 +157,19 @@ $padding: 0.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: var(--border-radius);
-    box-shadow: var(--default-box-shdow);
-    background-color: var(--default-color);
+    border-radius: var(--app-border-radius);
+    box-shadow: var(--app-default-shadow);
+    background-color: var(--app-default-color);
     overflow: clip;
   }
 
   &__info {
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: auto auto 7fr 3rem;
+    grid-template-rows: auto auto 7fr 2.75rem;
 
     @media only screen and (max-width: 640px) {
-      grid-template-rows: auto auto 3rem;
+      grid-template-rows: auto auto 2.75rem;
     };
 
     grid-gap: $gap;
@@ -177,10 +178,12 @@ $padding: 0.5rem;
   &__statistics {
     padding: 0.75rem;
     width: 100%;
+
   }
 
   &__user-label {
-    padding: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--app-active-color);
 
     &--vertical {
       @media only screen and (min-width: 640px) {
@@ -205,23 +208,16 @@ $padding: 0.5rem;
   &__button {
     height: 100%;
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: left ease-in-out 250ms;
-    user-select: none;
-    font-weight: bold;
-    font-size: x-large;
+    font-size: 14pt;
+    transition: all ease-in-out 250ms;
 
     &--description {
       left: -100%;
-      background-color: orange;
     }
 
     &--discussion {
       left: 100%;
       bottom: 100%;
-      background-color: dodgerblue;
     }
 
     &--on {

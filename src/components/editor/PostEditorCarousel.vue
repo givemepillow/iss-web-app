@@ -359,7 +359,7 @@ onUpdated(() => {
   min-width: 280px;
   min-height: 280px;
   user-select: none;
-  border-radius: var(--border-radius);
+  border-radius: var(--app-border-radius);
   overflow: clip;
 
   &__swiper-button-prev, &__swiper-button-next {

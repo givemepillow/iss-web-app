@@ -39,13 +39,14 @@ const props = defineProps({
 <style lang="scss" scoped>
 .wall-post {
   width: 100%;
-  background-color: var(--default-color);
-  border-radius: var(--border-radius);
-  box-shadow: var(--default-box-shdow);
+  background-color: var(--app-default-color);
+  border-radius: var(--app-border-radius);
+  box-shadow: var(--app-default-shadow);
   overflow: hidden;
   display: grid;
   grid-template-columns: 100%;
   grid-template-rows: auto 1fr auto;
+  border: var(--app-default-border);
 
   &__header {
     padding: 0.5rem;

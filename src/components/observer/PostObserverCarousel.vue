@@ -29,6 +29,11 @@
         :src="nextIcon"
         class="swiper-button-next post-carousel__button-next"
       />
+      <TextLabel
+        :size="11"
+        :text="props.pictures[swiper?.realIndex]?.contentType.toUpperCase()"
+        class="content-type"
+      />
     </div>
   </div>
 </template>
@@ -39,6 +44,7 @@ import { onMounted, ref } from "vue";
 import Swiper, { Navigation, Pagination } from "swiper";
 import Picture from "@/models/picture";
 import IconButton from "@/components/buttons/IconButton.vue";
+import TextLabel from "@/components/common/TextLabel.vue";
 
 const carouselElement = ref(null);
 const swiperContainerElement = ref(null);
@@ -88,16 +94,13 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.3s ease;
+.content-type {
+  position: absolute;
+  z-index: 3;
+  top: 0.5rem;
+  right: 0.5rem;
+  opacity: 0.65;
 }
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-
 
 .post-carousel {
   width: 100%;

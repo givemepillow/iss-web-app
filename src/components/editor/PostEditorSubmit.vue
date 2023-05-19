@@ -1,10 +1,15 @@
 <template>
-  <div :class="{disabled: props.disabled, pending: props.pending}" class="submit-button">
-    СОЗДАТЬ
-  </div>
+  <BaseButton
+    :class="{pending: props.pending}"
+    :disabled="disabled"
+    class="submit-button"
+    text="СОЗДАТЬ"
+  />
 </template>
 
 <script setup>
+import BaseButton from "@/components/buttons/AppButton.vue";
+
 const props = defineProps({
   disabled: {
     type: Boolean,
@@ -21,16 +26,9 @@ const props = defineProps({
 .submit-button {
   height: 100%;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-weight: bold;
   font-size: x-large;
-  text-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px;
-  transition: all ease-in-out 250ms;
-  cursor: pointer;
-  user-select: none;
-  background: #8ac926;
+  background-color: gold;
 }
 
 @keyframes gradient {
@@ -50,8 +48,8 @@ const props = defineProps({
 }
 
 .pending {
-  background: linear-gradient(90deg, hsla(148, 100%, 47%, 1) 0%, hsla(211, 90%, 47%, 1) 100%);
-  background-size: 400% 400%;
+  background: var(--app-active-color);
+  background-size: 300% 300%;
   animation: gradient 3s ease infinite;
   font-size: 0;
 }

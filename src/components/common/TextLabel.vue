@@ -1,16 +1,12 @@
 <template>
   <div :style="buttonStyle" class="button-container" draggable="false">
-    <span> {{ props.text}}</span>
+     {{ props.text }}
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
   text: String,
-  padding: {
-    type: Number,
-    default: 0
-  },
   size: {
     type: Number,
     default: 2
@@ -23,8 +19,7 @@ const props = defineProps({
 
 
 const buttonStyle = {
-  width: props.size + "rem",
-  height: props.size + "rem",
+  "font-size": props.size + "pt",
   "background-color": `rgba(0, 0, 0, ${props.alpha})`,
   "box-shadow": props.shadow ? "rgba(0, 0, 0, 0.16) 0 1px 4px" : "none"
 };
@@ -35,16 +30,12 @@ const buttonStyle = {
 .button-container {
   user-select: none;
   -webkit-user-drag: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
   transition: background-color ease-in 0.15s;
-  border-radius: 100%;
-  span {
-    user-select: none;
-    font-size: 9pt;
-  }
+  border-radius: 50%/75%;
+  padding: 0.1rem 0.4rem 0.1rem 0.4rem;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .button-container:hover {

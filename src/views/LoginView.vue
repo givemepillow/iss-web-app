@@ -1,5 +1,6 @@
 <script setup>
 import TemplatePage from "@/views/BaseView.vue";
+import LoginPage from "@/components/login/TheLogin.vue";
 </script>
 
 <template>
@@ -7,7 +8,7 @@ import TemplatePage from "@/views/BaseView.vue";
     <template v-slot:header>
     </template>
     <template v-slot:main>
-
+      <LoginPage />
     </template>
     <template v-slot:footer>
     </template>

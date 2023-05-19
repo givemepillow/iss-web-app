@@ -85,15 +85,16 @@ $padding: 0.5rem;
   };
 
   @media only screen and (max-width: 480px) {
-    $width: calc(100vw - var(--scrollbar-width) - $padding * 2);
+    $width: calc(100vw - var(--app-scrollbar-width) - $padding * 2);
     grid-template-columns: $width;
     grid-template-rows: $width 30rem;
   };
 
   &__cropper {
-    background-color: var(--default-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--default-box-shdow);
+    background-color: var(--app-default-color);
+    border-radius: var(--app-border-radius);
+    box-shadow: var(--app-default-shadow);
+    border: var(--app-default-border);
   }
 
   &__info {
@@ -103,30 +104,33 @@ $padding: 0.5rem;
     grid-gap: $gap;
 
     &--header {
-      background-color: var(--default-color);
-      border-radius: var(--border-radius);
-      box-shadow: var(--default-box-shdow);
+      background-color: var(--app-default-color);
+      border-radius: var(--app-border-radius);
+      box-shadow: var(--app-default-shadow);
       overflow: clip;
       display: grid;
       grid-template-columns: 100%;
       grid-template-rows: 1fr 1fr;
       grid-gap: $gap;
       padding: 0.75rem;
+      border: var(--app-default-border);
     }
 
     &--middle {
-      background-color: var(--default-color);
-      border-radius: var(--border-radius);
-      box-shadow: var(--default-box-shdow);
+      background-color: var(--app-default-color);
+      border-radius: var(--app-border-radius);
+      box-shadow: var(--app-default-shadow);
+      border: var(--app-default-border);
       overflow: clip;
       padding: 0.75rem;
     }
 
     &--bottom {
-      background-color: var(--default-color);
-      border-radius: var(--border-radius);
+      background-color: var(--app-default-color);
+      border-radius: var(--app-border-radius);
       overflow: clip;
-      box-shadow: var(--default-box-shdow);
+      box-shadow: var(--app-default-shadow);
+      border: var(--app-default-border);
       height: 100%;
     }
   }

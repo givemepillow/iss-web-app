@@ -58,7 +58,7 @@
 }
 
 .cropper-modal {
-    background-color: var(--default-color);
+    background-color: var(--app-default-color);
     opacity: 1;
 }
 
