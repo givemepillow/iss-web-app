@@ -1,32 +1,23 @@
 <template>
-  <div class="page">
-    <header>
-      <slot name="page__header">
-        <DesktopNavigation v-if="$route.name !== 'login'" />
-      </slot>
-    </header>
-    <main>
-      <slot name="page__main">
-        <router-view v-slot="{Component, route}">
-          <transition
-            :enter-active-class="route.meta.enterClass"
-            :leave-active-class="route.meta.leaveClass"
-            mode="out-in"
-          >
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </slot>
-    </main>
-    <footer>
-      <slot name="page__footer">
-        <MobileNavigation v-if="$route.name !== 'login'" />
-      </slot>
-    </footer>
-  </div>
-  <div class="page__background-container">
-    <div class="page__background"></div>
-  </div>
+  <AppView>
+    <template #header>
+      <DesktopNavigation v-if="$route.name !== 'login'" />
+    </template>
+    <template #main>
+      <router-view v-slot="{Component, route}">
+        <transition
+          :enter-active-class="route.meta.enterClass"
+          :leave-active-class="route.meta.leaveClass"
+          mode="out-in"
+        >
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </template>
+    <template #footer>
+      <MobileNavigation v-if="$route.name !== 'login'" />
+    </template>
+  </AppView>
 </template>
 
 
@@ -35,87 +26,6 @@ import { RouterView } from "vue-router";
 import "animate.css";
 import DesktopNavigation from "@/components/DesktopNavigation.vue";
 import MobileNavigation from "@/components/MobileNavigation.vue";
-
-
-// const editedTheme = computed(() => {
-//   darkTheme.common.primaryColor = "#ffffff";
-//   darkTheme.common.primaryColorHover = "#ffffff";
-//   darkTheme.common.primaryColorPressed = "#ffffff";
-//   darkTheme.common.primaryColorSuppl = "#ffffff";
-//   return darkTheme;
-// });
-
+import AppView from "@/views/AppView.vue";
 </script>
-<!--<template>-->
-<!--  <n-config-provider :theme="editedTheme">-->
-<!--    <n-dialog-provider>-->
-<!--      <n-message-provider>-->
-<!--        <RouterView />-->
-<!--      </n-message-provider>-->
-<!--    </n-dialog-provider>-->
-<!--  </n-config-provider>-->
-<!--</template>-->
 
-
-<style lang="scss" scoped>
-
-.page {
-  display: grid;
-  width: calc(100%);
-  grid-template-columns: calc(100%);
-  grid-template-rows: auto 100% auto;
-
-  &__header {
-    display: grid;
-    position: sticky;
-    top: 0;
-    width: calc(100%);
-    border-bottom: #333333 solid 1px;
-  }
-
-  &__main {
-    display: block;
-    width: calc(100%);
-  }
-
-  &__footer {
-    display: grid;
-    width: calc(100%);
-  }
-
-
-  &__background-container {
-    position: fixed;
-    z-index: -1;
-    height: 100vh;
-    width: 100vw;
-    left: 0;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &__background {
-    --size: 475px;
-    --speed: 50s;
-    --easing: cubic-bezier(0.9, 0.1, 0.1, 0.9);
-
-    width: var(--size);
-    height: var(--size);
-    filter: blur(calc(var(--size) / 5));
-    background-image: linear-gradient(hsl(158, 82%, 57%, 85%), hsl(252, 82%, 57%));
-    animation: rotate var(--speed) var(--easing) alternate infinite;
-    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-  }
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>

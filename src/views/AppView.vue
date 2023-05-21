@@ -1,13 +1,13 @@
 <template>
   <div class="page">
-    <header>
-      <slot name="page__header"></slot>
+    <header class="page__header">
+      <slot name="header"></slot>
     </header>
-    <main>
-      <slot name="page__main"></slot>
+    <main class="page__main">
+      <slot name="main"></slot>
     </main>
-    <footer>
-      <slot name="page__footer"></slot>
+    <footer class="page__footer">
+      <slot name="footer"></slot>
     </footer>
   </div>
   <div class="page__background-container">
@@ -27,7 +27,6 @@
   grid-template-rows: auto 100% auto;
 
   &__header {
-    z-index: 999;
     display: grid;
     position: sticky;
     top: 0;
@@ -35,14 +34,12 @@
     border-bottom: #333333 solid 1px;
   }
 
-  &__hmain {
+  &__main {
     display: block;
     width: calc(100%);
   }
 
-  &__hfooter {
-    margin-top: 4rem;
-    z-index: 1;
+  &__footer {
     display: grid;
     width: calc(100%);
   }
