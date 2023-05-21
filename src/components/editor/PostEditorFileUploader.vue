@@ -33,6 +33,7 @@ const file = ref(null);
 const emit = defineEmits(["upload"]);
 
 function onClick() {
+  file.value.value = null;
   file.value.click();
 }
 

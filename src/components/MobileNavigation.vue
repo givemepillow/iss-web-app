@@ -1,9 +1,9 @@
 <template>
   <nav>
-    <RouterLink to="/posts">
+    <RouterLink to="/explore">
       <IconButton :alpha="0" :shadow="false" :size="3" :src="exploreIcon" />
     </RouterLink>
-    <RouterLink to="/posts/new">
+    <RouterLink to="/new">
       <IconButton :alpha="0" :shadow="false" :size="3" :src="addIcon" />
     </RouterLink>
   </nav>
@@ -19,6 +19,7 @@ import addIcon from "@/assets/icons/add.svg";
 
 <style lang="scss" scoped>
 nav {
+  z-index: 999;
   border-top: #333333 solid 1px;
   position: fixed;
   bottom: 0;

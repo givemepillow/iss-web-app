@@ -5,7 +5,7 @@
     </div>
     <div class="editor__info">
       <div class="editor__info--header">
-        <UserLabel :user="user" />
+        <UserLabel />
         <PostEditorTitle ref="titleElement" :maxlength="25" placeholder="Придумайте название..." />
       </div>
       <div class="editor__info--middle">
@@ -29,10 +29,8 @@ import CreatePostSubmit from "@/components/editor/PostEditorSubmit.vue";
 import PostEditorDescription from "@/components/editor/PostEditorDescription.vue";
 import PostEditorTitle from "@/components/editor/PostEditorTitle.vue";
 import UserLabel from "@/components/common/UserLabel.vue";
-import { user, examples } from "@/models/examples";
-import Post from "@/models/post";
-import { useRouter } from "vue-router";
-const router = useRouter();
+import { publishPost } from "@/services/api";
+
 const cropperCarouselElement = ref(null);
 const descriptionElement = ref(null);
 const titleElement = ref(null);
@@ -42,16 +40,30 @@ const isPostCreated = ref(false);
 
 async function onCreatePost() {
   isPostPending.value = true;
-  let post = new Post({
-    id: Math.floor(Math.random() * 10000),
-    title: titleElement.value.value,
-    description: descriptionElement.value.value,
-    pictures: await cropperCarouselElement.value.getPictures()
-  });
-  examples[post.id] = post;
-  isPostPending.value = false;
-  isPostCreated.value = true;
-  await router.push({ path: "/posts" })
+
+  let formData = new FormData();
+
+  formData.append("title", titleElement.value.value);
+  formData.append("description", descriptionElement.value.value);
+
+  for (let flag of cropperCarouselElement.value.getSaveOriginals()) {
+    formData.append("saveOriginals", flag);
+  }
+
+  for (let area of cropperCarouselElement.value.getAreas()) {
+    formData.append("areas", JSON.stringify(area));
+  }
+
+  for (let file of cropperCarouselElement.value.getFiles()) {
+    formData.append("files", file, file.name);
+  }
+
+
+  let response = await publishPost(formData);
+  if (response.ok) {
+    isPostPending.value = false;
+    isPostCreated.value = true;
+  }
 }
 
 </script>
@@ -87,7 +99,7 @@ $padding: 0.5rem;
   @media only screen and (max-width: 480px) {
     $width: calc(100vw - var(--app-scrollbar-width) - $padding * 2);
     grid-template-columns: $width;
-    grid-template-rows: $width 30rem;
+    grid-template-rows: $width 30rem 4rem;
   };
 
   &__cropper {

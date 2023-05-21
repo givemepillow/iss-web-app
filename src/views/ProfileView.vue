@@ -1,6 +1,6 @@
 <script setup>
 import NavigationHeader from "@/components/DesktopNavigation.vue";
-import BaseView from "@/views/BaseView.vue";
+import BaseView from "@/views/AppView.vue";
 </script>
 
 <template>

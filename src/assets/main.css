@@ -1,17 +1,17 @@
 :root {
+    --animate-duration: 300ms;
+    --animate-delay: 0s;
     --app-text-color: whitesmoke;
     --app-background-color: #202020;
     --app-default-color: #232323;
     --app-inactive-color: #333333;
-    --app-active-color: linear-gradient(45deg, rgba(66,184,131,1) 0%,rgba(39,179,137,1) 19%,rgba(100,126,255,1) 100%);
+    --app-active-color: linear-gradient(45deg, rgba(66, 184, 131, 1) 0%, rgba(39, 179, 137, 1) 19%, rgba(100, 126, 255, 1) 100%);
     --app-secondary-color: #363636;
     --app-scrollbar-width: 0.75em;
     --app-border-radius: 0.25rem;
     --app-default-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-    --app-default-border: #313131  solid 1px;
+    --app-default-border: #313131 solid 1px;
 }
-
-
 
 *,
 *::before,
@@ -55,7 +55,6 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
-
 
 
 /*@media (prefers-color-scheme: dark) {*/

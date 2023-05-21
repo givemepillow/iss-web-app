@@ -18,6 +18,7 @@ const props = defineProps({
     type: String,
     required: true
   },
+  file: Object,
   ratio: {
     type: Number,
     required: true,
@@ -33,10 +34,10 @@ const cropper = ref(null);
 const currentZoom = ref(0);
 const isReady = ref(false);
 
-const isOriginalSaved = ref(false);
+const isOriginalSaved = ref(true);
 const zoomStep = 100;
 
-function save() {
+function saveLocal() {
   isOriginalSaved.value = !isOriginalSaved.value;
   cropper.value.getCroppedCanvas({
     imageSmoothingEnabled: false,
@@ -49,13 +50,21 @@ function save() {
   }, "image/png", 1);
 }
 
-async function getBlob() {
-  return await new Promise(resolve => {
-    cropper.value.getCroppedCanvas({
-      imageSmoothingEnabled: false,
-      imageSmoothingQuality: "high"
-    }).toBlob(resolve, "image/png", 1);
-  });
+function getFile() {
+  return props.file;
+}
+
+function getArea() {
+  let data = cropper.value.getData(true);
+  data["x"] = Math.floor(data["x"] / data["scaleX"]);
+  data["y"] = Math.floor(data["y"] / data["scaleY"]);
+  data["width"] = Math.floor(data["width"] / data["scaleX"]);
+  data["height"] = Math.floor(data["height"] / data["scaleY"]);
+  return data;
+}
+
+function getSrc() {
+  return props.src;
 }
 
 function rotate() {
@@ -80,9 +89,10 @@ function naturalRatio() {
 defineExpose({
   zoom,
   rotate,
-  save,
+  saveLocal,
   naturalRatio,
-  getBlob,
+  getArea,
+  getFile,
   currentZoom,
   isOriginalSaved,
   isReady

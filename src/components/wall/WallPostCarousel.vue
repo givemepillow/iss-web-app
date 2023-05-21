@@ -6,9 +6,9 @@
     <div ref="swiperContainer" class="swiper">
       <div class="swiper-wrapper">
         <img
-          v-for="picture in props.pictures"
+          v-for="picture in post.pictures"
           :key="picture.id"
-          :src="picture.url"
+          :src="resolvePictureUrl(post.user.id, picture.id)"
           alt=""
           class="swiper-slide"
         >
@@ -21,8 +21,9 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import Swiper, { Pagination, Autoplay } from "swiper";
-import Picture from "@/models/picture";
 import TextLabel from "@/components/common/TextLabel.vue";
+import Post from "@/models/post";
+import { resolvePictureUrl } from "@/services/tools";
 
 const container = ref(null);
 const image = ref(null);
@@ -30,8 +31,8 @@ const image = ref(null);
 const swiperContainer = ref(null);
 const swiper = ref(null);
 const props = defineProps({
-  pictures: {
-    type: Array[Picture],
+  post: {
+    type: Post,
     required: true
   }
 });

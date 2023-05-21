@@ -1,9 +1,9 @@
 <template>
   <nav>
-    <RouterLink to="/posts">
+    <RouterLink to="/explore">
       <IconButton :alpha="0" :shadow="false" :size="3" :src="exploreIcon" />
     </RouterLink>
-    <RouterLink to="/posts/new">
+    <RouterLink to="/new">
       <IconButton :alpha="0" :shadow="false" :size="3" :src="addIcon" />
     </RouterLink>
   </nav>
@@ -22,6 +22,7 @@ nav {
   @media only screen and (max-width: 639px) {
     display: none;
   };
+  z-index: 999;
   width: 100%;
   display: flex;
   border-bottom: #333333 solid 1px;

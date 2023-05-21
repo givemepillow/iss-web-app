@@ -1,4 +1,5 @@
-import {user as defaultUser} from "@/models/examples";
+import User from "@/models/user";
+import Picture from "@/models/picture";
 
 export default class Post {
   constructor(
@@ -8,16 +9,14 @@ export default class Post {
       description = "",
       pictures = [],
       createdAt = "",
-      editedAt = "",
-      user = defaultUser,
+      user = new User(),
     } = {}
   ) {
     this.id = id;
     this.description = description;
     this.title = title;
-    this.pictures = pictures;
+    this.pictures = pictures.map(p => Object.assign(new Picture(), p));
     this.createdAt = createdAt;
-    this.editedAt = editedAt;
-    this.user = user;
+    this.user = Object.assign(new User(), user);
   }
 }

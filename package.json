@@ -12,6 +12,7 @@
     "@picmo/popup-picker": "^5.8.4",
     "@vuelidate/core": "^2.0.2",
     "@vuelidate/validators": "^2.0.2",
+    "animate.css": "^4.1.1",
     "cropperjs": "=1.5.13",
     "eslint": "^8.33.0",
     "eslint-plugin-vue": "^9.9.0",

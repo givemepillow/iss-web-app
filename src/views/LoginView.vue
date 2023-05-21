@@ -1,5 +1,5 @@
 <script setup>
-import TemplatePage from "@/views/BaseView.vue";
+import TemplatePage from "@/views/AppView.vue";
 import LoginPage from "@/components/login/TheLogin.vue";
 </script>
 

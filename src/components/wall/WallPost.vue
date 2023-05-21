@@ -2,13 +2,13 @@
   <div class="wall-post">
     <div class="wall-post__header">
       <div class="wall-post__user">
-        <UserLabel :user="props.post.user" />
+        <UserLabel :user="post.user" />
       </div>
     </div>
     <RouterLink :to="'/posts/' + post.id">
       <div class="wall-post__middle">
         <div class="wall-post__carousel">
-          <WallPostCarousel :pictures="props.post.pictures" />
+          <WallPostCarousel :post="post" />
         </div>
       </div>
     </RouterLink>
@@ -30,10 +30,10 @@ import Post from "@/models/post";
 const props = defineProps({
   post: {
     type: Post,
-    default: new Post(),
     request: true
   }
 });
+
 </script>
 
 <style lang="scss" scoped>

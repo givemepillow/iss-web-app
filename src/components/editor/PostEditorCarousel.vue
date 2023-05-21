@@ -15,7 +15,7 @@
         :size="2"
         :src="saveIcon"
         class="cropper-carousel__save-button"
-        @click="onClickSave"
+        @click="onClickSaveOriginal"
       />
     </div>
     <div ref="swiperElement" class="cropper-carousel__swiper swiper">
@@ -25,7 +25,8 @@
           :key="v.key"
           ref="cropperElements"
           :ratio="currentRatio"
-          :src="v.file"
+          :src="v.url"
+          :file="v.file"
           class="cropper-carousel__swiper-slide swiper-slide"
           @created="onCreated"
         />
@@ -171,7 +172,6 @@ import squareIcon from "@/assets/icons/square.svg";
 import originalIcon from "@/assets/icons/original.svg";
 import TextButton from "@/components/buttons/TextButton.vue";
 import IconButton from "@/components/buttons/IconButton.vue";
-import Picture from "@/models/picture";
 
 const props = defineProps({
   maxlength: {
@@ -200,22 +200,35 @@ function onCreated(url) {
 
 }
 
-async function getPictures() {
-  let pictures = [];
+function getAreas() {
+  let picturesData = [];
   for (const key in cropperElements.value) {
-    pictures.push(
-      new Picture({
-        id: Math.floor(Math.random() * 10000),
-        url: URL.createObjectURL(await cropperElements.value[key].getBlob())
-      })
-    );
+    picturesData.push(cropperElements.value[key].getArea());
   }
-  return pictures;
+  return picturesData;
+}
+
+function getFiles() {
+  let picturesData = [];
+  for (const key in cropperElements.value) {
+    picturesData.push(cropperElements.value[key].getFile());
+  }
+  return picturesData;
+}
+
+function getSaveOriginals() {
+  let picturesData = [];
+  for (const key in cropperElements.value) {
+    picturesData.push(cropperElements.value[key].isOriginalSaved);
+  }
+  return picturesData;
 }
 
 defineExpose({
   isReadyToPost,
-  getPictures
+  getFiles,
+  getAreas,
+  getSaveOriginals
 });
 
 function toggle(isShowed) {
@@ -292,8 +305,10 @@ function onClickDelete() {
 }
 
 
-function onClickSave() {
-  cropperElements.value[swiper.value.realIndex].save();
+function onClickSaveOriginal() {
+  let prev = cropperElements.value[swiper.value.realIndex].isOriginalSaved;
+  cropperElements.value[swiper.value.realIndex].isOriginalSaved = !prev;
+  console.log(cropperElements.value[swiper.value.realIndex].isOriginalSaved)
 }
 
 function onZoomChange(v) {
@@ -310,11 +325,12 @@ function updateTools() {
 }
 
 function onFileUpload(files) {
-  Array.from(files).forEach((f) => {
+  Array.from(files).forEach((file) => {
     if (links.value.length >= props.maxlength) return;
     links.value.push({
       key: index++,
-      file: URL.createObjectURL(f)
+      url: URL.createObjectURL(file),
+      file: file
     });
   });
 }
@@ -480,7 +496,7 @@ onUpdated(() => {
 }
 
 .original-saved, .original-saved:hover {
-  background-color: rgba(3, 148, 252, 0.75);
+  background-color: rgba(3, 148, 252, 0.75)  !important;
 }
 
 .ratio-showed, .ratio-showed:hover, .zoom-showed, .zoom-showed:hover {

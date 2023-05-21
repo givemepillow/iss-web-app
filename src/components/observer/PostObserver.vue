@@ -1,65 +1,64 @@
 <template>
-  <Transition>
-    <div
-      v-if="isPostLoaded"
-      ref="postElement"
-      class="post"
-    >
-      <div class="post__picture">
-        <div class="post__user-label post__user-label--vertical  post__card">
-          <UserLabel :user="post.user" />
-        </div>
-        <div class="post__carousel">
-          <PostCarousel
-            :pictures="post.pictures"
-            @create="onCreate"
-          />
-        </div>
+  <div
+    v-if="isPostLoaded"
+    ref="postElement"
+    class="post"
+  >
+    <div class="post__picture">
+      <div class="post__user-label post__user-label--vertical  post__card">
+        <UserLabel :user="post.user" />
       </div>
-      <div class="post__info">
-        <div class="post__user-label post__user-label--horizontal  post__card">
-          <UserLabel :user="post.user" />
-        </div>
-        <div class="post__statistics  post__card">
-          <PostStatistics />
-        </div>
-        <div class="post__article  post__card">
-          <div class="post__title">
-            <PostTitle :title="post.title" />
-          </div>
-          <div class="post__description">
-            <PostDescription :description="post.description" />
-          </div>
-        </div>
-        <div class="post__card">
-          <BaseButton
-            :class="{'post__button--on': isDescription}"
-            class="post__button post__button--description"
-            text="Описание"
-            @click="isDescription = !isDescription"
-          />
-          <BaseButton
-            :class="{'post__button--on': !isDescription}"
-            class="post__button post__button--discussion"
-            text="Обсуждение"
-            @click="isDescription = !isDescription"
-          />
-        </div>
+      <div class="post__carousel">
+        <PostCarousel
+          :post="post"
+          @create="onCreate"
+        />
       </div>
     </div>
-  </Transition>
+    <div class="post__info">
+      <div class="post__user-label post__user-label--horizontal  post__card">
+        <UserLabel :user="post.user" />
+      </div>
+      <div class="post__statistics  post__card">
+        <PostStatistics />
+      </div>
+      <div class="post__article  post__card">
+        <div class="post__title">
+          <PostTitle :title="post.title" />
+        </div>
+        <div class="post__description">
+          <PostDescription :description="post.description" />
+        </div>
+      </div>
+      <div class="post__card">
+        <BaseButton
+          :class="{'post__button--on': isDescription}"
+          class="post__button post__button--description"
+          text="Описание"
+          @click="isDescription = !isDescription"
+        />
+        <BaseButton
+          :class="{'post__button--on': !isDescription}"
+          class="post__button post__button--discussion"
+          text="Обсуждение"
+          @click="isDescription = !isDescription"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 
-import { onBeforeMount, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import UserLabel from "@/components/common/UserLabel.vue";
 import PostCarousel from "@/components/observer/PostObserverCarousel.vue";
 import PostDescription from "@/components/observer/PostDescription.vue";
 import PostTitle from "@/components/observer/PostObserverTitle.vue";
 import PostStatistics from "@/components/observer/PostObserverStatistics.vue";
-import { examples } from "@/models/examples";
 import BaseButton from "@/components/buttons/AppButton.vue";
+import { getPost } from "@/services/api";
+import Post from "@/models/post";
 
 const postElement = ref(null);
 const isPostLoaded = ref(false);
@@ -70,7 +69,7 @@ const post = ref(null);
 
 const props = defineProps({
   post_id: {
-    type: Number,
+    type: String,
     request: true
   }
 });
@@ -83,31 +82,18 @@ function onCreate(width, height) {
   postRatio.value = height / width;
 }
 
-onBeforeMount(() => {
-  post.value = examples[props.post_id];
-});
 
-
-onMounted(() => {
+onMounted(async () => {
+  let response = await getPost(props.post_id);
+  if (response.ok) {
+    post.value = new Post(await response.json());
+  }
   isPostLoaded.value = true;
 });
 
 </script>
 
 <style lang="scss" scoped>
-
-
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.1s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-
-
 $gap: 0.5rem;
 $padding: 0.5rem;
 .post {

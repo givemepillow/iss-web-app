@@ -1,27 +1,13 @@
 <template>
   <div class="page">
     <header>
-      <slot name="page__header">
-        <DesktopNavigation v-if="$route.name !== 'login'" />
-      </slot>
+      <slot name="page__header"></slot>
     </header>
     <main>
-      <slot name="page__main">
-        <router-view v-slot="{Component, route}">
-          <transition
-            :enter-active-class="route.meta.enterClass"
-            :leave-active-class="route.meta.leaveClass"
-            mode="out-in"
-          >
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </slot>
+      <slot name="page__main"></slot>
     </main>
     <footer>
-      <slot name="page__footer">
-        <MobileNavigation v-if="$route.name !== 'login'" />
-      </slot>
+      <slot name="page__footer"></slot>
     </footer>
   </div>
   <div class="page__background-container">
@@ -29,36 +15,11 @@
   </div>
 </template>
 
-
 <script setup>
-import { RouterView } from "vue-router";
-import "animate.css";
-import DesktopNavigation from "@/components/DesktopNavigation.vue";
-import MobileNavigation from "@/components/MobileNavigation.vue";
-
-
-// const editedTheme = computed(() => {
-//   darkTheme.common.primaryColor = "#ffffff";
-//   darkTheme.common.primaryColorHover = "#ffffff";
-//   darkTheme.common.primaryColorPressed = "#ffffff";
-//   darkTheme.common.primaryColorSuppl = "#ffffff";
-//   return darkTheme;
-// });
 
 </script>
-<!--<template>-->
-<!--  <n-config-provider :theme="editedTheme">-->
-<!--    <n-dialog-provider>-->
-<!--      <n-message-provider>-->
-<!--        <RouterView />-->
-<!--      </n-message-provider>-->
-<!--    </n-dialog-provider>-->
-<!--  </n-config-provider>-->
-<!--</template>-->
-
 
 <style lang="scss" scoped>
-
 .page {
   display: grid;
   width: calc(100%);
@@ -66,6 +27,7 @@ import MobileNavigation from "@/components/MobileNavigation.vue";
   grid-template-rows: auto 100% auto;
 
   &__header {
+    z-index: 999;
     display: grid;
     position: sticky;
     top: 0;
@@ -73,12 +35,14 @@ import MobileNavigation from "@/components/MobileNavigation.vue";
     border-bottom: #333333 solid 1px;
   }
 
-  &__main {
+  &__hmain {
     display: block;
     width: calc(100%);
   }
 
-  &__footer {
+  &__hfooter {
+    margin-top: 4rem;
+    z-index: 1;
     display: grid;
     width: calc(100%);
   }

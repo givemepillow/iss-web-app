@@ -1,13 +1,21 @@
 <template>
-  <div :class="{'login--visible': isReady}" class="login">
+  <div :class="{'login--visible': true}" class="login">
     <img :src="pillowIcon" alt="pillow" class="login__logo" height="96">
-    <Transition appear mode="out-in">
-      <span v-if="!isSignUp && !isCode &&!isSuccess"  class="login__title">Войдите в сервис!</span>
+    <Transition
+      enter-active-class="animate__animated animate__zoomIn"
+      leave-active-class="animate__animated animate__zoomOut"
+      mode="out-in"
+    >
+      <span v-if="!isSignUp && !isCode &&!isSuccess" class="login__title">Войдите в сервис!</span>
       <span v-else-if="isCode &&!isSuccess" class="login__title">Подтверждение почты.</span>
-      <span v-else-if="isSuccess" class="login__title">Добро пожаловать!</span>
-      <span v-else class="login__title">Создание аккаунта.</span>
+      <span v-else-if="!isSuccess" class="login__title">Создание аккаунта.</span>
+      <h1 v-else class="login__title login__welcome">Добро пожаловать!</h1>
     </Transition>
-    <Transition appear mode="out-in">
+    <Transition
+      enter-active-class="animate__animated animate__slideInRight"
+      leave-active-class="animate__animated animate__slideOutLeft"
+      mode="out-in"
+    >
       <form
         v-if="!isSignUp && !isCode &&!isSuccess"
         class="login__sign-in login__card"
@@ -31,7 +39,7 @@
           text="Войти"
           @click="onSignInClick"
         />
-<!--        <TelegramLogin class="sign-in__telegram" telegram-login="ImageSharingServiceBot" />-->
+        <TelegramLogin class="sign-in__telegram" telegram-login="ImageSharingServiceBot" />
       </form>
       <form
         v-else-if="isCode &&!isSuccess"
@@ -66,13 +74,13 @@
       >
         <InputItem
           v-model="v$.username.$model"
+          :error="!v$.username.$error ? '' : v$.username.$errors[0]?.$message ?? ''"
           :maxlength="25"
           class="sign-up__username"
           label="Придумайте имя пользователя."
           name="username"
           placeholder="username"
           type="text"
-          :error="!v$.username.$error ? '' : v$.username.$errors[0]?.$message ?? ''"
         />
         <InputItem
           v-model="v$.name.$model"
@@ -92,12 +100,6 @@
       </form>
     </Transition>
   </div>
-  <ModalWindow
-    v-if="isModalOpen"
-    text="Вы успешно зарегестрировались!"
-    @submit="isModalOpen = false"
-  />
-  <div class="background"></div>
 </template>
 
 <script setup>
@@ -106,9 +108,9 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers, between, numeric, minLength, maxLength } from "@vuelidate/validators";
 import pillowIcon from "@/assets/icons/pillow.svg";
 import BaseButton from "@/components/buttons/AppButton.vue";
-import ModalWindow from "@/components/common/ModalWindow.vue";
 import InputItem from "@/components/common/InputItem.vue";
 import { useRouter } from "vue-router";
+import TelegramLogin from "@/components/login/TelegramLogin.vue";
 
 const isReady = ref(false);
 const isSignUp = ref(false);
@@ -201,7 +203,7 @@ async function onSignUpClick() {
   isSignUp.value = false;
   isSuccess.value = true;
   await new Promise(r => setTimeout(r, 2000));
-  await router.push({ path: "/posts" });
+  await router.push({ path: "/explore" });
 
 
   // if (v$.value.name.$invalid || v$.value.username.$invalid) {
@@ -251,7 +253,13 @@ onMounted(async () => {
     font-size: 17pt;
     text-align: center;
     vertical-align: middle;
-    transition: all ease-in-out 0.5s;
+  }
+
+  &__welcome {
+    font-weight: lighter;
+    font-size: 22pt;
+    text-align: center;
+    vertical-align: middle;
   }
 
   &__logo {
@@ -293,32 +301,32 @@ onMounted(async () => {
 }
 
 
-.background {
-  position: fixed;
-
-  z-index: -1;
-  --size: 350px;
-  --speed: 50s;
-  --easing: cubic-bezier(0.9, 0.1, 0.1, 0.9);
-
-  left: calc(50% - var(--size) / 2);
-  top: calc(var(--size) / 2);
-  width: var(--size);
-  height: var(--size);
-  filter: blur(calc(var(--size) / 5));
-  background-image: linear-gradient(hsl(158, 82%, 57%, 85%), hsl(252, 82%, 57%));
-  animation: rotate var(--speed) var(--easing) alternate infinite;
-  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+//.background {
+//  position: fixed;
+//
+//  z-index: -1;
+//  --size: 350px;
+//  --speed: 50s;
+//  --easing: cubic-bezier(0.9, 0.1, 0.1, 0.9);
+//
+//  left: calc(50% - var(--size) / 2);
+//  top: calc(var(--size) / 2);
+//  width: var(--size);
+//  height: var(--size);
+//  filter: blur(calc(var(--size) / 5));
+//  background-image: linear-gradient(hsl(158, 82%, 57%, 85%), hsl(252, 82%, 57%));
+//  animation: rotate var(--speed) var(--easing) alternate infinite;
+//  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+//}
+//
+//@keyframes rotate {
+//  0% {
+//    transform: rotate(0deg);
+//  }
+//  100% {
+//    transform: rotate(360deg);
+//  }
+//}
 
 
 .v-enter-active,

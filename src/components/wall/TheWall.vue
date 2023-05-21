@@ -1,24 +1,31 @@
 <template>
-  <div ref="container" class="wall">
-    <div v-for="post in posts" :key="post.id" class="wall__post">
-      <WallPost :post="post"/>
-    </div>
+  <div class="wall">
+    <WallPost v-for="post in posts" :key="post.id" :post="post" class="wall__post" />
   </div>
 </template>
 
 <script setup>
 
 import WallPost from "@/components/wall/WallPost.vue";
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 
-import { examples } from "@/models/examples";
+import { getPosts } from "@/services/api";
+import Post from "@/models/post";
 
-const container = ref(null);
-let posts = examples;
+const posts = ref([]);
+
+onBeforeMount(async () => {
+  let response = await getPosts();
+  let result = await response.json();
+  for (let json of result) {
+    posts.value.push(new Post(json));
+  }
+});
+
+
 </script>
 
 <style lang="scss" scoped>
-
 @media (max-width: 480px) {
   .wall {
     columns: 2;
