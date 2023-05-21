@@ -129,6 +129,7 @@ function onInput(event) {
     margin: 0 0 0.3rem 0;
     padding: 0 0 0 .2rem;
     font-size: 9pt;
+    color: var(--app-text-color)
   }
 
   &__tip, &__error {
