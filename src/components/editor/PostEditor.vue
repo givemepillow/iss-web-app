@@ -5,7 +5,7 @@
     </div>
     <div class="editor__info">
       <div class="editor__info--header">
-        <UserLabel />
+        <UserLabel :user="userinfo.user" />
         <PostEditorTitle ref="titleElement" :maxlength="25" placeholder="Придумайте название..." />
       </div>
       <div class="editor__info--middle">
@@ -23,13 +23,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import PostEditorCarousel from "@/components/editor/PostEditorCarousel.vue";
 import CreatePostSubmit from "@/components/editor/PostEditorSubmit.vue";
 import PostEditorDescription from "@/components/editor/PostEditorDescription.vue";
 import PostEditorTitle from "@/components/editor/PostEditorTitle.vue";
 import UserLabel from "@/components/common/UserLabel.vue";
 import { publishPost } from "@/services/api";
+import { useUserInfoStore } from "@/stores/userinfo";
 
 const cropperCarouselElement = ref(null);
 const descriptionElement = ref(null);
@@ -37,6 +38,10 @@ const titleElement = ref(null);
 
 const isPostPending = ref(false);
 const isPostCreated = ref(false);
+
+
+const userinfo = useUserInfoStore();
+
 
 async function onCreatePost() {
   isPostPending.value = true;
@@ -58,13 +63,16 @@ async function onCreatePost() {
     formData.append("files", file, file.name);
   }
 
-
   let response = await publishPost(formData);
   if (response.ok) {
     isPostPending.value = false;
     isPostCreated.value = true;
   }
 }
+
+onBeforeMount(async () => {
+  await userinfo.load();
+});
 
 </script>
 

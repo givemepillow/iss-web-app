@@ -3,10 +3,24 @@ import PostEditor from "@/components/editor/PostEditor.vue";
 import TheWall from "@/components/wall/TheWall.vue";
 import PostObserver from "@/components/observer/PostObserver.vue";
 import TheLogin from "@/components/login/TheLogin.vue";
+import { useUserInfoStore } from "@/stores/userinfo";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+
   routes: [
+    {
+      path: "/",
+      name: "root",
+      redirect: to => {
+        const userinfo = useUserInfoStore();
+        if (userinfo.user !== null) {
+          return "login";
+        } else {
+          return "explore";
+        }
+      }
+    },
     {
       path: "/login",
       name: "login",
@@ -43,14 +57,6 @@ const router = createRouter({
         enterClass: "animate__animated animate__fadeInLeft",
         leaveClass: "animate__animated animate__fadeOutRight"
       }
-    },
-    {
-      path: "/dev",
-      name: "dev",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("@/views/DevView.vue")
     }
   ]
 });

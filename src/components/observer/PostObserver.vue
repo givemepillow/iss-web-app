@@ -155,7 +155,7 @@ $padding: 0.5rem;
     grid-template-rows: auto auto 7fr 2.75rem;
 
     @media only screen and (max-width: 640px) {
-      grid-template-rows: auto auto 2.75rem;
+      grid-template-rows: auto auto 2.75rem 4rem;
     };
 
     grid-gap: $gap;

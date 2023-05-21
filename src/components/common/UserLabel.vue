@@ -1,10 +1,10 @@
 <template>
   <div class="user-label">
     <div class="user-label__avatar">
-      <img :alt="user.username" :src="avatar" class="">
+      <img :alt="props.user?.username" :src="avatar" class="">
     </div>
     <span class="user-label__name">
-      {{ user.username }}
+      {{ props.user?.username }}
     </span>
   </div>
 </template>
@@ -17,7 +17,7 @@ import User from "@/models/user";
 const props = defineProps({
   user: {
     type: User,
-    default: new User()
+    required: true
   }
 });
 
@@ -28,7 +28,7 @@ const props = defineProps({
   display: flex;
   gap: 1em;
   align-items: center;
-  font-size: 12pt;
+  font-size: 10pt;
   padding: 0;
 
   &__avatar {

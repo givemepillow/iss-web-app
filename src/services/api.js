@@ -1,11 +1,9 @@
 import ky from "ky";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 
 const api = ky.create({
-  prefixUrl: "http://localhost:8008",
-  // headers: {
-  //   "Content-Type": "application/json;charset=utf-8"
-  // },
+  prefixUrl: apiUrl,
   mode: "cors",
   credentials: "include",
   throwHttpErrors: false,
@@ -20,6 +18,10 @@ const api = ky.create({
   }
 });
 
+
+export function getMe() {
+  return api.get("users/me");
+}
 
 export function getPosts() {
   return api.get("posts");
@@ -37,14 +39,18 @@ export function signIn(email) {
   return api.post("authorization/email", { json: { "email": email } });
 }
 
+export function signInViaTelegram(data) {
+  return api.post("authorization/telegram", { json: data });
+}
+
 export async function confirmCode(email, code) {
   return api.post("authorization/code", { json: { "email": email, "code": code } });
 }
 
 export async function signUp(username, name) {
-  return api.post("signup", { json: { "username": username, "name": name } });
+  return api.post("authorization/signup", { json: { "username": username, "name": name } });
 }
 
 export async function usernameAvailable(username) {
-  return api.post("usernames/available", { searchParams: { "username": username } });
+  return api.get("users/username", { searchParams: { "username": username } });
 }

@@ -2,13 +2,13 @@
   <div class="wall-post">
     <div class="wall-post__header">
       <div class="wall-post__user">
-        <UserLabel :user="post.user" />
+        <UserLabel :user="props.post.user" />
       </div>
     </div>
-    <RouterLink :to="'/posts/' + post.id">
+    <RouterLink :to="'/posts/' + props.post.id">
       <div class="wall-post__middle">
         <div class="wall-post__carousel">
-          <WallPostCarousel :post="post" />
+          <WallPostCarousel :post="props.post" />
         </div>
       </div>
     </RouterLink>

@@ -172,6 +172,7 @@ import squareIcon from "@/assets/icons/square.svg";
 import originalIcon from "@/assets/icons/original.svg";
 import TextButton from "@/components/buttons/TextButton.vue";
 import IconButton from "@/components/buttons/IconButton.vue";
+import { useUserInfoStore } from "@/stores/userinfo";
 
 const props = defineProps({
   maxlength: {
@@ -195,6 +196,8 @@ const isMoveLeftShowed = ref(false);
 const isZoomSliderShowed = ref(false);
 const isNaturalRatio = ref(false);
 const isReadyToPost = ref(false);
+
+
 
 function onCreated(url) {
 

@@ -2,102 +2,120 @@
   <div :class="{'login--visible': true}" class="login">
     <img :src="pillowIcon" alt="pillow" class="login__logo" height="96">
     <Transition
-      enter-active-class="animate__animated animate__zoomIn"
-      leave-active-class="animate__animated animate__zoomOut"
+      enter-active-class="animate__animated animate__fadeInRight"
+      leave-active-class="animate__animated animate__fadeOutLeft"
       mode="out-in"
     >
-      <span v-if="!isSignUp && !isCode &&!isSuccess" class="login__title">Войдите в сервис!</span>
-      <span v-else-if="isCode &&!isSuccess" class="login__title">Подтверждение почты.</span>
-      <span v-else-if="!isSuccess" class="login__title">Создание аккаунта.</span>
-      <h1 v-else class="login__title login__welcome">Добро пожаловать!</h1>
-    </Transition>
-    <Transition
-      enter-active-class="animate__animated animate__slideInRight"
-      leave-active-class="animate__animated animate__slideOutLeft"
-      mode="out-in"
-    >
-      <form
-        v-if="!isSignUp && !isCode &&!isSuccess"
-        class="login__sign-in login__card"
-        name="sign-in"
-        @submit.prevent="onSignInClick"
-      >
-        <InputItem
-          v-model.lazy="v$.email.$model"
-          :error="!v$.email.$error ? '' : v$.email.$errors[0]?.$message ?? ''"
-          :maxlength="75"
-          autofocus
-          class="sign-in__email"
-          label="Введите ваш email."
-          name="email"
-          placeholder="username@example.com"
-          type="email"
-        />
-        <BaseButton
-          :disabled="!userData.email || v$.email.$error"
-          class="login__button login__login-button"
-          text="Войти"
-          @click="onSignInClick"
-        />
-        <TelegramLogin class="sign-in__telegram" telegram-login="ImageSharingServiceBot" />
-      </form>
-      <form
-        v-else-if="isCode &&!isSuccess"
-        class="login__code login__card"
-        name="code"
-        @submit.prevent="onConfirmCodeClick"
-      >
-        <InputItem
-          v-model="v$.code.$model"
-          :error="!v$.code.$error ? '' : v$.code.$errors[0]?.$message ?? ''"
-          :maxlength="4"
-          align="center"
-          autocomplete="off"
-          class="sign-in__code"
-          label="Код из письма."
+      <div v-if="currentState === states.signIn" class="login__form">
+        <span class="login__title">Войдите в сервис!</span>
+        <form
+          v-if="currentState === states.signIn"
+          class="login__sign-in login__card"
+          name="sign-in"
+          @submit.prevent="onSignInClick"
+        >
+          <InputItem
+            v-model.lazy="v$.email.$model"
+            :error="!v$.email.$error ? '' : v$.email.$errors[0]?.$message ?? ''"
+            :maxlength="75"
+            autofocus
+            class="login__input"
+            label="Введите ваш email."
+            name="email"
+            placeholder="username@example.com"
+            type="email"
+          />
+          <BaseButton
+            :disabled="!userData.email || v$.email.$error"
+            class="login__button login__login-button"
+            text="Войти"
+            @click="onSignInClick"
+          />
+          <TelegramLogin class="login__telegram" telegram-login="ImageSharingServiceBot" @login="onTelegramLogin" />
+        </form>
+      </div>
+      <div v-else-if="currentState === states.confirmCode" class="login__form">
+        <span class="login__title">Подтверждение почты.</span>
+        <form
+          class="login__code login__card"
           name="code"
-          placeholder="0000"
-
-        />
-        <BaseButton
-          :disabled="!userData.code"
-          class="login__button login__confirm-button"
-          text="Подтвердить"
-          @click="onConfirmCodeClick"
-        />
-      </form>
-      <form
-        v-else-if="!isSuccess"
-        class="sign-up login__card"
-        name="sign-up"
-        @submit.prevent="onSignUpClick"
-      >
-        <InputItem
-          v-model="v$.username.$model"
-          :error="!v$.username.$error ? '' : v$.username.$errors[0]?.$message ?? ''"
-          :maxlength="25"
-          class="sign-up__username"
-          label="Придумайте имя пользователя."
-          name="username"
-          placeholder="username"
-          type="text"
-        />
-        <InputItem
-          v-model="v$.name.$model"
-          :maxlength="50"
-          class="sign-up__name"
-          label="Введите ваше имя."
-          name="name"
-          placeholder="Алексей Миронов"
-          type="text"
-        />
-        <BaseButton
-          :disabled="!userData.username || !userData.name"
-          class="login__button login__save-button"
-          text="Подтвердить"
-          @click="onSignUpClick"
-        />
-      </form>
+          @input.prevent="onCodeInput"
+        >
+          <InputItem
+            v-model="v$.code.$model"
+            :error="!v$.code.$error ? '' : v$.code.$errors[0]?.$message ?? ''"
+            :maxlength="4"
+            align="center"
+            autocomplete="off"
+            class="login__input"
+            label="Код из письма."
+            name="code"
+            placeholder="0000"
+          />
+          <BaseButton
+            class="login__button login__confirm-button"
+            text="Назад"
+            @click="onBackClick"
+          />
+          <Transition
+            appear
+            enter-active-class="animate__animated animate__fadeIn"
+            leave-active-class="animate__animated animate__fadeOut"
+            mode="out-in"
+          >
+            <span
+              v-if="countDown > 0"
+              class="login__countdown"
+            >
+              Отправить код повторно через {{ countDown }} сек.
+            </span>
+            <span
+              v-else
+              class="login__countdown login__repeat-code"
+              @click="onSignInClick"
+            >
+              Отправить код повторно.
+            </span>
+          </Transition>
+        </form>
+      </div>
+      <div v-else-if="currentState === states.signUp" class="login__form">
+        <span class="login__title">Создание аккаунта.</span>
+        <form
+          class="sign-up login__card"
+          name="sign-up"
+          @submit.prevent="onSignUpClick"
+        >
+          <InputItem
+            v-model="v$.username.$model"
+            :error="!v$.username.$error ? '' : v$.username.$errors[0]?.$message ?? ''"
+            :maxlength="25"
+            class="login__input"
+            label="Придумайте имя пользователя."
+            name="username"
+            placeholder="username"
+            type="text"
+          />
+          <InputItem
+            v-model="v$.name.$model"
+            :maxlength="50"
+            class="login__input"
+            label="Введите ваше имя."
+            name="name"
+            placeholder="Алексей Миронов"
+            type="text"
+          />
+          <BaseButton
+            :disabled="!userData.username || !userData.name"
+            class="login__button login__save-button"
+            text="Подтвердить"
+            @click="onSignUpClick"
+          />
+        </form>
+      </div>
+      <div v-else-if="currentState === states.loginComplete" class="login__form">
+        <h1 class="login__title login__welcome">Добро пожаловать!</h1>
+      </div>
     </Transition>
   </div>
 </template>
@@ -111,14 +129,24 @@ import BaseButton from "@/components/buttons/AppButton.vue";
 import InputItem from "@/components/common/InputItem.vue";
 import { useRouter } from "vue-router";
 import TelegramLogin from "@/components/login/TelegramLogin.vue";
-
-const isReady = ref(false);
-const isSignUp = ref(false);
-const isCode = ref(false);
-const isSuccess = ref(false);
-const isModalOpen = ref(false);
+import { confirmCode, signIn, signInViaTelegram, signUp, usernameAvailable } from "@/services/api";
+import { useTimer } from "@/services/timer";
 
 const router = useRouter();
+const timer = useTimer();
+const countDown = ref(30);
+const timeout = 45;
+
+const isReady = ref(false);
+
+const states = Object.freeze({
+  signIn: 0,
+  signUp: 1,
+  confirmCode: 2,
+  loginComplete: 3
+});
+const currentState = ref(states.signIn);
+
 
 const userData = reactive({
   email: "",
@@ -137,6 +165,8 @@ const rules = computed(() => ({
     code: {
       required: helpers.withMessage("Это обязательное поле!", required),
       between: helpers.withMessage("Некорректный код!", between(0, 9999)),
+      minLength: helpers.withMessage("Некорректный код!", minLength(4)),
+      maxLength: helpers.withMessage("Некорректный код!", maxLength(4)),
       numeric: helpers.withMessage("Только цифры!", numeric),
       $lazy: true
     },
@@ -149,7 +179,7 @@ const rules = computed(() => ({
       required: helpers.withMessage("Это обязательное поле!", required),
       minLength: helpers.withMessage("Минимум 3 символа!", minLength(3)),
       maxLength: helpers.withMessage("Максимум 25 символов!", maxLength(25)),
-      // available: helpers.withMessage("Имя пользователя занято!", helpers.withAsync(isUsernameAvailable)),
+      available: helpers.withMessage("Имя пользователя занято!", helpers.withAsync(isUsernameAvailable)),
       $autoDirty: true,
       $lazy: true
     }
@@ -158,68 +188,82 @@ const rules = computed(() => ({
 
 const v$ = useVuelidate(rules, userData);
 
-// async function isUsernameAvailable(username) {
-//   let response = await usernameAvailable(username);
-//   return response.ok;
-// }
+async function isUsernameAvailable(username) {
+  let response = await usernameAvailable(username);
+  if (response.ok) {
+    let result = await response.json();
+    return result["available"];
+  }
+  return false;
+}
+
+async function onTelegramLogin(data) {
+  let response = await signInViaTelegram(data);
+  if (response.ok) {
+    let result = await response.json();
+    if (result["userExists"]) {
+      currentState.value = states.loginComplete;
+      await new Promise(r => setTimeout(r, 2000));
+      await router.push({ path: "/explore" });
+    } else {
+      currentState.value = states.signUp;
+      userData.username = data["username"] ?? "";
+      userData.name = [data["first_name"], data["last_name"] ?? ""].join(" ").trim();
+    }
+  }
+}
+
 
 async function onSignInClick() {
-
   if (v$.value.email.$invalid) {
     return;
   }
-  isCode.value = true;
-  // let response = await signIn(userData.email);
-  // if (response.ok) { // если HTTP-статус в диапазоне 200-299
-  //   isCode.value = true;
-  // } else {
-  //   alert("Ошибка HTTP: " + response.status);
-  // }
+  let response = await signIn(userData.email);
+  if (response.ok) {
+    currentState.value = states.confirmCode;
+    countDown.value = timeout;
+    timer(countDown);
+  } else {
+    alert("Ошибка HTTP: " + JSON.stringify(await response.json()));
+  }
 }
 
-async function onConfirmCodeClick() {
-  isCode.value = false;
-  isSignUp.value = true;
-  // if (v$.value.code.$invalid) {
-  //   return;
-  // }
-  // let response = await confirmCode(userData.email, userData.code);
-  // if (!response.ok) {
-  //   alert("Ошибка HTTP: " + response.status);
-  //   return;
-  // }
-  // if (response.status === 201) {
-  //   isCode.value = false;
-  //   isSignUp.value = true;
-  // } else if (response.status === 200) {
-  //   isSuccess.value = true;
-  //   await new Promise(r => setTimeout(r, 2000));
-  //   await router.push({ path: "/posts" });
-  // }
+function onBackClick() {
+  currentState.value = states.signIn;
+}
+
+async function onCodeInput() {
+  if (v$.value.code.$invalid) {
+    return;
+  }
+  let response = await confirmCode(userData.email, userData.code);
+  if (response.ok) {
+    let result = await response.json();
+    if (result["userExists"]) {
+      currentState.value = states.loginComplete;
+      await new Promise(r => setTimeout(r, 2000));
+      await router.push({ path: "/explore" });
+    } else {
+      currentState.value = states.signUp;
+    }
+  } else {
+    // alert("Ошибка HTTP: " + JSON.stringify(await response.json()));
+  }
 }
 
 async function onSignUpClick() {
-  isCode.value = false;
-  isSignUp.value = false;
-  isSuccess.value = true;
-  await new Promise(r => setTimeout(r, 2000));
-  await router.push({ path: "/explore" });
+  if (v$.value.username.$invalid) {
+    return;
+  }
 
-
-  // if (v$.value.name.$invalid || v$.value.username.$invalid) {
-  //   return;
-  // }
-  //
-  // let response = await signUp(userData.username, userData.name);
-  //
-  // if (response.ok) { // если HTTP-статус в диапазоне 200-299
-  //   await new Promise(r => setTimeout(r, 2000));
-  //   isSuccess.value = true;
-  // } else {
-  //   isCode.value = false;
-  //   isSignUp.value = false;
-  //   alert("Ошибка HTTP: " + response.status);
-  // }
+  let response = await signUp(userData.username, userData.name);
+  if (response.ok) {
+    currentState.value = states.loginComplete;
+    await new Promise(r => setTimeout(r, 2000));
+    await router.push({ path: "/explore" });
+  } else {
+    alert("Ошибка HTTP: " + JSON.stringify(await response.json()));
+  }
 
 }
 
@@ -262,13 +306,48 @@ onMounted(async () => {
     vertical-align: middle;
   }
 
-  &__logo {
+  &__countdown {
+    font-size: 10.5pt;
+    color: grey;
+    margin-top: 0.75rem;
+    user-select: none;
+  }
 
+  &__telegram {
+    margin-top: 1rem;
+    //margin-bottom: 1rem;
+  }
+
+  &__repeat-code {
+    text-decoration: underline;
+    text-underline-offset: 2pt;
+    cursor: pointer;
+    transition: color ease-in-out 100ms;
+
+    &:hover {
+      color: darkgray;
+    }
+
+    &:active {
+      color: whitesmoke;
+    }
+  }
+
+  &__form {
+    width: 100%;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-gap: 1rem;
   }
 
   &__button {
-    margin-top: 1.5rem;
     font-size: 12pt;
+  }
+
+  &__input {
+    margin-bottom: 1.25rem;
+    margin-top: 1.25rem;
   }
 
   &__card {
@@ -281,64 +360,8 @@ onMounted(async () => {
     border-radius: var(--app-border-radius);
     box-shadow: var(--app-default-shadow);
     border: var(--app-default-border);
-    padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+    padding: 1.25rem 1.5rem 1.25rem 1.5rem;
     transition: all ease-in-out 0.5s;
   }
-
-  .sign-up {
-
-    &__name {
-      margin-top: 2.5rem;
-    }
-  }
-
-  .sign-in {
-    &__telegram {
-      margin-top: 1rem;
-    }
-  }
-
-}
-
-
-//.background {
-//  position: fixed;
-//
-//  z-index: -1;
-//  --size: 350px;
-//  --speed: 50s;
-//  --easing: cubic-bezier(0.9, 0.1, 0.1, 0.9);
-//
-//  left: calc(50% - var(--size) / 2);
-//  top: calc(var(--size) / 2);
-//  width: var(--size);
-//  height: var(--size);
-//  filter: blur(calc(var(--size) / 5));
-//  background-image: linear-gradient(hsl(158, 82%, 57%, 85%), hsl(252, 82%, 57%));
-//  animation: rotate var(--speed) var(--easing) alternate infinite;
-//  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-//}
-//
-//@keyframes rotate {
-//  0% {
-//    transform: rotate(0deg);
-//  }
-//  100% {
-//    transform: rotate(360deg);
-//  }
-//}
-
-
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.form-v-enter-from {
-  opacity: 0;
-}
-
-.v-leave-to {
-  opacity: 0;
 }
 </style>

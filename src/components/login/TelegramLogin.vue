@@ -26,12 +26,14 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(["login"])
+
 const scriptElement = ref(null);
 
 const isLoaded = ref(false);
 
 function onTelegramAuth(user) {
-  console.log("user: ", user);
+  emit("login", user)
 }
 
 onBeforeMount(() => {
