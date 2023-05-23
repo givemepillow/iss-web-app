@@ -55,6 +55,10 @@ const userinfo = useUserInfoStore();
 
 
 async function onCreatePost() {
+  if (!(cropperCarouselElement.value?.isReadyToPost ?? false)){
+    return
+  }
+
   isPostPending.value = true;
 
   let formData = new FormData();
