@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div v-if="open" class="fullscreen" @click="onClick">
       <img
-        :src="resolvePictureUrl(props.post.user.id, props.post.pictures[swiper?.realIndex]?.id)"
+        :src="resolvePictureSrc(props.post.user.id, props.post.pictures[swiper?.realIndex]?.id)"
         alt=""
         class="fullscreen__image"
       >
