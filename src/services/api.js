@@ -1,5 +1,5 @@
 import ky from "ky";
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_ENDPOINT;
 
 
 const api = ky.create({
@@ -53,4 +53,8 @@ export async function signUp(username, name) {
 
 export async function usernameAvailable(username) {
   return api.get("users/username", { searchParams: { "username": username } });
+}
+
+export function resolvePictureSrc(user_id, picture_id) {
+  return `${apiUrl}/pictures/optimized/${user_id}/${picture_id}`;
 }

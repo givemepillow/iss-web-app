@@ -8,7 +8,7 @@
         <img
           v-for="picture in post.pictures"
           :key="picture.id"
-          :src="resolvePictureUrl(post.user.id, picture.id)"
+          :src="resolvePictureSrc(post.user.id, picture.id)"
           alt=""
           class="swiper-slide"
         >
@@ -23,7 +23,7 @@ import { onMounted, ref } from "vue";
 import Swiper, { Pagination, Autoplay } from "swiper";
 import TextLabel from "@/components/common/TextLabel.vue";
 import Post from "@/models/post";
-import { resolvePictureUrl } from "@/services/tools";
+import { resolvePictureSrc } from "@/services/api";
 
 const container = ref(null);
 const image = ref(null);

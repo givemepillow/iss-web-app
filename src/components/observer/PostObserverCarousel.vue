@@ -14,7 +14,7 @@
         <img
           v-for="picture in props.post.pictures" :key="picture.id"
           ref="imageElements"
-          :src="resolvePictureUrl(props.post.user.id, picture.id)"
+          :src="resolvePictureSrc(props.post.user.id, picture.id)"
           alt=""
           class="swiper-slide"
           @click="onClick"
@@ -50,8 +50,8 @@ import { onMounted, ref } from "vue";
 import Swiper, { Navigation, Pagination } from "swiper";
 import IconButton from "@/components/buttons/IconButton.vue";
 import TextLabel from "@/components/common/TextLabel.vue";
-import { resolvePictureUrl } from "@/services/tools";
 import Post from "@/models/post";
+import { resolvePictureSrc } from "@/services/api";
 
 const carouselElement = ref(null);
 const swiperContainerElement = ref(null);

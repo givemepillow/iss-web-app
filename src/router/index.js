@@ -7,7 +7,7 @@ import { useUserInfoStore } from "@/stores/userinfo";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-
+  mode: "history",
   routes: [
     {
       path: "/",
