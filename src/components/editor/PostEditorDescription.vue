@@ -52,11 +52,12 @@ onMounted(() => {
     showPreview: false,
     showVariants: false,
     theme: "darkTheme",
+    className: "emoji-picker",
     emojiSize: "1.5rem"
   }, {
     referenceElement: emojiButton.value,
     triggerElement: emojiButton.value,
-    position: "bottom-start",
+    position: "top-end",
     showCloseButton: false,
     hideOnEscape: true,
     hideOnClickOutside: true,
@@ -73,6 +74,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+
+
 .description {
   height: 100%;
   display: grid;

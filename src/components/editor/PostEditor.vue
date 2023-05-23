@@ -1,17 +1,22 @@
 <template>
   <div class="editor">
-    <div class="editor__cropper">
+    <div class="editor__card editor__user editor__user--mobile">
+      <UserLabel :user="userinfo.user" />
+    </div>
+    <div class="editor__cropper editor__card ">
       <PostEditorCarousel ref="cropperCarouselElement" />
     </div>
     <div class="editor__info">
-      <div class="editor__info--header">
-        <UserLabel :user="userinfo.user" />
+      <div class="editor__card editor__info--header">
+        <div class="editor__user editor__user--desktop">
+          <UserLabel :user="userinfo.user" />
+        </div>
         <PostEditorTitle ref="titleElement" :maxlength="25" placeholder="Придумайте название..." />
       </div>
-      <div class="editor__info--middle">
+      <div class="editor__card editor__info--middle">
         <PostEditorDescription ref="descriptionElement" :maxlength="500" placeholder="Добавьте описание..." />
       </div>
-      <div class="editor__info--bottom">
+      <div class="editor__card editor__info--bottom">
         <CreatePostSubmit
           :disabled="!(cropperCarouselElement?.isReadyToPost ?? false)"
           :pending="isPostPending"
@@ -80,6 +85,7 @@ onBeforeMount(async () => {
 $gap: 0.5rem;
 $padding: 0.5rem;
 
+
 .editor {
   padding: $padding;
   justify-content: center;
@@ -107,14 +113,31 @@ $padding: 0.5rem;
   @media only screen and (max-width: 480px) {
     $width: calc(100vw - var(--app-scrollbar-width) - $padding * 2);
     grid-template-columns: $width;
-    grid-template-rows: $width 30rem 4rem;
+    grid-template-rows: auto $width 30rem 4rem;
   };
 
-  &__cropper {
+  &__card {
     background-color: var(--app-default-color);
     border-radius: var(--app-border-radius);
     box-shadow: var(--app-default-shadow);
     border: var(--app-default-border);
+  }
+
+  &__user {
+
+
+    &--mobile {
+      @media only screen and (min-width: 481px) {
+        display: none;
+      };
+      padding: 0.75rem;
+    }
+
+    &--desktop {
+      @media only screen and (max-width: 480px) {
+        display: none;
+      };
+    }
   }
 
   &__info {
@@ -124,33 +147,21 @@ $padding: 0.5rem;
     grid-gap: $gap;
 
     &--header {
-      background-color: var(--app-default-color);
-      border-radius: var(--app-border-radius);
-      box-shadow: var(--app-default-shadow);
       overflow: clip;
       display: grid;
       grid-template-columns: 100%;
       grid-template-rows: 1fr 1fr;
       grid-gap: $gap;
       padding: 0.75rem;
-      border: var(--app-default-border);
     }
 
     &--middle {
-      background-color: var(--app-default-color);
-      border-radius: var(--app-border-radius);
-      box-shadow: var(--app-default-shadow);
-      border: var(--app-default-border);
       overflow: clip;
       padding: 0.75rem;
     }
 
     &--bottom {
-      background-color: var(--app-default-color);
-      border-radius: var(--app-border-radius);
       overflow: clip;
-      box-shadow: var(--app-default-shadow);
-      border: var(--app-default-border);
       height: 100%;
     }
   }

@@ -56,6 +56,10 @@ body {
     background: #555;
 }
 
+.emoji-picker {
+    --background-color: var(--app-background-color);
+}
+
 
 /*@media (prefers-color-scheme: dark) {*/
 /*  :root {*/
