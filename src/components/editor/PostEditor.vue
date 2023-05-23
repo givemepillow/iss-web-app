@@ -1,5 +1,5 @@
 <template>
-  <div class="editor">
+  <div v-if="!isPostPending && !isPostCreated" class="editor">
     <div class="editor__card editor__user editor__user--mobile">
       <UserLabel :user="userinfo.user" />
     </div>
@@ -24,6 +24,12 @@
         />
       </div>
     </div>
+  </div>
+  <div v-else-if="isPostPending" class="loading">
+    <div class="lds-ripple"><div></div><div></div></div>
+  </div>
+  <div v-else-if="isPostCreated" class="created">
+    Опубликовано!
   </div>
 </template>
 
@@ -73,6 +79,8 @@ async function onCreatePost() {
     isPostPending.value = false;
     isPostCreated.value = true;
   }
+  isPostPending.value = false;
+  isPostCreated.value = true;
 }
 
 onBeforeMount(async () => {
@@ -84,6 +92,69 @@ onBeforeMount(async () => {
 <style lang="scss" scoped>
 $gap: 0.5rem;
 $padding: 0.5rem;
+.loading {
+  top: 15rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.created {
+  top: 15rem;
+  width: 100%;
+  font-size: 26pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid #fff;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -1s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  4.9% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  5% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
 
 
 .editor {
