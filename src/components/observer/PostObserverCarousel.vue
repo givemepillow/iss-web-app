@@ -8,7 +8,7 @@
       >
     </div>
   </Teleport>
-  <div ref="carouselElement" class="post-carousel">
+  <div ref="carouselElement" class="post-carousel" @mouseover="">
     <div ref="swiperContainerElement" class="swiper">
       <div class="swiper-wrapper">
         <img
@@ -24,6 +24,7 @@
       <div class="swiper-pagination"></div>
       <IconButton
         ref="buttonPrev"
+        :class="{'swiper-navigation-disabled': isNavigationHidden}"
         :size="1.6"
         :src="nextIcon"
         class="swiper-button-prev post-carousel__button-prev"
@@ -31,6 +32,7 @@
       />
       <IconButton
         ref="buttonNext"
+        :class="{'swiper-navigation-disabled': isNavigationHidden}"
         :size="1.6"
         :src="nextIcon"
         class="swiper-button-next post-carousel__button-next"
@@ -65,6 +67,7 @@ const props = defineProps({
   }
 });
 
+const isNavigationHidden = ref(false);
 const emits = defineEmits(["create"]);
 const open = ref(false);
 
@@ -92,11 +95,12 @@ onMounted(() => {
       clickable: true
     },
     navigation: {
-      nextEl: ".post-carousel__button-next",
-      prevEl: ".post-carousel__button-prev"
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev"
     }
   });
   swiperContainerElement.value.focus();
+  isNavigationHidden.value = swiper.value.slides.length === 1;
 });
 </script>
 
@@ -130,5 +134,8 @@ onMounted(() => {
   }
 }
 
+.swiper-navigation-disabled {
+  display: none;
+}
 
 </style>

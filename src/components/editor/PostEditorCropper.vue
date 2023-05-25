@@ -68,7 +68,8 @@ function getSrc() {
 }
 
 function rotate() {
-  // cropper.value.rotate(90);
+  // scaleCropper(props.ratio);
+  cropper.value.rotate(90);
 }
 
 function zoom(v) {
@@ -99,7 +100,7 @@ defineExpose({
 });
 
 function scaleCropper(ratio) {
-  cropper.value.reset();
+  // cropper.value.reset();
   const image = cropper.value.getImageData();
   cropper.value.setAspectRatio(ratio !== 0 ? ratio : image.width / image.height);
   const box = cropper.value.getCropBoxData(); // Порядок важен!

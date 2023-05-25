@@ -25,12 +25,13 @@ nav {
   z-index: 999;
   width: 100%;
   display: flex;
-  border-bottom: #333333 solid 1px;
   align-items: center;
   justify-items: center;
   gap: 1em;
   padding: 0.5rem;
-  background-color: var(--app-background-color);
+  border-bottom: #393939 solid 1px;
+  box-shadow: var(--app-default-shadow);
+  background-color: var(--app-default-color);
 }
 
 </style>

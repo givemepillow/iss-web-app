@@ -12,13 +12,18 @@
 <script setup>
 import avatar from "@/assets/avatars/batman.svg";
 import User from "@/models/user";
+import { computed } from "vue";
 
 
 const props = defineProps({
   user: {
-    type: User,
-    required: true
+    type: User
   }
+});
+
+
+const user = computed(() => {
+  return props.user ?? new User();
 });
 
 </script>
@@ -30,6 +35,7 @@ const props = defineProps({
   align-items: center;
   font-size: 10pt;
   padding: 0;
+  background-color: transparent;
 
   &__avatar {
     height: 2rem;
@@ -47,7 +53,6 @@ const props = defineProps({
       -webkit-user-drag: none;
       user-select: none;
     }
-
   }
 
 

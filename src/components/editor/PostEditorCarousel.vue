@@ -39,15 +39,17 @@
       </div>
       <div class="swiper-pagination"></div>
       <IconButton
-        :size="2"
+        :size="1.8"
         :src="nextIcon"
         class="cropper-carousel__swiper-button-prev swiper-button-prev"
+        ref="buttonPrev"
         style="transform: rotate(180deg)"
       />
       <IconButton
-        :size="2"
+        :size="1.8"
         :src="nextIcon"
-        class=" cropper-carousel__swiper-button-next swiper-button-next"
+        ref="buttonNext"
+        class="cropper-carousel__swiper-button-next swiper-button-next"
       />
     </div>
     <div
@@ -188,6 +190,8 @@ const cropperElements = ref([]);
 const swiper = ref(null);
 const currentRatio = ref(1);
 let index = 0;
+const buttonNext = ref(null);
+const buttonPrev = ref(null);
 
 const isRatioToolsShowed = ref(false);
 const isToolsShowed = ref(false);
@@ -348,6 +352,7 @@ onMounted(() => {
     spaceBetween: 1,
     effect: "slide",
     allowTouchMove: false,
+    watchOverflow: true,
     pagination: {
       el: ".swiper-pagination",
       clickable: true

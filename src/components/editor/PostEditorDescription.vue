@@ -95,14 +95,14 @@ onMounted(() => {
     color: whitesmoke;
     font-size: 12pt;
     font-weight: normal;
-    background-color: var(--app-default-color);
+    background-color: transparent;
   }
 
   &__bottom {
     margin: 0;
     padding: 0;
     display: flex;
-    background-color: var(--app-default-color);
+    background-color: transparent;
     //align-self: end;
   }
 

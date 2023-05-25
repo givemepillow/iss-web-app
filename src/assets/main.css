@@ -2,8 +2,8 @@
     --animate-duration: 300ms;
     --animate-delay: 0s;
     --app-text-color: whitesmoke;
-    --app-background-color: #202020;
-    --app-default-color: #232323;
+    --app-background-color: rgba(32, 32, 32, 1);
+    --app-default-color: rgba(35, 35, 35, 0.8);
     --app-inactive-color: #333333;
     --app-active-color: linear-gradient(45deg, rgba(66, 184, 131, 1) 0%, rgba(39, 179, 137, 1) 19%, rgba(100, 126, 255, 1) 100%);
     --app-secondary-color: #363636;

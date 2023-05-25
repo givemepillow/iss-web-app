@@ -303,12 +303,14 @@ swiper-container:not(.swiper-watch-progress) .swiper-lazy-preloader,
 .swiper-button-next.swiper-button-disabled {
     opacity: 0;
     cursor: auto;
+    display: none;
     pointer-events: none;
 }
 
 .swiper-button-prev.swiper-button-hidden,
 .swiper-button-next.swiper-button-hidden {
     opacity: 0;
+    display: none;
     cursor: auto;
     pointer-events: none;
 }

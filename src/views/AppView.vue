@@ -31,7 +31,6 @@
     position: sticky;
     top: 0;
     width: calc(100%);
-    border-bottom: #333333 solid 1px;
   }
 
   &__main {
@@ -43,7 +42,6 @@
     display: grid;
     width: calc(100%);
   }
-
 
   &__background-container {
     position: fixed;

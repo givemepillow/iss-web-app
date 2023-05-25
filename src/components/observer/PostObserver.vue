@@ -4,9 +4,19 @@
     ref="postElement"
     class="post"
   >
+    <BackgroundOverlay v-if="currentState !== states.default ">
+      <TheLoading v-if="currentState === states.pending" />
+      <ModalPopup
+        v-else-if="currentState === states.confirmation"
+        text="Вы действительно хотите удалить публикацию!?"
+        @confirm="onConfirm"
+        @reject="onReject"
+      />
+    </BackgroundOverlay>
     <div class="post__picture">
-      <div class="post__user-label post__user-label--vertical  post__card">
+      <div class="post__bar post__bar--vertical post__card">
         <UserLabel :user="post.user" />
+        <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
       </div>
       <div class="post__carousel">
         <PostCarousel
@@ -16,8 +26,9 @@
       </div>
     </div>
     <div class="post__info">
-      <div class="post__user-label post__user-label--horizontal  post__card">
+      <div class="post__bar post__bar--horizontal post__card">
         <UserLabel :user="post.user" />
+        <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
       </div>
       <div class="post__statistics  post__card">
         <PostStatistics />
@@ -30,7 +41,7 @@
           <PostDescription :description="post.description" />
         </div>
       </div>
-      <div class="post__card">
+      <div class="post__card" style="overflow: clip">
         <BaseButton
           :class="{'post__button--on': isDescription}"
           class="post__button post__button--description"
@@ -50,15 +61,21 @@
 
 <script setup>
 
-import { onMounted, ref } from "vue";
+import { inject, ref } from "vue";
 import UserLabel from "@/components/common/UserLabel.vue";
 import PostCarousel from "@/components/observer/PostObserverCarousel.vue";
 import PostDescription from "@/components/observer/PostDescription.vue";
 import PostTitle from "@/components/observer/PostObserverTitle.vue";
 import PostStatistics from "@/components/observer/PostObserverStatistics.vue";
 import BaseButton from "@/components/buttons/AppButton.vue";
-import { getPost } from "@/services/api";
+import { deletePost, getPost } from "@/services/api";
 import Post from "@/models/post";
+import OptionsMenu from "@/components/common/OptionsMenu.vue";
+import trashIcon from "@/assets/icons/trash.svg";
+import { useRouter } from "vue-router";
+import BackgroundOverlay from "@/components/common/BackgroundOverlay.vue";
+import ModalPopup from "@/components/common/ModalPopup.vue";
+import TheLoading from "@/components/common/TheLoading.vue";
 
 const postElement = ref(null);
 const isPostLoaded = ref(false);
@@ -66,6 +83,14 @@ const postWidth = ref("");
 const postRatio = ref(1);
 const isDescription = ref(true);
 const post = ref(null);
+
+const states = Object.freeze({
+  confirmation: 0,
+  pending: 1,
+  default: 2
+});
+const currentState = ref(states.default);
+
 
 const props = defineProps({
   post_id: {
@@ -75,6 +100,37 @@ const props = defineProps({
 });
 
 
+const showNotification = inject("showNotification");
+const router = useRouter();
+
+const options = [
+  { key: "delete", text: "Удалить", icon: trashIcon }
+];
+
+
+function onReject() {
+  currentState.value = states.default;
+}
+
+async function onConfirm() {
+  currentState.value = states.pending;
+  let response = await deletePost(props.post_id);
+  if (response.ok) {
+    router.go(-1);
+    showNotification((await response.json()).detail);
+  } else {
+    showNotification((await response.json()).detail);
+  }
+}
+
+
+async function onSelect(key) {
+  if (key === "delete") {
+    currentState.value = states.confirmation;
+  }
+}
+
+
 function onCreate(width, height) {
   let w = ((window.innerHeight / height) * width);
   w = w >= window.innerWidth * 0.55 ? window.innerWidth * 0.55 : w * 0.9;
@@ -82,14 +138,12 @@ function onCreate(width, height) {
   postRatio.value = height / width;
 }
 
+let response = await getPost(props.post_id);
+if (response.ok) {
+  post.value = new Post(await response.json());
+}
+isPostLoaded.value = true;
 
-onMounted(async () => {
-  let response = await getPost(props.post_id);
-  if (response.ok) {
-    post.value = new Post(await response.json());
-  }
-  isPostLoaded.value = true;
-});
 
 </script>
 
@@ -106,7 +160,6 @@ $padding: 0.5rem;
     background-color: var(--app-default-color);
     border-radius: var(--app-border-radius);
     box-shadow: var(--app-default-shadow);
-    overflow: clip;
     border: var(--app-default-border);
   }
 
@@ -167,9 +220,12 @@ $padding: 0.5rem;
 
   }
 
-  &__user-label {
-    padding: 0.5rem 0.75rem;
-    background: var(--app-active-color);
+  &__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0 0.5rem 0.5em;
+
 
     &--vertical {
       @media only screen and (min-width: 640px) {
@@ -182,6 +238,7 @@ $padding: 0.5rem;
         display: none;
       };
     }
+
   }
 
   &__article {
@@ -197,6 +254,7 @@ $padding: 0.5rem;
     font-size: 14pt;
     transition: all ease-in-out 250ms;
 
+
     &--description {
       left: -100%;
     }
@@ -211,5 +269,4 @@ $padding: 0.5rem;
     }
   }
 }
-
 </style>

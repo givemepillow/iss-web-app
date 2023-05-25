@@ -35,7 +35,7 @@ function onClick(e) {
 .base-button {
   height: 2.5rem;
   border-radius: var(--app-border-radius);
-  box-shadow: var(--app-default-shadow);
+  //box-shadow: var(--app-default-shadow);
   outline: none;
   background: var(--app-active-color);
   border: none;
@@ -44,6 +44,9 @@ function onClick(e) {
   align-items: center;
   justify-content: center;
   text-shadow: rgba(0, 0, 0, 0.05) 0 0 0 1px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4.2px);
+  -webkit-backdrop-filter: blur(4.2px);
   cursor: pointer;
   user-select: none;
   transition: all linear 25ms;

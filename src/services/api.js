@@ -1,4 +1,5 @@
 import ky from "ky";
+
 const apiUrl = import.meta.env.VITE_API_ENDPOINT;
 
 
@@ -33,6 +34,10 @@ export function getPost(post_id) {
 
 export function publishPost(formData) {
   return api.post("posts", { body: formData });
+}
+
+export function deletePost(posts_id) {
+  return api.delete(`posts/${posts_id}`);
 }
 
 export function signIn(email) {

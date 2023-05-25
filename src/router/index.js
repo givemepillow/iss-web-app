@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import PostEditor from "@/components/editor/PostEditor.vue";
 import TheWall from "@/components/wall/TheWall.vue";
-import PostObserver from "@/components/observer/PostObserver.vue";
-import TheLogin from "@/components/login/TheLogin.vue";
 import { useUserInfoStore } from "@/stores/userinfo";
 
 const router = createRouter({
@@ -14,7 +11,7 @@ const router = createRouter({
       name: "root",
       redirect: to => {
         const userinfo = useUserInfoStore();
-        if (userinfo.user !== null) {
+        if (userinfo.user === null) {
           return "login";
         } else {
           return "explore";
@@ -24,7 +21,7 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: TheLogin,
+      component: () => import( "@/components/login/TheLogin.vue"),
       meta: {
         enterClass: "animate__animated animate__zoomIn",
         leaveClass: "animate__animated animate__zoomOut"
@@ -33,17 +30,17 @@ const router = createRouter({
     {
       path: "/new",
       name: "new",
-      component: PostEditor,
+      component: () => import( "@/components/editor/PostEditor.vue"),
       meta: {
-        enterClass: "animate__animated animate__fadeInRight",
-        leaveClass: "animate__animated animate__fadeOutLeft"
+        enterClass: "animate__animated animate__fadeIn",
+        leaveClass: "animate__animated animate__fadeOut"
       }
     },
     {
       path: "/posts/:id",
       name: "post",
       props: route => ({ post_id: route.params.id }),
-      component: PostObserver,
+      component: () => import( "@/components/observer/PostObserver.vue"),
       meta: {
         enterClass: "animate__animated animate__zoomIn",
         leaveClass: "animate__animated animate__fadeOutDown"
@@ -54,8 +51,8 @@ const router = createRouter({
       name: "explore",
       component: TheWall,
       meta: {
-        enterClass: "animate__animated animate__fadeInLeft",
-        leaveClass: "animate__animated animate__fadeOutRight"
+        enterClass: "animate__animated animate__fadeInDown",
+        leaveClass: "animate__animated animate__fadeOutDown"
       }
     }
   ]

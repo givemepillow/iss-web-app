@@ -7,21 +7,18 @@
 <script setup>
 
 import WallPost from "@/components/wall/WallPost.vue";
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, onMounted } from "vue";
 
 import { getPosts } from "@/services/api";
 import Post from "@/models/post";
 
 const posts = ref([]);
 
-onBeforeMount(async () => {
-  let response = await getPosts();
-  let result = await response.json();
-  for (let json of result) {
-    posts.value.push(new Post(json));
-  }
-});
-
+let response = await getPosts();
+let result = await response.json();
+for (let json of result) {
+  posts.value.push(new Post(json));
+}
 
 </script>
 
@@ -56,6 +53,7 @@ onBeforeMount(async () => {
   user-select: none;
   column-gap: 0.5rem;
   padding: 0.5rem;
+  margin-bottom: 4rem;
 
   &__post {
     width: 100%;

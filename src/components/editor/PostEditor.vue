@@ -1,7 +1,10 @@
 <template>
-  <div v-if="!isPostPending && !isPostCreated" class="editor">
+  <div class="editor">
+    <BackgroundOverlay v-if="isPostPending">
+      <TheLoading />
+    </BackgroundOverlay>
     <div class="editor__card editor__user editor__user--mobile">
-      <UserLabel :user="userinfo.user" />
+      <UserLabel :user="me" />
     </div>
     <div class="editor__cropper editor__card ">
       <PostEditorCarousel ref="cropperCarouselElement" />
@@ -9,7 +12,7 @@
     <div class="editor__info">
       <div class="editor__card editor__info--header">
         <div class="editor__user editor__user--desktop">
-          <UserLabel :user="userinfo.user" />
+          <UserLabel :user="me" />
         </div>
         <PostEditorTitle ref="titleElement" :maxlength="25" placeholder="Придумайте название..." />
       </div>
@@ -19,22 +22,15 @@
       <div class="editor__card editor__info--bottom">
         <CreatePostSubmit
           :disabled="!(cropperCarouselElement?.isReadyToPost ?? false)"
-          :pending="isPostPending"
           @click="onCreatePost"
         />
       </div>
     </div>
   </div>
-  <div v-else-if="isPostPending" class="loading">
-    <div class="lds-ripple"><div></div><div></div></div>
-  </div>
-  <div v-else-if="isPostCreated" class="created">
-    Опубликовано!
-  </div>
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from "vue";
+import { inject, ref } from "vue";
 import PostEditorCarousel from "@/components/editor/PostEditorCarousel.vue";
 import CreatePostSubmit from "@/components/editor/PostEditorSubmit.vue";
 import PostEditorDescription from "@/components/editor/PostEditorDescription.vue";
@@ -42,21 +38,24 @@ import PostEditorTitle from "@/components/editor/PostEditorTitle.vue";
 import UserLabel from "@/components/common/UserLabel.vue";
 import { publishPost } from "@/services/api";
 import { useUserInfoStore } from "@/stores/userinfo";
+import { useRouter } from "vue-router";
+import BackgroundOverlay from "@/components/common/BackgroundOverlay.vue";
+import TheLoading from "@/components/common/TheLoading.vue";
 
 const cropperCarouselElement = ref(null);
 const descriptionElement = ref(null);
 const titleElement = ref(null);
 
 const isPostPending = ref(false);
-const isPostCreated = ref(false);
 
 
 const userinfo = useUserInfoStore();
-
+const router = useRouter();
+const showNotification = inject("showNotification");
 
 async function onCreatePost() {
-  if (!(cropperCarouselElement.value?.isReadyToPost ?? false)){
-    return
+  if (!(cropperCarouselElement.value?.isReadyToPost ?? false)) {
+    return;
   }
 
   isPostPending.value = true;
@@ -78,18 +77,25 @@ async function onCreatePost() {
     formData.append("files", file, file.name);
   }
 
-  let response = await publishPost(formData);
-  if (response.ok) {
+  // await new Promise(r => setTimeout(r,2000));
+
+  try {
+    let response = await publishPost(formData);
+    if (response.ok) {
+      router.go(-1);
+      showNotification((await response.json()).detail);
+    } else {
+      showNotification((await response.json()).detail);
+      isPostPending.value = false;
+    }
+  } catch (e) {
+    showNotification(e);
     isPostPending.value = false;
-    isPostCreated.value = true;
   }
-  isPostPending.value = false;
-  isPostCreated.value = true;
+
 }
 
-onBeforeMount(async () => {
-  await userinfo.load();
-});
+const me = await userinfo.get();
 
 </script>
 
@@ -111,53 +117,6 @@ $padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.lds-ripple {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-ripple div {
-  position: absolute;
-  border: 4px solid #fff;
-  opacity: 1;
-  border-radius: 50%;
-  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-}
-.lds-ripple div:nth-child(2) {
-  animation-delay: -1s;
-}
-@keyframes lds-ripple {
-  0% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 0;
-  }
-  4.9% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 0;
-  }
-  5% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: 72px;
-    height: 72px;
-    opacity: 0;
-  }
 }
 
 
@@ -188,7 +147,7 @@ $padding: 0.5rem;
   @media only screen and (max-width: 480px) {
     $width: calc(100vw - var(--app-scrollbar-width) - $padding * 2);
     grid-template-columns: $width;
-    grid-template-rows: auto $width 30rem 4rem;
+    grid-template-rows: auto $width auto 4rem;
   };
 
   &__card {
@@ -220,6 +179,10 @@ $padding: 0.5rem;
     grid-template-columns: 100%;
     grid-template-rows: 2fr 7fr 3rem;
     grid-gap: $gap;
+
+    @media only screen and (max-width: 740px) {
+      grid-template-rows: 4rem 12rem 3rem;
+    };
 
     &--header {
       overflow: clip;
