@@ -23,7 +23,7 @@
       </div>
       <div class="swiper-pagination"></div>
       <IconButton
-        ref="buttonPrev"
+        @click="swiper?.slidePrev()"
         :class="{'swiper-navigation-disabled': isNavigationHidden}"
         :size="1.6"
         :src="nextIcon"
@@ -31,7 +31,7 @@
         style="transform: rotate(180deg)"
       />
       <IconButton
-        ref="buttonNext"
+        @click="swiper?.slideNext()"
         :class="{'swiper-navigation-disabled': isNavigationHidden}"
         :size="1.6"
         :src="nextIcon"
@@ -95,8 +95,6 @@ onMounted(() => {
       clickable: true
     },
     navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
     }
   });
   swiperContainerElement.value.focus();

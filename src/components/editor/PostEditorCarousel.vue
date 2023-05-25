@@ -24,9 +24,9 @@
           v-for="[_, v] of links.entries()"
           :key="v.key"
           ref="cropperElements"
+          :file="v.file"
           :ratio="currentRatio"
           :src="v.url"
-          :file="v.file"
           class="cropper-carousel__swiper-slide swiper-slide"
           @created="onCreated"
         />
@@ -39,17 +39,19 @@
       </div>
       <div class="swiper-pagination"></div>
       <IconButton
+        :class="{'swiper-navigation-disabled': swiper?.realIndex === 0}"
         :size="1.8"
         :src="nextIcon"
         class="cropper-carousel__swiper-button-prev swiper-button-prev"
-        ref="buttonPrev"
         style="transform: rotate(180deg)"
+        @click="swiper?.slidePrev()"
       />
       <IconButton
+        :class="{'swiper-navigation-disabled': swiper?.realIndex === links.length}"
         :size="1.8"
         :src="nextIcon"
-        ref="buttonNext"
         class="cropper-carousel__swiper-button-next swiper-button-next"
+        @click="swiper?.slideNext()"
       />
     </div>
     <div
@@ -190,8 +192,6 @@ const cropperElements = ref([]);
 const swiper = ref(null);
 const currentRatio = ref(1);
 let index = 0;
-const buttonNext = ref(null);
-const buttonPrev = ref(null);
 
 const isRatioToolsShowed = ref(false);
 const isToolsShowed = ref(false);
@@ -200,7 +200,6 @@ const isMoveLeftShowed = ref(false);
 const isZoomSliderShowed = ref(false);
 const isNaturalRatio = ref(false);
 const isReadyToPost = ref(false);
-
 
 
 function onCreated(url) {
@@ -315,7 +314,7 @@ function onClickDelete() {
 function onClickSaveOriginal() {
   let prev = cropperElements.value[swiper.value.realIndex].isOriginalSaved;
   cropperElements.value[swiper.value.realIndex].isOriginalSaved = !prev;
-  console.log(cropperElements.value[swiper.value.realIndex].isOriginalSaved)
+  console.log(cropperElements.value[swiper.value.realIndex].isOriginalSaved);
 }
 
 function onZoomChange(v) {
@@ -357,10 +356,7 @@ onMounted(() => {
       el: ".swiper-pagination",
       clickable: true
     },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
-    },
+    navigation: {},
     on: {
       update: () => {
         updateTools();
@@ -370,6 +366,7 @@ onMounted(() => {
       }
     }
   });
+
 });
 
 onUpdated(() => {
@@ -504,7 +501,7 @@ onUpdated(() => {
 }
 
 .original-saved, .original-saved:hover {
-  background-color: rgba(3, 148, 252, 0.75)  !important;
+  background-color: rgba(3, 148, 252, 0.75) !important;
 }
 
 .ratio-showed, .ratio-showed:hover, .zoom-showed, .zoom-showed:hover {
@@ -515,6 +512,10 @@ onUpdated(() => {
 .zoom-showed, .zoom-showed:hover,
 .ratio-selected, .ratio-selected:hover {
   background-color: rgba(247, 247, 247, 0.55);
+}
+
+.swiper-navigation-disabled {
+  display: none;
 }
 
 </style>
