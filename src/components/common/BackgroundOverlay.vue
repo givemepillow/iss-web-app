@@ -1,15 +1,7 @@
 <template>
-  <Transition
-    enter-active-class="animate__animated animate__fadeIn"
-    leave-active-class="animate__animated animate__fadeOut"
-    mode="out-in"
-  >
-    <Teleport to="body">
-      <div class="background-overlay" @click.stop>
-        <slot></slot>
-      </div>
-    </Teleport>
-  </Transition>
+  <div class="background-overlay" @click.stop>
+    <slot></slot>
+  </div>
 </template>
 
 <script setup>
