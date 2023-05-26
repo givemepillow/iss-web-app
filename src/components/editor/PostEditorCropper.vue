@@ -1,7 +1,10 @@
 <template>
-  <div ref="cropperElement" :class="{'post-cropper--ready': isReady}" class="post-cropper">
-    <div ref="canvasElement" class="post-cropper__canvas cropper-canvas">
+  <div ref="cropperElement" class="post-cropper">
+    <div ref="canvasElement" :class="{'post-cropper--ready': isReady}" class="post-cropper__canvas cropper-canvas">
       <img ref="imageElement" :src="src" alt="" class="post-cropper__image">
+    </div>
+    <div :class="{'post-cropper__placeholder--ready': isReady}" class="post-cropper__placeholder">
+      <TheLoading />
     </div>
     <a ref="a" style="display:none;position: absolute"></a>
   </div>
@@ -11,6 +14,7 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import Cropper from "cropperjs";
+import TheLoading from "@/components/common/TheLoading.vue";
 
 const a = ref(null);
 const props = defineProps({
@@ -208,20 +212,34 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .post-cropper {
-  opacity: 0;
   user-select: none;
   transition: opacity ease-out 0.25s;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  &--ready {
-    opacity: 1;
+
+  &__placeholder {
+    position: absolute;
+    pointer-events: none;
+    &--ready {
+      opacity: 0;
+      z-index: -1;
+    }
+  }
+
+  &__canvas {
+    opacity: 0;
+    transition: opacity ease-out 0.25s;
   }
 
   &__image {
     display: block;
     max-width: 100%;
+  }
+
+  &--ready {
+    opacity: 1;
   }
 }
 </style>
