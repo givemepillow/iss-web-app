@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="isPostLoaded"
     ref="postElement"
     class="post"
   >
@@ -60,7 +59,6 @@
 </template>
 
 <script setup>
-
 import { inject, ref } from "vue";
 import UserLabel from "@/components/common/UserLabel.vue";
 import PostCarousel from "@/components/observer/PostObserverCarousel.vue";
@@ -78,7 +76,6 @@ import ModalPopup from "@/components/common/ModalPopup.vue";
 import TheLoading from "@/components/common/TheLoading.vue";
 
 const postElement = ref(null);
-const isPostLoaded = ref(false);
 const postWidth = ref("");
 const postRatio = ref(1);
 const isDescription = ref(true);
@@ -143,7 +140,6 @@ if (response.ok) {
   post.value = new Post(await response.json());
 }
 scroll(0,0);
-isPostLoaded.value = true;
 
 
 </script>
