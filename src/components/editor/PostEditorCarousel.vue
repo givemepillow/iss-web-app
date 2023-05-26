@@ -176,7 +176,6 @@ import squareIcon from "@/assets/icons/square.svg";
 import originalIcon from "@/assets/icons/original.svg";
 import TextButton from "@/components/buttons/TextButton.vue";
 import IconButton from "@/components/buttons/IconButton.vue";
-import { useUserInfoStore } from "@/stores/userinfo";
 
 const props = defineProps({
   maxlength: {
@@ -192,6 +191,7 @@ const cropperElements = ref([]);
 const swiper = ref(null);
 const currentRatio = ref(1);
 let index = 0;
+let readyNumber = 0;
 
 const isRatioToolsShowed = ref(false);
 const isToolsShowed = ref(false);
@@ -202,8 +202,8 @@ const isNaturalRatio = ref(false);
 const isReadyToPost = ref(false);
 
 
-function onCreated(url) {
-
+function onCreated() {
+  readyNumber += 1;
 }
 
 function getAreas() {
@@ -230,6 +230,10 @@ function getSaveOriginals() {
   return picturesData;
 }
 
+function getCurrentCropper() {
+  return cropperElements.value[swiper.value?.realIndex];
+}
+
 defineExpose({
   isReadyToPost,
   getFiles,
@@ -242,7 +246,7 @@ function toggle(isShowed) {
 }
 
 function isCropperReady() {
-  return cropperElements.value[swiper.value?.realIndex]?.isReady ?? false;
+  return getCurrentCropper()?.isReady ?? false;
 }
 
 function isPictureSlide() {
@@ -262,7 +266,7 @@ function isLastPictureSlide() {
 function onClickRatio(r) {
   isNaturalRatio.value = r === null;
   if (r === null) {
-    let naturalRatio = cropperElements.value[swiper.value.realIndex].naturalRatio();
+    let naturalRatio = getCurrentCropper().naturalRatio();
     currentRatio.value = naturalRatio > 2 ? 21 / 9 : naturalRatio;
   } else {
     currentRatio.value = r;
@@ -271,7 +275,7 @@ function onClickRatio(r) {
 
 
 function onClickRotate() {
-  cropperElements.value[swiper.value.realIndex].rotate();
+  getCurrentCropper().rotate(90);
 }
 
 function onClickZoom() {
@@ -303,6 +307,7 @@ function onClickMoveRight() {
 }
 
 function onClickDelete() {
+  readyNumber -= 1;
   const index = swiper.value.realIndex;
   links.value.splice(index, 1);
   if (index === links.value.length || index === props.maxlength - 1) {
@@ -312,13 +317,11 @@ function onClickDelete() {
 
 
 function onClickSaveOriginal() {
-  let prev = cropperElements.value[swiper.value.realIndex].isOriginalSaved;
-  cropperElements.value[swiper.value.realIndex].isOriginalSaved = !prev;
-  console.log(cropperElements.value[swiper.value.realIndex].isOriginalSaved);
+  getCurrentCropper().isOriginalSaved = !getCurrentCropper().isOriginalSaved;
 }
 
 function onZoomChange(v) {
-  cropperElements.value[swiper.value.realIndex].zoom(v);
+  getCurrentCropper().zoom(v);
 }
 
 function updateTools() {
@@ -327,7 +330,7 @@ function updateTools() {
   isMoveRightShowed.value = !isLastPictureSlide() && isPictureSlide();
   isRatioToolsShowed.value = isPictureSlide() && isRatioToolsShowed.value;
   isZoomSliderShowed.value = isPictureSlide() && isZoomSliderShowed.value;
-  isReadyToPost.value = links.value.length > 0;
+  isReadyToPost.value = links.value.length > 0 && readyNumber === links.value.length;
 }
 
 function onFileUpload(files) {
@@ -516,6 +519,10 @@ onUpdated(() => {
 
 .swiper-navigation-disabled {
   display: none;
+}
+
+.swiper-navigation-hidden {
+  opacity: 0;
 }
 
 </style>
