@@ -20,7 +20,7 @@
     </div>
     <div ref="swiperElement" class="cropper-carousel__swiper swiper">
       <div class="cropper-carousel__swiper-wrapper swiper-wrapper">
-        <CropperCarouselItem
+        <PostEditorCropper
           v-for="[_, v] of links.entries()"
           :key="v.key"
           ref="cropperElements"
@@ -162,7 +162,7 @@
 <script setup>
 import { onMounted, onUpdated, ref } from "vue";
 import Swiper, { Pagination, Navigation } from "swiper";
-import CropperCarouselItem from "@/components/editor/PostEditorCropper.vue";
+import PostEditorCropper from "@/components/editor/PostEditorCropper.vue";
 import CropperCarouselZoomSlider from "@/components/editor/PostEditorZoomSlider.vue";
 import CropperCarouselFileUploader from "@/components/editor/PostEditorFileUploader.vue";
 import saveIcon from "@/assets/icons/save.svg";
