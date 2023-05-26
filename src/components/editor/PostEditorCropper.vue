@@ -55,36 +55,43 @@ function getFile() {
 }
 
 function getArea() {
+  cropper.value.crop();
   let data = cropper.value.getData(true);
-  data["x"] = Math.floor(data["x"] / data["scaleX"]);
-  data["y"] = Math.floor(data["y"] / data["scaleY"]);
-  data["width"] = Math.floor(data["width"] / data["scaleX"]);
-  data["height"] = Math.floor(data["height"] / data["scaleY"]);
-  return data;
+  let area = {};
+  area.x = Math.floor(data.x / data.scaleX);
+  area.y = Math.floor(data.y / data.scaleY);
+  area.width = Math.floor(data.width / data.scaleX);
+  area.height = Math.floor(data.height / data.scaleY);
+  area.rotate = data.rotate;
+  return area;
 }
 
-function getSrc() {
-  return props.src;
-}
 
-function rotate() {
-  // scaleCropper(props.ratio);
-  cropper.value.rotate(90);
+function rotate(r) {
+  cropper.value.rotate(r);
 }
 
 function zoom(v) {
   if (cropper.value === null) return;
   const containerData = cropper.value.getContainerData();
   const canvasData = cropper.value.getCanvasData();
-  cropper.value.zoomTo((canvasData.width / canvasData.naturalWidth) + ((v - currentZoom.value) / zoomStep), {
-    x: containerData.width / 2,
-    y: containerData.height / 2
-  });
+  cropper.value.zoomTo(
+    (canvasData.width / canvasData.naturalWidth) +
+    ((v - currentZoom.value) / zoomStep),
+    {
+      x: containerData.width / 2,
+      y: containerData.height / 2
+    }
+  );
   currentZoom.value = v;
 }
 
 function naturalRatio() {
-  return cropper.value.getImageData().aspectRatio;
+  if (cropper.value.getData().rotate % 180 === 0) {
+    return cropper.value.getImageData().aspectRatio;
+  } else {
+    return 1 / cropper.value.getImageData().aspectRatio;
+  }
 }
 
 defineExpose({
@@ -100,21 +107,49 @@ defineExpose({
 });
 
 function scaleCropper(ratio) {
-  // cropper.value.reset();
-  const image = cropper.value.getImageData();
-  cropper.value.setAspectRatio(ratio !== 0 ? ratio : image.width / image.height);
-  const box = cropper.value.getCropBoxData(); // Порядок важен!
+  // Порядок важен!!!
+  cropper.value.reset();
+
+  // Получем высоту и ширину изображения в текущем положении.
+  const imageData = cropper.value.getImageData();
+  let [imageWidth, imageHeight] = [imageData.width, imageData.height];
+  if (cropper.value.getData().rotate % 180 !== 0) {
+    [imageWidth, imageHeight] = [imageHeight, imageWidth];
+  }
+
+  // Устанавливаем соотношение сторон.
+  cropper.value.setAspectRatio(ratio !== 0 ? ratio : imageWidth / imageHeight);
+
+  // Вычисление коэффициента увеличения изображения.
+  const boxData = cropper.value.getCropBoxData();
   let scale = canvasElement.value.offsetHeight;
-  scale /= (box.height > box.width ? box.height : box.width);
+  scale /= (boxData.height > boxData.width ? boxData.height : boxData.width);
+
+  // Увеличиваем изображение, подгоняя его тем самым к размеру контейнера.
   cropper.value.scale(scale, scale);
+
+
+  // Вычисление размеров crop box.
+  const containerData = cropper.value.getContainerData();
+  let [boxHeight, boxWidth] = [containerData.height, containerData.height * ratio];
+  if (ratio > 1) {
+    [boxWidth, boxHeight] = [containerData.width, containerData.width / ratio];
+  }
+
+  // Установка crop box.
   cropper.value.setCropBoxData({
-    left: scale !== 1 ? (image.width - box.width * scale) / 2 : box.left,
-    top: scale !== 1 ? (image.height - box.height * scale) / 2 : box.top,
-    height: box.height * scale,
-    width: box.width * scale
+    left: (containerData.width - boxWidth) / 2,
+    top: (containerData.height - boxHeight) / 2,
+    height: boxHeight,
+    width: boxWidth
   });
+
+  // Возвращаем исходный зум.
   const canvasData = cropper.value.getCanvasData();
-  cropper.value.zoomTo((canvasData.width / canvasData.naturalWidth) + (currentZoom.value / zoomStep));
+  cropper.value.zoomTo(
+    (canvasData.width / canvasData.naturalWidth) +
+    (currentZoom.value / zoomStep)
+  );
 }
 
 watch(props, () => {
@@ -152,6 +187,7 @@ onMounted(() => {
       maxZoom = (canvasData.width / canvasData.naturalWidth) + (100 / zoomStep);
       currentZoom.value = 0;
       isReady.value = true;
+      emit("created");
     },
     zoom(event) {
       if (maxZoom < event.detail.ratio) {
