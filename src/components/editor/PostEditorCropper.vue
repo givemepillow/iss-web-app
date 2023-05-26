@@ -34,7 +34,7 @@ const cropper = ref(null);
 const currentZoom = ref(0);
 const isReady = ref(false);
 
-const isOriginalSaved = ref(true);
+const isOriginalSaved = ref(false);
 const zoomStep = 100;
 
 function saveLocal() {
