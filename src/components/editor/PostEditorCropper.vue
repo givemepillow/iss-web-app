@@ -26,7 +26,7 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(["created"]);
+const emit = defineEmits(["created"]);
 const canvasElement = ref(null);
 const cropperElement = ref(null);
 const imageElement = ref(null);
