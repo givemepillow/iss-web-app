@@ -142,6 +142,7 @@ let response = await getPost(props.post_id);
 if (response.ok) {
   post.value = new Post(await response.json());
 }
+scroll(0,0);
 isPostLoaded.value = true;
 
 
