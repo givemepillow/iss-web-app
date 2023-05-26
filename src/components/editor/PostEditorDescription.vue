@@ -1,6 +1,7 @@
 <template>
   <div class="description">
     <textarea
+      ref="textareaElement"
       v-model.trim="value"
       :maxlength="props.maxlength"
       :placeholder="props.placeholder"
@@ -35,6 +36,7 @@ const props = defineProps({
 });
 
 const emojiButton = ref(null);
+const textareaElement = ref(null);
 const value = ref("");
 
 defineExpose({
@@ -65,7 +67,11 @@ onMounted(() => {
     onPositionLost: "close"
   });
   picker.addEventListener("emoji:select", (selection) => {
-    value.value += selection.emoji;
+    if (!(value.value.length + selection.emoji.length < props.maxlength)) {
+      return;
+    }
+    let i = textareaElement.value.selectionEnd;
+    value.value = value.value.slice(0, i) + selection.emoji + value.value.slice(i);
   });
   emojiButton.value.addEventListener("click", () => {
     picker.toggle();
@@ -103,7 +109,6 @@ onMounted(() => {
     padding: 0;
     display: flex;
     background-color: transparent;
-    //align-self: end;
   }
 
   &__counter {

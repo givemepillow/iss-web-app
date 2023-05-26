@@ -55,7 +55,7 @@ defineExpose({
   bottom: 12.5%;
 
   &__card {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.55);
     border-radius: var(--app-border-radius);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.3);

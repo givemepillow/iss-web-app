@@ -296,7 +296,7 @@ swiper-container:not(.swiper-watch-progress) .swiper-lazy-preloader,
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.75;
+    opacity: 0.6;
 }
 
 .swiper-button-prev.swiper-button-disabled,

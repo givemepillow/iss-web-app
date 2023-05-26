@@ -10,12 +10,12 @@
           :key="picture.id"
           :src="resolvePictureSrc(post.user.id, picture.id)"
           alt=""
-          class="swiper-slide"
+          loading="lazy"
+          class="swiper-slide wall-post-carousel__image"
         >
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup>

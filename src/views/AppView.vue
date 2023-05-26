@@ -31,6 +31,7 @@
     position: sticky;
     top: 0;
     width: calc(100%);
+    z-index: 100;
   }
 
   &__main {

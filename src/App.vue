@@ -1,15 +1,22 @@
 <template>
   <AppView>
     <template #header>
-      <DesktopNavigation v-if="$route.name !== 'login'" />
+      <Transition
+        enter-active-class="animate__animated animate__slideInDown"
+        leave-active-class="animate__animated animate__slideOutUp"
+        mode="out-in"
+      >
+        <DesktopNavigation v-if="$route.name !== 'login'" />
+      </Transition>
     </template>
     <template #main>
       <RouterView v-slot="{Component, route}">
-        <Transition
-          :enter-active-class="route.meta.enterClass"
-          :leave-active-class="route.meta.leaveClass"
-          mode="out-in"
-        >
+        <template v-if="Component">
+          <Transition
+            :enter-active-class="route.meta.enterClass"
+            :leave-active-class="route.meta.leaveClass"
+            mode="out-in"
+          >
             <Suspense>
               <component :is="Component" />
               <template #fallback>
@@ -18,11 +25,18 @@
                 </BackgroundOverlay>
               </template>
             </Suspense>
-        </Transition>
+          </Transition>
+        </template>
       </RouterView>
     </template>
     <template #footer>
-      <MobileNavigation v-if="$route.name !== 'login'" />
+      <Transition
+        enter-active-class="animate__animated animate__slideInUp"
+        leave-active-class="animate__animated animate__slideOutDown"
+        mode="out-in"
+      >
+        <MobileNavigation v-if="$route.name !== 'login'" />
+      </Transition>
     </template>
   </AppView>
   <NotificationPopUp ref="notificationElement" text="ОШИБКА!!!" />

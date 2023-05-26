@@ -44,7 +44,7 @@ for (let json of result) {
 
 @media (min-width: 960px) {
   .wall {
-    columns: 6;
+    columns: 5;
   }
 }
 

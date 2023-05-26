@@ -49,7 +49,7 @@ const router = createRouter({
     {
       path: "/explore",
       name: "explore",
-      component: TheWall,
+      component: () => import( "@/components/wall/TheWall.vue"),
       meta: {
         enterClass: "animate__animated animate__fadeInDown",
         leaveClass: "animate__animated animate__fadeOutDown"
