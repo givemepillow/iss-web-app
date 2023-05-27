@@ -58,6 +58,9 @@ for (let json of result) {
   &__post {
     width: 100%;
     margin-bottom: 0.5rem;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
   }
 }
 </style>
