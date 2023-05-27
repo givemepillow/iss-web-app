@@ -18,7 +18,6 @@
           alt=""
           class="swiper-slide"
           @click="onClick"
-          @load="onLoad"
         >
       </div>
       <div class="swiper-pagination"></div>
@@ -68,12 +67,8 @@ const props = defineProps({
 });
 
 const isNavigationHidden = ref(false);
-const emits = defineEmits(["create"]);
 const open = ref(false);
 
-function onLoad() {
-  emits("create", imageElements.value[0].naturalWidth, imageElements.value[0].naturalHeight);
-}
 
 function onClick() {
   open.value = !open.value;

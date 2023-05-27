@@ -20,7 +20,6 @@
       <div class="post__carousel">
         <PostCarousel
           :post="post"
-          @create="onCreate"
         />
       </div>
     </div>
@@ -76,8 +75,6 @@ import ModalPopup from "@/components/common/ModalPopup.vue";
 import TheLoading from "@/components/common/TheLoading.vue";
 
 const postElement = ref(null);
-const postWidth = ref("");
-const postRatio = ref(1);
 const isDescription = ref(true);
 const post = ref(null);
 
@@ -127,19 +124,20 @@ async function onSelect(key) {
   }
 }
 
-
-function onCreate(width, height) {
-  let w = ((window.innerHeight / height) * width);
-  w = w >= window.innerWidth * 0.55 ? window.innerWidth * 0.55 : w * 0.9;
-  postWidth.value = (w > window.innerHeight * 0.8 ? window.innerHeight * 0.8 : w) + "px";
-  postRatio.value = height / width;
-}
-
 let response = await getPost(props.post_id);
 if (response.ok) {
-  post.value = new Post(await response.json());
+  post.value = new Post( await response.json());
+  console.log(post.value)
 }
-scroll(0,0);
+
+const postRatio = post.value.aspectRatio;
+const postWidth = Math.min(
+  window.innerHeight * postRatio * 0.8,
+  window.innerWidth / 2.75
+);
+const postHeight = postWidth / postRatio;
+
+scroll(0, 0);
 
 
 </script>
@@ -161,35 +159,33 @@ $padding: 0.5rem;
   }
 
   @media only screen and (min-width: 960px) {
-    grid-template-columns: calc(v-bind(postWidth) - 2 * $padding) min(45%, 20rem);
-    grid-template-rows: max(calc((v-bind(postWidth) - 2 * $padding) * v-bind(postRatio)), 75vh);
+    grid-template-columns: calc(1px * v-bind(postWidth)) min(20rem, 40%);
+    grid-template-rows: max(calc(1px * v-bind(postHeight)),  calc(1px * v-bind(postWidth)));
   };
 
   @media only screen and (max-width: 960px) {
-    grid-template-columns: calc(v-bind(postWidth) - 2 * $padding) min(45%, 20rem);
-    grid-template-rows: max(calc((v-bind(postWidth) - 2 * $padding) * v-bind(postRatio)), 75vh);
+    grid-template-columns: calc(1px * v-bind(postWidth)) min(20rem, 40%);
+    grid-template-rows: max(calc(1px * v-bind(postHeight)),  calc(1px * v-bind(postWidth)));
   };
 
-  @media only screen and ((max-width: 640px) or (max-device-width: 960px)) {
+  @media only screen and (max-width: 640px) {
     grid-template-columns: calc(85% - 2 * $padding);
     grid-template-rows: none;
   };
 
-  @media only screen and ((max-width: 480px) or (max-device-width: 640px)) {
+  @media only screen and (max-width: 480px) {
     grid-template-columns: calc(100% - 2 * $padding);
     grid-template-rows: none;
   };
 
 
   &__picture {
-    width: 100%;
     display: grid;
     grid-template-columns: 100%;
     grid-gap: $gap;
   }
 
   &__carousel {
-    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;

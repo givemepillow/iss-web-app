@@ -236,6 +236,7 @@ function getCurrentCropper() {
 
 defineExpose({
   isReadyToPost,
+  currentRatio,
   getFiles,
   getAreas,
   getSaveOriginals

@@ -64,6 +64,7 @@ async function onCreatePost() {
 
   formData.append("title", titleElement.value.value);
   formData.append("description", descriptionElement.value.value);
+  formData.append("aspectRatio", cropperCarouselElement.value.currentRatio);
 
   for (let flag of cropperCarouselElement.value.getSaveOriginals()) {
     formData.append("saveOriginals", flag);
@@ -138,11 +139,18 @@ $padding: 0.5rem;
     grid-template-rows:  450px;
   };
 
+  @media only screen and ((max-width: 980px) and ((hover: none) and (pointer: coarse))) {
+    $width: 80vw;
+    grid-template-columns: $width;
+    grid-template-rows: $width $width;
+  };
+
   @media only screen and (max-width: 740px) {
     $width: 80vw;
     grid-template-columns: $width;
     grid-template-rows: $width $width;
   };
+
 
   @media only screen and (max-width: 480px) {
     $width: calc(100vw - var(--app-scrollbar-width) - $padding * 2);
