@@ -1,11 +1,20 @@
 <template>
   <nav>
-    <RouterLink to="/explore">
-      <IconButton :alpha="0" :shadow="false" :size="3" :src="exploreIcon" />
-    </RouterLink>
-    <RouterLink to="/new">
-      <IconButton :alpha="0" :shadow="false" :size="3" :src="addIcon" />
-    </RouterLink>
+    <div class="explore-button">
+      <RouterLink to="/explore">
+        <IconButton :alpha="0" :shadow="false" :size="3" :src="exploreIcon" />
+      </RouterLink>
+    </div>
+    <div class="new-button">
+      <RouterLink to="/new">
+        <IconButton :alpha="0" :shadow="false" :size="3" :src="addIcon" />
+      </RouterLink>
+    </div>
+    <div class="profile-button">
+      <RouterLink to="/profile">
+        <IconButton :alpha="0" :shadow="false" :size="3" :src="profileIcon" />
+      </RouterLink>
+    </div>
   </nav>
 </template>
 
@@ -13,6 +22,7 @@
 import IconButton from "@/components/buttons/IconButton.vue";
 import exploreIcon from "@/assets/icons/explore.svg";
 import addIcon from "@/assets/icons/add.svg";
+import profileIcon from "@/assets/icons/profile.svg";
 
 
 </script>
@@ -32,8 +42,12 @@ nav {
   align-items: center;
   justify-items: center;
   gap: 1em;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   background-color: var(--app-background-color);
+
+  .profile-button {
+    margin-left: auto;
+  }
 }
 
 </style>

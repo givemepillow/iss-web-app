@@ -11,7 +11,7 @@ const router = createRouter({
       name: "root",
       redirect: to => {
         const userinfo = useUserInfoStore();
-        if (userinfo.user === null) {
+        if (!userinfo.isSet()) {
           return "login";
         } else {
           return "explore";
@@ -20,12 +20,24 @@ const router = createRouter({
     },
     {
       path: "/:username/:tab?",
-      name: "profile",
+      name: "user",
       props: route => ({ username: route.params.username, tab: route.params.tab }),
       component: () => import( "@/components/profile/TheProfile.vue"),
       meta: {
         enterClass: "animate__animated animate__zoomIn",
         leaveClass: "animate__animated animate__fadeOutDown"
+      }
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      redirect: to => {
+        const userinfo = useUserInfoStore();
+        if (!userinfo.isSet()) {
+          return "login";
+        } else {
+          return { path: `/${userinfo.username()}` };
+        }
       }
     },
     {
