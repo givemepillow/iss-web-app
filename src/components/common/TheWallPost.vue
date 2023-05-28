@@ -14,7 +14,7 @@
     </RouterLink>
     <div class="wall-post__bottom">
       <div class="wall-post__statistics">
-        <PostObserverStatistics />
+        <PostStatistics :me="me" :post="props.post" />
       </div>
     </div>
   </div>
@@ -22,16 +22,18 @@
 
 <script setup>
 import UserLabel from "@/components/common/UserLabel.vue";
-import WallPostCarousel from "@/components/wall/WallPostCarousel.vue";
-import PostObserverStatistics from "@/components/observer/PostObserverStatistics.vue";
+import WallPostCarousel from "@/components/common/WallPostCarousel.vue";
+import PostStatistics from "@/components/common/PostStatistics.vue";
 import Post from "@/models/post";
+import Me from "@/models/me";
 
 
 const props = defineProps({
   post: {
     type: Post,
     request: true
-  }
+  },
+  me: Me
 });
 
 </script>

@@ -22,7 +22,7 @@ const props = defineProps({
     type: String,
     required: true
   },
-  file: Object,
+  file: String,
   ratio: {
     type: Number,
     required: true,
@@ -206,6 +206,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   cropper.value.destroy();
+  URL.revokeObjectURL(props.file);
 });
 
 </script>

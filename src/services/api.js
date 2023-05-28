@@ -28,6 +28,16 @@ export function getPosts() {
   return api.get("posts");
 }
 
+export function getBookmarks(username) {
+  return api.get(`users/${username}/bookmarks`);
+}
+
+export function getPostsByUserId(user_id) {
+  return api.get("posts", {
+    searchParams: { user_id: user_id }
+  });
+}
+
 export function getPost(post_id) {
   return api.get(`posts/${post_id}`);
 }
@@ -36,8 +46,20 @@ export function publishPost(formData) {
   return api.post("posts", { body: formData });
 }
 
-export function deletePost(posts_id) {
-  return api.delete(`posts/${posts_id}`);
+export function saveBookmark(post_id) {
+  return api.post(`posts/${post_id}/bookmark`);
+}
+
+export function removeBookmark(post_id) {
+  return api.delete(`posts/${post_id}/bookmark`);
+}
+
+export function deletePost(post_id) {
+  return api.delete(`posts/${post_id}`);
+}
+
+export function getUser(username) {
+  return api.get(`users/${username}`);
 }
 
 export function signIn(email) {

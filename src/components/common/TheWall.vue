@@ -1,24 +1,24 @@
 <template>
   <div class="wall">
-    <WallPost v-for="post in posts" :key="post.id" :post="post" class="wall__post" />
+    <WallPost v-for="post in posts" :key="post.id" :me="me" :post="post" class="wall__post" />
   </div>
 </template>
 
 <script setup>
 
-import WallPost from "@/components/wall/WallPost.vue";
-import { ref, onBeforeMount, onMounted } from "vue";
+import WallPost from "@/components/common/TheWallPost.vue";
 
-import { getPosts } from "@/services/api";
 import Post from "@/models/post";
+import { useUserInfoStore } from "@/stores/userinfo";
 
-const posts = ref([]);
-
-let response = await getPosts();
-let result = await response.json();
-for (let json of result) {
-  posts.value.push(new Post(json));
-}
+const props = defineProps({
+  posts: {
+    type: Array[Post],
+    default: []
+  }
+});
+const userinfo = useUserInfoStore();
+const me = await userinfo.get();
 
 </script>
 
@@ -47,6 +47,7 @@ for (let json of result) {
     columns: 5;
   }
 }
+
 
 .wall {
   width: 100%;

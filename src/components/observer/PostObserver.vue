@@ -29,7 +29,7 @@
         <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
       </div>
       <div class="post__statistics  post__card">
-        <PostStatistics />
+        <PostStatistics :post="post"/>
       </div>
       <div class="post__article  post__card">
         <div class="post__title">
@@ -63,7 +63,7 @@ import UserLabel from "@/components/common/UserLabel.vue";
 import PostCarousel from "@/components/observer/PostObserverCarousel.vue";
 import PostDescription from "@/components/observer/PostDescription.vue";
 import PostTitle from "@/components/observer/PostObserverTitle.vue";
-import PostStatistics from "@/components/observer/PostObserverStatistics.vue";
+import PostStatistics from "@/components/common/PostStatistics.vue";
 import BaseButton from "@/components/buttons/AppButton.vue";
 import { deletePost, getPost } from "@/services/api";
 import Post from "@/models/post";

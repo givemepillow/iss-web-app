@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import TheWall from "@/components/wall/TheWall.vue";
 import { useUserInfoStore } from "@/stores/userinfo";
+import TheExplore from "@/components/explore/TheExplore.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +19,16 @@ const router = createRouter({
       }
     },
     {
+      path: "/:username/:tab?",
+      name: "profile",
+      props: route => ({ username: route.params.username, tab: route.params.tab }),
+      component: () => import( "@/components/profile/TheProfile.vue"),
+      meta: {
+        enterClass: "animate__animated animate__zoomIn",
+        leaveClass: "animate__animated animate__fadeOutDown"
+      }
+    },
+    {
       path: "/login",
       name: "login",
       component: () => import( "@/components/login/TheLogin.vue"),
@@ -30,7 +40,7 @@ const router = createRouter({
     {
       path: "/new",
       name: "new",
-      component: () => import( "@/components/editor/PostEditor.vue"),
+      component: () => import( "@/components/new/PostEditor.vue"),
       meta: {
         enterClass: "animate__animated animate__fadeIn",
         leaveClass: "animate__animated animate__fadeOut"
@@ -49,7 +59,7 @@ const router = createRouter({
     {
       path: "/explore",
       name: "explore",
-      component: () => import( "@/components/wall/TheWall.vue"),
+      component: TheExplore,
       meta: {
         enterClass: "animate__animated animate__fadeInDown",
         leaveClass: "animate__animated animate__fadeOutDown"

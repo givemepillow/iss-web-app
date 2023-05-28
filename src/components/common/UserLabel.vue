@@ -1,29 +1,25 @@
 <template>
-  <div class="user-label">
-    <div class="user-label__avatar">
-      <img :alt="props.user?.username" :src="avatar" class="">
-    </div>
-    <span class="user-label__name">
+  <RouterLink :to="'/'+props.user?.username">
+    <div class="user-label">
+      <div class="user-label__avatar">
+        <img :alt="props.user?.username" :src="avatar" class="">
+      </div>
+      <span class="user-label__name">
       {{ props.user?.username }}
     </span>
-  </div>
+    </div>
+  </RouterLink>
 </template>
 
 <script setup>
 import avatar from "@/assets/avatars/batman.svg";
 import User from "@/models/user";
-import { computed } from "vue";
 
 
 const props = defineProps({
   user: {
     type: User
   }
-});
-
-
-const user = computed(() => {
-  return props.user ?? new User();
 });
 
 </script>
@@ -36,6 +32,7 @@ const user = computed(() => {
   font-size: 10pt;
   padding: 0;
   background-color: transparent;
+
 
   &__avatar {
     height: 2rem;

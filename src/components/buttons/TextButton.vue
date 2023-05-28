@@ -18,6 +18,10 @@ const props = defineProps({
   alpha: {
     type: Number,
     default: 0.4
+  },
+  fontSize: {
+    type: Number,
+    default: 9
   }
 });
 
@@ -25,6 +29,7 @@ const props = defineProps({
 const buttonStyle = {
   width: props.size + "rem",
   height: props.size + "rem",
+  "font-size": props.fontSize + "pt",
   "background-color": `rgba(0, 0, 0, ${props.alpha})`,
   "box-shadow": props.shadow ? "rgba(0, 0, 0, 0.16) 0 1px 4px" : "none"
 };
@@ -42,8 +47,8 @@ const buttonStyle = {
   transition: background-color ease-in 0.15s;
   border-radius: 100%;
   span {
+    padding: 0;
     user-select: none;
-    font-size: 9pt;
   }
 }
 

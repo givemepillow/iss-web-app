@@ -6,7 +6,7 @@
     <div ref="swiperContainer" class="swiper">
       <div class="swiper-wrapper">
         <img
-          v-for="picture in post.pictures"
+          v-for="picture in props.post.pictures"
           :key="picture.id"
           :src="resolvePictureSrc(post.user.id, picture.id)"
           alt=""

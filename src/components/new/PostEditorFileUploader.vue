@@ -11,7 +11,7 @@
     >
       <input
         ref="file"
-        accept=".webp,.gif,.jpg,.jpeg,.png"
+        accept=".webp,.gif,.jpg,.jpeg,.png,.heic"
         multiple
         style="display: none"
         type="file"

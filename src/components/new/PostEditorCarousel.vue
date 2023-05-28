@@ -162,9 +162,9 @@
 <script setup>
 import { onMounted, onUpdated, ref } from "vue";
 import Swiper, { Pagination, Navigation } from "swiper";
-import PostEditorCropper from "@/components/editor/PostEditorCropper.vue";
-import CropperCarouselZoomSlider from "@/components/editor/PostEditorZoomSlider.vue";
-import CropperCarouselFileUploader from "@/components/editor/PostEditorFileUploader.vue";
+import PostEditorCropper from "@/components/new/PostEditorCropper.vue";
+import CropperCarouselZoomSlider from "@/components/new/PostEditorZoomSlider.vue";
+import CropperCarouselFileUploader from "@/components/new/PostEditorFileUploader.vue";
 import saveIcon from "@/assets/icons/save.svg";
 import deleteIcon from "@/assets/icons/delete.svg";
 import nextIcon from "@/assets/icons/next.svg";
@@ -265,13 +265,14 @@ function isLastPictureSlide() {
 }
 
 function onClickRatio(r) {
-  isNaturalRatio.value = r === null;
   if (r === null) {
     let naturalRatio = getCurrentCropper().naturalRatio();
     currentRatio.value = naturalRatio > 2 ? 21 / 9 : naturalRatio;
   } else {
     currentRatio.value = r;
+
   }
+  isNaturalRatio.value = (r === null);
 }
 
 
@@ -450,7 +451,11 @@ onUpdated(() => {
   }
 
   &__save-button:hover {
-    background-color: rgba(3, 148, 252, 0.75);
+    background-color: rgba(3, 148, 252, 0.75) !important;
+  }
+
+  &__delete-button:hover {
+    background-color: #4f000b !important;
   }
 
   &__rotate-button {
@@ -515,7 +520,7 @@ onUpdated(() => {
 .ratio-showed, .ratio-showed:hover,
 .zoom-showed, .zoom-showed:hover,
 .ratio-selected, .ratio-selected:hover {
-  background-color: rgba(247, 247, 247, 0.55);
+  background-color: rgba(247, 247, 247, 0.55) !important;
 }
 
 .swiper-navigation-disabled {

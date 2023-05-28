@@ -31,10 +31,10 @@
 
 <script setup>
 import { inject, ref } from "vue";
-import PostEditorCarousel from "@/components/editor/PostEditorCarousel.vue";
-import CreatePostSubmit from "@/components/editor/PostEditorSubmit.vue";
-import PostEditorDescription from "@/components/editor/PostEditorDescription.vue";
-import PostEditorTitle from "@/components/editor/PostEditorTitle.vue";
+import PostEditorCarousel from "@/components/new/PostEditorCarousel.vue";
+import CreatePostSubmit from "@/components/new/PostEditorSubmit.vue";
+import PostEditorDescription from "@/components/new/PostEditorDescription.vue";
+import PostEditorTitle from "@/components/new/PostEditorTitle.vue";
 import UserLabel from "@/components/common/UserLabel.vue";
 import { publishPost } from "@/services/api";
 import { useUserInfoStore } from "@/stores/userinfo";
