@@ -29,7 +29,7 @@
         <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
       </div>
       <div class="post__statistics  post__card">
-        <PostStatistics :post="post"/>
+        <PostStatistics :me="me" :post="post"/>
       </div>
       <div class="post__article  post__card">
         <div class="post__title">
@@ -73,6 +73,7 @@ import { useRouter } from "vue-router";
 import BackgroundOverlay from "@/components/common/BackgroundOverlay.vue";
 import ModalPopup from "@/components/common/ModalPopup.vue";
 import TheLoading from "@/components/common/TheLoading.vue";
+import { useUserInfoStore } from "@/stores/userinfo";
 
 const postElement = ref(null);
 const isDescription = ref(true);
@@ -84,7 +85,8 @@ const states = Object.freeze({
   default: 2
 });
 const currentState = ref(states.default);
-
+const userinfo = useUserInfoStore();
+const me = await userinfo.get();
 
 const props = defineProps({
   post_id: {

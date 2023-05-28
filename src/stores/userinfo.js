@@ -13,8 +13,6 @@ export const useUserInfoStore = defineStore(
         if (response.ok) {
           let result = await response.json();
           user.value = new Me(result);
-        } else {
-          return null;
         }
       }
       return user.value;

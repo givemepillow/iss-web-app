@@ -131,8 +131,6 @@ import {
   numeric,
   minLength,
   maxLength,
-  or,
-  alphaNum,
   alpha
 } from "@vuelidate/validators";
 import pillowIcon from "@/assets/icons/pillow.svg";
@@ -142,6 +140,7 @@ import { useRouter } from "vue-router";
 import TelegramLogin from "@/components/login/TelegramLogin.vue";
 import { confirmCode, signIn, signInViaTelegram, signUp, usernameAvailable } from "@/services/api";
 import { useTimer } from "@/services/timer";
+import { useUserInfoStore } from "@/stores/userinfo";
 
 const router = useRouter();
 const timer = useTimer();
@@ -157,7 +156,7 @@ const states = Object.freeze({
   loginComplete: 3
 });
 const currentState = ref(states.signIn);
-
+const userinfo = useUserInfoStore();
 
 const userData = reactive({
   email: "",
@@ -215,6 +214,7 @@ async function onTelegramLogin(data) {
     let result = await response.json();
     if (result["userExists"]) {
       currentState.value = states.loginComplete;
+      await userinfo.get();
       await new Promise(r => setTimeout(r, 2000));
       await router.push({ path: "/explore" });
     } else {
@@ -253,6 +253,7 @@ async function onCodeInput() {
     let result = await response.json();
     if (result["userExists"]) {
       currentState.value = states.loginComplete;
+      await userinfo.get();
       await new Promise(r => setTimeout(r, 2000));
       await router.push({ path: "/explore" });
     } else {
@@ -271,6 +272,7 @@ async function onSignUpClick() {
   let response = await signUp(userData.username, userData.name);
   if (response.ok) {
     currentState.value = states.loginComplete;
+    await userinfo.get();
     await new Promise(r => setTimeout(r, 2000));
     await router.push({ path: "/explore" });
   } else {
