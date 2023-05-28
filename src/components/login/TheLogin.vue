@@ -106,7 +106,7 @@
             type="text"
           />
           <BaseButton
-            :disabled="!userData.username || !userData.name"
+            :disabled="!userData.username"
             class="login__button login__save-button"
             text="Подтвердить"
             @click="onSignUpClick"
@@ -123,7 +123,18 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers, between, numeric, minLength, maxLength } from "@vuelidate/validators";
+import {
+  required,
+  email,
+  helpers,
+  between,
+  numeric,
+  minLength,
+  maxLength,
+  or,
+  alphaNum,
+  alpha
+} from "@vuelidate/validators";
 import pillowIcon from "@/assets/icons/pillow.svg";
 import BaseButton from "@/components/buttons/AppButton.vue";
 import InputItem from "@/components/common/InputItem.vue";
@@ -179,6 +190,7 @@ const rules = computed(() => ({
       required: helpers.withMessage("Это обязательное поле!", required),
       minLength: helpers.withMessage("Минимум 3 символа!", minLength(3)),
       maxLength: helpers.withMessage("Максимум 25 символов!", maxLength(25)),
+      alphaNum: helpers.withMessage("Только буквы и цифры!", alpha),
       available: helpers.withMessage("Имя пользователя занято!", helpers.withAsync(isUsernameAvailable)),
       $autoDirty: true,
       $lazy: true
