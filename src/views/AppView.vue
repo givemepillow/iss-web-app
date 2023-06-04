@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <header class="page__header">
+    <header class="page__header" >
       <slot name="header"></slot>
     </header>
     <main class="page__main">
@@ -42,6 +42,7 @@
   &__footer {
     display: grid;
     width: calc(100%);
+    margin-top: 6rem;
   }
 
   &__background-container {

@@ -33,7 +33,7 @@ function onClick(e) {
 
 <style lang="scss" scoped>
 .base-button {
-  height: 2.5rem;
+  height: 2.25rem;
   border-radius: var(--app-border-radius);
   //box-shadow: var(--app-default-shadow);
   outline: none;

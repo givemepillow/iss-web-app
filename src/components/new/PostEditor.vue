@@ -3,25 +3,25 @@
     <BackgroundOverlay v-if="isPostPending">
       <TheLoading />
     </BackgroundOverlay>
-    <div class="editor__card editor__user editor__user--mobile">
+    <div class="editor__user editor__user--mobile">
       <UserLabel :user="me" />
     </div>
-    <div class="editor__cropper editor__card ">
+    <div class="editor__cropper app-card">
       <PostEditorCarousel ref="cropperCarouselElement" />
     </div>
     <div class="editor__info">
-      <div class="editor__card editor__info--header">
+      <div class="editor__info--header  app-card">
         <div class="editor__user editor__user--desktop">
           <UserLabel :user="me" />
         </div>
         <PostEditorTitle ref="titleElement" :maxlength="25" placeholder="Придумайте название..." />
       </div>
-      <div class="editor__card editor__info--middle">
+      <div class="editor__info--middle  app-card">
         <PostEditorDescription ref="descriptionElement" :maxlength="500" placeholder="Добавьте описание..." />
       </div>
-      <div class="editor__card editor__info--bottom">
+      <div class="editor__info--bottom">
         <CreatePostSubmit
-          :disabled="!(cropperCarouselElement?.isReadyToPost ?? false)"
+          :disabled="!(cropperCarouselElement?.isReady ?? false)"
           @click="onCreatePost"
         />
       </div>
@@ -31,7 +31,7 @@
 
 <script setup>
 import { inject, ref } from "vue";
-import PostEditorCarousel from "@/components/new/PostEditorCarousel.vue";
+import PostEditorCarousel from "@/components/common/CropperCarousel.vue";
 import CreatePostSubmit from "@/components/new/PostEditorSubmit.vue";
 import PostEditorDescription from "@/components/new/PostEditorDescription.vue";
 import PostEditorTitle from "@/components/new/PostEditorTitle.vue";
@@ -54,7 +54,7 @@ const router = useRouter();
 const showNotification = inject("showNotification");
 
 async function onCreatePost() {
-  if (!(cropperCarouselElement.value?.isReadyToPost ?? false)) {
+  if (!(cropperCarouselElement.value?.isReady ?? false)) {
     return;
   }
 
@@ -96,7 +96,7 @@ async function onCreatePost() {
 
 }
 
-const me = await userinfo.get();
+const me = await userinfo.get(true);
 
 </script>
 
@@ -128,6 +128,7 @@ $padding: 0.5rem;
   grid-gap: $gap;
   overflow: clip;
   opacity: 1;
+  user-select: none;
 
   @media only screen and (min-width: 980px) {
     grid-template-columns: 550px 20rem;
@@ -155,15 +156,8 @@ $padding: 0.5rem;
   @media only screen and (max-width: 480px) {
     $width: calc(100vw - var(--app-scrollbar-width) - $padding * 2);
     grid-template-columns: $width;
-    grid-template-rows: auto $width auto 4rem;
+    grid-template-rows: auto $width auto;
   };
-
-  &__card {
-    background-color: var(--app-default-color);
-    border-radius: var(--app-border-radius);
-    box-shadow: var(--app-default-shadow);
-    border: var(--app-default-border);
-  }
 
   &__user {
 

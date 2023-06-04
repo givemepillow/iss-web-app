@@ -1,8 +1,11 @@
 <template>
-  <RouterLink :to="'/'+props.user?.username">
+  <RouterLink :to="'/'+props.user?.username" :key="$route.path">
     <div class="user-label">
       <div class="user-label__avatar">
-        <img :alt="props.user?.username" :src="avatar" class="">
+        <img
+          :alt="props.user?.username"
+          :src="resolveAvatarSrc(props.user?.id ?? 0, props.user?.avatarId ?? 0)"
+        >
       </div>
       <span class="user-label__name">
       {{ props.user?.username }}
@@ -12,8 +15,8 @@
 </template>
 
 <script setup>
-import avatar from "@/assets/avatars/batman.svg";
 import User from "@/models/user";
+import { resolveAvatarSrc } from "@/services/api";
 
 
 const props = defineProps({

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useUserInfoStore } from "@/stores/userinfo";
 import TheExplore from "@/components/explore/TheExplore.vue";
+import TheProfile from "@/components/profile/TheProfile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,34 +10,26 @@ const router = createRouter({
       path: "/",
       name: "root",
       redirect: to => {
-        const userinfo = useUserInfoStore();
-        if (!userinfo.isSet()) {
-          return "login";
-        } else {
-          return "explore";
-        }
+        return "explore";
       }
     },
     {
       path: "/:username/:tab?",
       name: "user",
       props: route => ({ username: route.params.username, tab: route.params.tab }),
-      component: () => import( "@/components/profile/TheProfile.vue"),
+      component: TheProfile,
       meta: {
         enterClass: "animate__animated animate__zoomIn",
         leaveClass: "animate__animated animate__fadeOutDown"
       }
     },
     {
-      path: "/profile",
-      name: "profile",
-      redirect: to => {
-        const userinfo = useUserInfoStore();
-        if (!userinfo.isSet()) {
-          return "login";
-        } else {
-          return { path: `/${userinfo.username()}` };
-        }
+      path: "/settings",
+      name: "settings",
+      component: () => import( "@/components/settings/TheSettings.vue"),
+      meta: {
+        enterClass: "animate__animated animate__zoomIn",
+        leaveClass: "animate__animated animate__zoomOut"
       }
     },
     {
@@ -62,7 +54,7 @@ const router = createRouter({
       path: "/posts/:id",
       name: "post",
       props: route => ({ post_id: route.params.id }),
-      component: () => import( "@/components/observer/PostObserver.vue"),
+      component: () => import( "@/components/observer/ThePost.vue"),
       meta: {
         enterClass: "animate__animated animate__zoomIn",
         leaveClass: "animate__animated animate__fadeOutDown"

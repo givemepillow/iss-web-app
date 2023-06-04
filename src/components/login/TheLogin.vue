@@ -23,7 +23,6 @@
             label="Введите ваш email."
             name="email"
             placeholder="username@example.com"
-            type="email"
           />
           <BaseButton
             :disabled="!userData.email || v$.email.$error"
@@ -94,7 +93,6 @@
             label="Придумайте имя пользователя."
             name="username"
             placeholder="username"
-            type="text"
           />
           <InputItem
             v-model="v$.name.$model"
@@ -103,7 +101,6 @@
             label="Введите ваше имя."
             name="name"
             placeholder="Алексей Миронов"
-            type="text"
           />
           <BaseButton
             :disabled="!userData.username"
@@ -360,8 +357,9 @@ onMounted(async () => {
   }
 
   &__input {
-    margin-bottom: 1.25rem;
-    margin-top: 1.25rem;
+    margin-bottom: 1.75rem;
+    margin-top: 1.75rem;
+    height: 2rem;
   }
 
   &__card {

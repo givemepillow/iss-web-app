@@ -11,6 +11,7 @@
         @click="onClickDelete"
       />
       <IconButton
+        v-if="props.saveOriginal"
         :class="{'original-saved': cropperElements[swiper?.realIndex]?.isOriginalSaved}"
         :size="2"
         :src="saveIcon"
@@ -47,7 +48,7 @@
         @click="swiper?.slidePrev()"
       />
       <IconButton
-        :class="{'swiper-navigation-disabled': swiper?.realIndex === links.length}"
+        :class="{'swiper-navigation-disabled': swiper?.realIndex === links.length || swiper?.realIndex === props.maxlength - 1}"
         :size="1.8"
         :src="nextIcon"
         class="cropper-carousel__swiper-button-next swiper-button-next"
@@ -65,6 +66,7 @@
         @click="onClickRotate"
       />
       <IconButton
+        v-if="props.multipleRatio"
         :class="{'ratio-showed': isRatioToolsShowed}"
         :size="2"
         :src="ratioIcon"
@@ -162,9 +164,9 @@
 <script setup>
 import { onMounted, onUpdated, ref } from "vue";
 import Swiper, { Pagination, Navigation } from "swiper";
-import PostEditorCropper from "@/components/new/PostEditorCropper.vue";
+import PostEditorCropper from "@/components/common/CropperItem.vue";
 import CropperCarouselZoomSlider from "@/components/new/PostEditorZoomSlider.vue";
-import CropperCarouselFileUploader from "@/components/new/PostEditorFileUploader.vue";
+import CropperCarouselFileUploader from "@/components/common/FileUploader.vue";
 import saveIcon from "@/assets/icons/save.svg";
 import deleteIcon from "@/assets/icons/delete.svg";
 import nextIcon from "@/assets/icons/next.svg";
@@ -182,6 +184,14 @@ const props = defineProps({
     type: Number,
     required: false,
     default: 10
+  },
+  multipleRatio: {
+    type: Boolean,
+    default: true
+  },
+  saveOriginal: {
+    type: Boolean,
+    default: true
   }
 });
 
@@ -199,7 +209,7 @@ const isMoveRightShowed = ref(false);
 const isMoveLeftShowed = ref(false);
 const isZoomSliderShowed = ref(false);
 const isNaturalRatio = ref(false);
-const isReadyToPost = ref(false);
+const isReady = ref(false);
 
 
 function onCreated() {
@@ -234,13 +244,6 @@ function getCurrentCropper() {
   return cropperElements.value[swiper.value?.realIndex];
 }
 
-defineExpose({
-  isReadyToPost,
-  currentRatio,
-  getFiles,
-  getAreas,
-  getSaveOriginals
-});
 
 function toggle(isShowed) {
   isShowed.value = !isShowed.value;
@@ -332,17 +335,22 @@ function updateTools() {
   isMoveRightShowed.value = !isLastPictureSlide() && isPictureSlide();
   isRatioToolsShowed.value = isPictureSlide() && isRatioToolsShowed.value;
   isZoomSliderShowed.value = isPictureSlide() && isZoomSliderShowed.value;
-  isReadyToPost.value = links.value.length > 0 && readyNumber === links.value.length;
+  isReady.value = links.value.length > 0 && readyNumber === links.value.length;
+}
+
+function pushLink(key, url, file) {
+  if (links.value.length >= props.maxlength) return;
+  links.value.push({
+    key: key,
+    url: url,
+    file: file
+  });
+
 }
 
 function onFileUpload(files) {
   Array.from(files).forEach((file) => {
-    if (links.value.length >= props.maxlength) return;
-    links.value.push({
-      key: index++,
-      url: URL.createObjectURL(file),
-      file: file
-    });
+    pushLink(index++, URL.createObjectURL(file), file);
   });
 }
 
@@ -377,6 +385,16 @@ onMounted(() => {
 onUpdated(() => {
   updateTools();
 });
+
+
+defineExpose({
+  isReady,
+  currentRatio,
+  pushLink,
+  getFiles,
+  getAreas,
+  getSaveOriginals
+});
 </script>
 
 <style lang="scss" scoped>
@@ -399,7 +417,7 @@ onUpdated(() => {
     position: absolute;
     display: flex;
     align-items: center;
-    padding: 0 1.5rem 0 1.5rem;
+    padding: 0 1rem 0 1rem;
     column-gap: 3%;
     transition: all ease-in-out 150ms;
 
@@ -408,7 +426,7 @@ onUpdated(() => {
     }
 
     &--bottom {
-      bottom: 2.5em;
+      bottom: 1.5em;
     }
 
   }

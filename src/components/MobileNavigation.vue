@@ -11,8 +11,13 @@
       </RouterLink>
     </div>
     <div class="profile-button">
-      <RouterLink to="/profile">
-        <IconButton :alpha="0" :shadow="false" :size="3" :src="profileIcon" />
+      <RouterLink :key="$route.fullPath" :to="'/'+(me?.username ?? '')">
+        <IconButton :alpha="0" :shadow="false" :size="2.7" :src="profileIcon" />
+      </RouterLink>
+    </div>
+    <div class="settings-button">
+      <RouterLink to="/settings">
+        <IconButton :alpha="0" :shadow="false" :size="3.2" :src="settingsIcon" />
       </RouterLink>
     </div>
   </nav>
@@ -23,8 +28,16 @@ import IconButton from "@/components/buttons/IconButton.vue";
 import exploreIcon from "@/assets/icons/explore.svg";
 import addIcon from "@/assets/icons/add.svg";
 import profileIcon from "@/assets/icons/profile.svg";
+import settingsIcon from "@/assets/icons/settings.svg";
+import { onMounted, ref } from "vue";
+import { useUserInfoStore } from "@/stores/userinfo";
 
+const me = ref(null);
+const userinfo = useUserInfoStore();
 
+onMounted(async () => {
+  me.value = await userinfo.get(true);
+});
 </script>
 
 <style lang="scss" scoped>

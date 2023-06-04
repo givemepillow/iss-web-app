@@ -1,7 +1,7 @@
 <template>
   <div class="post-statistics">
     <div class="post-statistics__item">
-      <span class="post-statistics__number">{{ props.post.views }}</span>
+      <span class="post-statistics__number">{{ props.post.views.length }}</span>
       <img :src="eyeIcon" alt="" class="post-statistics__icon">
     </div>
     <div class="post-statistics__item">
@@ -9,7 +9,7 @@
       <img :src="downloadsIcon" alt="" class="post-statistics__icon">
     </div>
     <div class="post-statistics__item" @click="onClickMark" @mouseleave="isHover = false" @mouseover="isHover = true">
-      <span class="post-statistics__number">{{ bookmarks.length }}</span>
+      <span class="post-statistics__number">{{ bookmarksNumber }}</span>
       <img v-if="!isHover && !isMarked" :src="markIcon" alt="" class="post-statistics__icon">
       <img v-else :src="markedIcon" alt="" class="post-statistics__icon">
     </div>
@@ -31,13 +31,19 @@ const props = defineProps({
   me: Me
 });
 
-const bookmarks = ref(props.post.bookmarks);
+const bookmarks = ref(props.post.in_bookmarks);
+const bookmarksNumber = ref(props.post.in_bookmarks.length)
 const showNotification = inject("showNotification");
 const isMarked = ref(false);
 const isHover = ref(false);
 
 onMounted(() => {
-  isMarked.value = bookmarks.value.includes(props.me.id);
+  for (let u of props.post.in_bookmarks) {
+    if (u.id === props.me.id) {
+      isMarked.value = true;
+      return;
+    }
+  }
 });
 
 
@@ -46,16 +52,15 @@ async function onClickMark() {
     if (isMarked.value) {
       let response = await removeBookmark(props.post.id);
       if (response.ok) {
-        let index = bookmarks.value.indexOf(props.me.id);
-        if (index !== -1) {
-          bookmarks.value.splice(index, 1);
-        }
+        bookmarksNumber.value -= 1;
+        isMarked.value = false;
         showNotification((await response.json()).detail);
       }
     } else {
       let response = await saveBookmark(props.post.id);
       if (response.ok) {
-        bookmarks.value.push(props.me.id);
+        bookmarksNumber.value += 1;
+        isMarked.value = true;
         showNotification((await response.json()).detail);
       } else {
         showNotification((await response.json()).detail);
@@ -63,8 +68,6 @@ async function onClickMark() {
     }
   } catch (e) {
     showNotification(e);
-  } finally {
-    isMarked.value = bookmarks.value.includes(props.me.id);
   }
 }
 
@@ -73,6 +76,7 @@ async function onClickMark() {
 <style lang="scss" scoped>
 
 .post-statistics {
+  user-select: none;
   width: 100%;
   display: flex;
   align-items: center;

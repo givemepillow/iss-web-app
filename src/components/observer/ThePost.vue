@@ -13,7 +13,7 @@
       />
     </BackgroundOverlay>
     <div class="post__picture">
-      <div class="post__bar post__bar--vertical post__card">
+      <div class="post__bar post__bar--vertical app-card">
         <UserLabel :user="post.user" />
         <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
       </div>
@@ -24,30 +24,49 @@
       </div>
     </div>
     <div class="post__info">
-      <div class="post__bar post__bar--horizontal post__card">
+      <div class="post__bar post__bar--horizontal  app-card">
         <UserLabel :user="post.user" />
         <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
       </div>
-      <div class="post__statistics  post__card">
-        <PostStatistics :me="me" :post="post"/>
+      <div class="post__statistics  app-card ">
+        <PostStatistics :me="me" :post="post" />
       </div>
-      <div class="post__article  post__card">
+      <div class="post__article  app-card ">
         <div class="post__title">
           <PostTitle :title="post.title" />
         </div>
-        <div class="post__description">
-          <PostDescription :description="post.description" />
-        </div>
+        <Transition
+          enter-active-class="animate__animated animate__fadeIn"
+          leave-active-class="animate__animated animate__fadeOut"
+          mode="out-in"
+        >
+          <Suspense>
+            <div v-if="isDescription && post.description.length > 0" class="post__description">
+              <ThePostDescription :description="post.description" />
+            </div>
+            <div v-else-if="isDescription" class="post__placeholder">
+              <div class="placeholder-wrapper">
+                <img :src="placeholders[Math.floor(Math.random() * placeholders.length)]" alt="" />
+              </div>
+            </div>
+            <div v-else class="post__discussion">
+              <ThePostDiscussion :post_id="post_id" />
+            </div>
+            <template #fallback>
+              <TheLoading />
+            </template>
+          </Suspense>
+        </Transition>
       </div>
-      <div class="post__card" style="overflow: clip">
+      <div class="" style="overflow: clip">
         <BaseButton
-          :class="{'post__button--on': isDescription}"
+          v-if="isDescription"
           class="post__button post__button--description"
           text="Описание"
           @click="isDescription = !isDescription"
         />
         <BaseButton
-          :class="{'post__button--on': !isDescription}"
+          v-else
           class="post__button post__button--discussion"
           text="Обсуждение"
           @click="isDescription = !isDescription"
@@ -60,9 +79,8 @@
 <script setup>
 import { inject, ref } from "vue";
 import UserLabel from "@/components/common/UserLabel.vue";
-import PostCarousel from "@/components/observer/PostObserverCarousel.vue";
-import PostDescription from "@/components/observer/PostDescription.vue";
-import PostTitle from "@/components/observer/PostObserverTitle.vue";
+import PostCarousel from "@/components/observer/ThePostCarousel.vue";
+import PostTitle from "@/components/observer/ThePostTitle.vue";
 import PostStatistics from "@/components/common/PostStatistics.vue";
 import BaseButton from "@/components/buttons/AppButton.vue";
 import { deletePost, getPost } from "@/services/api";
@@ -74,6 +92,28 @@ import BackgroundOverlay from "@/components/common/BackgroundOverlay.vue";
 import ModalPopup from "@/components/common/ModalPopup.vue";
 import TheLoading from "@/components/common/TheLoading.vue";
 import { useUserInfoStore } from "@/stores/userinfo";
+import ThePostDiscussion from "@/components/observer/ThePostDiscussion.vue";
+import ThePostDescription from "@/components/observer/ThePostDescription.vue";
+import p1 from "@/assets/placeholders/castle.svg";
+import p2 from "@/assets/placeholders/farm.svg";
+import p3 from "@/assets/placeholders/hay.svg";
+import p4 from "@/assets/placeholders/dunes.svg";
+import p5 from "@/assets/placeholders/farm.svg";
+import p6 from "@/assets/placeholders/desert.svg";
+import p7 from "@/assets/placeholders/island.svg";
+import p8 from "@/assets/placeholders/mountains.svg";
+import p9 from "@/assets/placeholders/park.svg";
+import p10 from "@/assets/placeholders/spring.svg";
+import p12 from "@/assets/placeholders/sunset.svg";
+import p13 from "@/assets/placeholders/waterfall.svg";
+import p14 from "@/assets/placeholders/valley.svg";
+import p15 from "@/assets/placeholders/winter.svg";
+import p16 from "@/assets/placeholders/tree.svg";
+import p17 from "@/assets/placeholders/summer.svg";
+import p18 from "@/assets/placeholders/forest.svg";
+import p19 from "@/assets/placeholders/grove.svg";
+
+const placeholders = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p12, p13, p14, p15, p16, p17, p18, p19];
 
 const postElement = ref(null);
 const isDescription = ref(true);
@@ -86,7 +126,7 @@ const states = Object.freeze({
 });
 const currentState = ref(states.default);
 const userinfo = useUserInfoStore();
-const me = await userinfo.get();
+const me = await userinfo.get(false);
 
 const props = defineProps({
   post_id: {
@@ -128,8 +168,7 @@ async function onSelect(key) {
 
 let response = await getPost(props.post_id);
 if (response.ok) {
-  post.value = new Post( await response.json());
-  console.log(post.value)
+  post.value = new Post(await response.json());
 }
 
 const postRatio = post.value.aspectRatio;
@@ -153,21 +192,14 @@ $padding: 0.5rem;
   grid-gap: $gap;
   justify-content: center;
 
-  &__card {
-    background-color: var(--app-default-color);
-    border-radius: var(--app-border-radius);
-    box-shadow: var(--app-default-shadow);
-    border: var(--app-default-border);
-  }
-
   @media only screen and (min-width: 960px) {
-    grid-template-columns: calc(1px * v-bind(postWidth)) min(20rem, 40%);
-    grid-template-rows: max(calc(1px * v-bind(postHeight)),  calc(1px * v-bind(postWidth)));
+    grid-template-columns: calc(1px * v-bind(postWidth)) min(25rem, 40%);
+    grid-template-rows: min(max(calc(1px * v-bind(postHeight)), calc(1px * v-bind(postWidth))));
   };
 
   @media only screen and (max-width: 960px) {
-    grid-template-columns: calc(1px * v-bind(postWidth)) min(20rem, 40%);
-    grid-template-rows: max(calc(1px * v-bind(postHeight)),  calc(1px * v-bind(postWidth)));
+    grid-template-columns: calc(1px * v-bind(postWidth)) min(25rem, 40%);
+    grid-template-rows: max(calc(1px * v-bind(postHeight)), calc(1px * v-bind(postWidth)));
   };
 
   @media only screen and (max-width: 640px) {
@@ -188,6 +220,7 @@ $padding: 0.5rem;
   }
 
   &__carousel {
+    user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -200,10 +233,10 @@ $padding: 0.5rem;
   &__info {
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: auto auto 7fr 2.75rem;
+    grid-template-rows: auto auto minmax(0, 7fr) 2.75rem;
 
     @media only screen and (max-width: 640px) {
-      grid-template-rows: auto auto 2.75rem 4rem;
+      grid-template-rows: auto minmax(5rem, 20rem) 2.75rem;
     };
 
     grid-gap: $gap;
@@ -237,10 +270,65 @@ $padding: 0.5rem;
   }
 
   &__article {
-    padding: 0.75rem;
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding: 0.5rem 0.75rem;
+    overflow: clip;
+  }
+
+
+  &__description {
+    opacity: 0.85;
+    word-wrap: normal;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 0.5rem;
+      border-radius: 5px;
+      overflow: clip;
+      height: 0.25em;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);;
+    }
+
+  }
+
+  &__placeholder {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    height: 100%;
+    width: 100%;
+
+
+    .placeholder-wrapper {
+      height: 75%;
+      width: 100%;
+      opacity: 0.5;
+
+      img {
+        -webkit-user-drag: none;
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+      }
+    }
   }
 
   &__button {
@@ -248,20 +336,6 @@ $padding: 0.5rem;
     width: 100%;
     font-size: 14pt;
     transition: all ease-in-out 250ms;
-
-
-    &--description {
-      left: -100%;
-    }
-
-    &--discussion {
-      left: 100%;
-      bottom: 100%;
-    }
-
-    &--on {
-      left: 0;
-    }
   }
 }
 </style>

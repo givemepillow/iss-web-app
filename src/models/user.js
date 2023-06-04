@@ -3,11 +3,15 @@ export default class User {
     {
       id,
       name,
-      username
+      username,
+      bio,
+      avatarId
     } = {}
   ) {
     this.id = id;
     this.name = name;
     this.username = username;
+    this.bio = bio;
+    this.avatarId = avatarId;
   }
 }

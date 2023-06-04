@@ -1,7 +1,7 @@
 <template>
   <div ref="cropperElement" class="post-cropper">
     <div ref="canvasElement" :class="{'post-cropper--ready': isReady}" class="post-cropper__canvas cropper-canvas">
-      <img ref="imageElement" :src="src" alt="" class="post-cropper__image">
+      <img ref="imageElement" :src="src" alt="" class="post-cropper__image" crossorigin>
     </div>
     <div :class="{'post-cropper__placeholder--ready': isReady}" class="post-cropper__placeholder">
       <TheLoading />
@@ -22,7 +22,7 @@ const props = defineProps({
     type: String,
     required: true
   },
-  file: String,
+  file: File,
   ratio: {
     type: Number,
     required: true,
@@ -223,6 +223,7 @@ onUnmounted(() => {
   &__placeholder {
     position: absolute;
     pointer-events: none;
+
     &--ready {
       opacity: 0;
       z-index: -1;

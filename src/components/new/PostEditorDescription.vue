@@ -9,7 +9,7 @@
       wrap="hard"
     ></textarea>
     <div ref="emojiButton" class="description__bottom">
-      <img :src="emojiIcon" alt="" class="description__emoji">
+      <EmojiButton @emoji="onEmoji" class="description__emoji"/>
       <div class="description__counter">
         {{ value.length }} / {{ props.maxlength }}
       </div>
@@ -18,9 +18,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import emojiIcon from "@/assets/icons/emoji.svg";
-import { createPopup } from "@picmo/popup-picker";
+import { ref } from "vue";
+import EmojiButton from "@/components/buttons/EmojiButton.vue";
 
 const props = defineProps({
   maxlength: {
@@ -35,7 +34,6 @@ const props = defineProps({
   }
 });
 
-const emojiButton = ref(null);
 const textareaElement = ref(null);
 const value = ref("");
 
@@ -43,40 +41,14 @@ defineExpose({
   value
 });
 
+function onEmoji(emoji) {
+  if (!(value.value.length + emoji.length < props.maxlength)) {
+    return;
+  }
+  let i = textareaElement.value.selectionEnd;
+  value.value = value.value.slice(0, i) + emoji + value.value.slice(i);
+}
 
-onMounted(() => {
-  const picker = createPopup({
-    emojisPerRow: 6,
-    visibleRows: 4,
-    showSearch: false,
-    showCategoryTabs: false,
-    showRecents: true,
-    showPreview: false,
-    showVariants: false,
-    theme: "darkTheme",
-    className: "emoji-picker",
-    emojiSize: "1.5rem"
-  }, {
-    referenceElement: emojiButton.value,
-    triggerElement: emojiButton.value,
-    position: "top-end",
-    showCloseButton: false,
-    hideOnEscape: true,
-    hideOnClickOutside: true,
-    hideOnEmojiSelect: false,
-    onPositionLost: "close"
-  });
-  picker.addEventListener("emoji:select", (selection) => {
-    if (!(value.value.length + selection.emoji.length < props.maxlength)) {
-      return;
-    }
-    let i = textareaElement.value.selectionEnd;
-    value.value = value.value.slice(0, i) + selection.emoji + value.value.slice(i);
-  });
-  emojiButton.value.addEventListener("click", () => {
-    picker.toggle();
-  });
-});
 </script>
 
 <style lang="scss" scoped>
@@ -119,13 +91,8 @@ onMounted(() => {
   }
 
   &__emoji {
-    user-select: none;
-    -webkit-user-drag: none;
     height: 1.3em;
     width: 1.3em;
-    cursor: pointer;
-    background-color: transparent;
-    opacity: 0.5;
   }
 
   ::-webkit-scrollbar {

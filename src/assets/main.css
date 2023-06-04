@@ -40,6 +40,14 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.app-card {
+    background-color: var(--app-default-color);
+    border-radius: var(--app-border-radius);
+    box-shadow: var(--app-default-shadow);
+    border: var(--app-default-border);
+}
+
+
 ::-webkit-scrollbar {
     width: var(--app-scrollbar-width);
     height: 0.5em;

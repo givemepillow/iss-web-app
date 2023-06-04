@@ -11,7 +11,7 @@ export default class Post {
       pictures = [],
       downloads = 0,
       views = 0,
-      bookmarks = 0,
+      in_bookmarks = 0,
       createdAt = "",
       user = {}
     } = {}
@@ -22,8 +22,8 @@ export default class Post {
     this.aspectRatio = aspectRatio;
     this.pictures = pictures.map(p => Object.assign(new Picture(), p));
     this.createdAt = createdAt;
+    this.in_bookmarks = in_bookmarks;
     this.views = views;
-    this.bookmarks = bookmarks;
     this.downloads = downloads;
     this.user = Object.assign(new User(), user);
   }

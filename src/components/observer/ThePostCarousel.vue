@@ -22,26 +22,55 @@
       </div>
       <div class="swiper-pagination"></div>
       <IconButton
-        @click="swiper?.slidePrev()"
         :class="{'swiper-navigation-disabled': isNavigationHidden}"
         :size="1.6"
         :src="nextIcon"
         class="swiper-button-prev post-carousel__button-prev"
         style="transform: rotate(180deg)"
+        @click="swiper?.slidePrev()"
       />
       <IconButton
-        @click="swiper?.slideNext()"
         :class="{'swiper-navigation-disabled': isNavigationHidden}"
         :size="1.6"
         :src="nextIcon"
         class="swiper-button-next post-carousel__button-next"
+        @click="swiper?.slideNext()"
       />
-      <TextLabel
-        :size="11"
+      <TextIconButton
+        :font-size="10.5"
+        :size="1.75"
+        :src="formatIcon"
         :text="post.pictures[swiper?.realIndex]?.format"
-        class="content-type"
+        class="content-type app-card"
+      />
+      <TextIconButton
+        v-if="numberLabel"
+        :font-size="10.5"
+        :size="1.75"
+        :src="collageIcon"
+        :text="numberLabel"
+        class="number app-card"
+      />
+      <TextIconButton
+        :font-size="10.5"
+        :size="1.75"
+        :src="resolutionIcon"
+        :text="post.pictures[swiper?.realIndex]?.width +
+         ' × ' +
+         post.pictures[swiper?.realIndex]?.height"
+        class="resolution app-card"
+      />
+      <TextIconButton
+        :font-size="10.5"
+        :size="1.75"
+        :src="downloadIcon"
+        :text="
+         Math.round((props.post.pictures[swiper?.realIndex]?.size / 1000000) * 100) / 100 >= 1 ?  ((Math.round((props.post.pictures[swiper?.realIndex]?.size / 1000000) * 100)) / 100 + ' MB') : ((Math.round((props.post.pictures[swiper?.realIndex]?.size / 1000) * 100)) / 100 + ' KB')"
+        class="size app-card"
+        @click="onDownload"
       />
     </div>
+    <a ref="aElement" style="display:none"></a>
   </div>
 </template>
 
@@ -50,14 +79,21 @@ import nextIcon from "@/assets/icons/next.svg";
 import { onMounted, ref } from "vue";
 import Swiper, { Navigation, Pagination } from "swiper";
 import IconButton from "@/components/buttons/IconButton.vue";
-import TextLabel from "@/components/common/TextLabel.vue";
 import Post from "@/models/post";
-import { resolvePictureSrc } from "@/services/api";
+import { resolveOriginalPictureSrc, resolvePictureSrc } from "@/services/api";
+import TextIconButton from "@/components/buttons/TextIconButton.vue";
+import downloadIcon from "@/assets/icons/download.svg";
+import collageIcon from "@/assets/icons/collage.svg";
+import formatIcon from "@/assets/icons/format.svg";
+import resolutionIcon from "@/assets/icons/resolution.svg";
 
 const carouselElement = ref(null);
 const swiperContainerElement = ref(null);
 const imageElements = ref(null);
 const swiper = ref(null);
+
+const numberLabel = ref("");
+
 
 const props = defineProps({
   post: {
@@ -66,12 +102,28 @@ const props = defineProps({
   }
 });
 
+function updateLabel() {
+  if (swiper.value?.slides?.length > 1) {
+    numberLabel.value = `${(swiper.value?.realIndex ?? 0) + 1}/${swiper.value?.slides?.length}`;
+  } else {
+    numberLabel.value = "";
+  }
+}
+
+
 const isNavigationHidden = ref(false);
 const open = ref(false);
-
+const aElement = ref(null);
 
 function onClick() {
   open.value = !open.value;
+}
+
+async function onDownload() {
+  let url = resolveOriginalPictureSrc(props.post?.user.id, props.post?.pictures[swiper.value?.realIndex]?.id);
+  aElement.value.href = url;
+  aElement.value.download = url;
+  aElement.value.click();
 }
 
 onMounted(() => {
@@ -89,7 +141,14 @@ onMounted(() => {
       el: ".swiper-pagination",
       clickable: true
     },
-    navigation: {
+    navigation: {},
+    on: {
+      update: () => {
+        updateLabel();
+      },
+      slideChange: () => {
+        updateLabel();
+      }
     }
   });
   swiperContainerElement.value.focus();
@@ -98,12 +157,43 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.content-type {
+.content-type, .number, .resolution, .size {
   position: absolute;
   z-index: 3;
-  top: 0.5rem;
+  opacity: 0.85;
+  font-family: Roboto, sans-serif;
+  font-weight: bold;
+  transition: all ease-in-out 0.15s;
+  cursor: default !important;
+
+
+}
+
+
+.number {
   right: 0.5rem;
-  opacity: 0.65;
+  top: 0.5rem;
+}
+
+.resolution {
+  left: 0.5rem;
+  bottom: 0.5rem;
+
+}
+
+.size {
+  right: 0.5rem;
+  bottom: 0.5rem;
+  cursor: pointer !important;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.content-type {
+  left: 0.5rem;
+  top: 0.5rem;
 }
 
 .post-carousel {

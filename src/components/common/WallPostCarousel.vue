@@ -1,7 +1,7 @@
 <template>
   <div ref="container" class="wall-post-carousel">
-    <div class="number">
-      <TextLabel v-if="numberLabel" :size="10" :text="numberLabel" />
+    <div class="number app-card">
+      <TextIconButton :src="collageIcon" v-if="numberLabel" :size="1.5" :font-size="10" :text="numberLabel" />
     </div>
     <div ref="swiperContainer" class="swiper">
       <div class="swiper-wrapper">
@@ -21,9 +21,10 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import Swiper, { Pagination, Autoplay } from "swiper";
-import TextLabel from "@/components/common/TextLabel.vue";
 import Post from "@/models/post";
 import { resolvePictureSrc } from "@/services/api";
+import TextIconButton from "@/components/buttons/TextIconButton.vue";
+import collageIcon from "@/assets/icons/collage.svg";
 
 const container = ref(null);
 const image = ref(null);
@@ -85,11 +86,12 @@ onMounted(() => {
 
 .number {
   position: absolute;
-  top: 0.5rem;
+  top: 0.25rem;
   z-index: 2;
   color: whitesmoke;
-  right: 0.5rem;
+  right: 0.25rem;
   opacity: 0.75;
+  cursor: none;
 }
 
 

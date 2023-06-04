@@ -4,9 +4,9 @@
       <Transition
         enter-active-class="animate__animated animate__slideInDown"
         leave-active-class="animate__animated animate__slideOutUp"
-        mode="out-in"
+        mode="in-out"
       >
-        <DesktopNavigation v-if="$route.name !== 'login'" />
+        <DesktopNavigation v-if="($route.name ?? 'login') !== 'login'" />
       </Transition>
     </template>
     <template #main>
@@ -35,7 +35,7 @@
         leave-active-class="animate__animated animate__slideOutDown"
         mode="out-in"
       >
-        <MobileNavigation v-if="$route.name !== 'login'" />
+        <MobileNavigation v-if="($route.name ?? 'login') !== 'login'" />
       </Transition>
     </template>
   </AppView>
@@ -44,7 +44,7 @@
 
 
 <script setup>
-import { onMounted, provide, ref } from "vue";
+import { provide, ref } from "vue";
 import { RouterView } from "vue-router";
 
 import "animate.css";
@@ -55,8 +55,6 @@ import AppView from "@/views/AppView.vue";
 import NotificationPopUp from "@/components/common/NotificationPopup.vue";
 import BackgroundOverlay from "@/components/common/BackgroundOverlay.vue";
 import TheLoading from "@/components/common/TheLoading.vue";
-import { useUserInfoStore } from "@/stores/userinfo";
-
 
 const notificationElement = ref(null);
 
@@ -70,11 +68,6 @@ function hide() {
 
 provide("showNotification", show);
 provide("hideNotification", hide);
-
-onMounted(async () => {
-  const userinfo = useUserInfoStore();
-  await userinfo.get();
-});
 </script>
 
 <style scoped>
