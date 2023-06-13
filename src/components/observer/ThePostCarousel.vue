@@ -81,7 +81,7 @@ import Swiper, { Navigation, Pagination } from "swiper";
 import IconButton from "@/components/buttons/IconButton.vue";
 import Post from "@/models/post";
 import { resolveOriginalPictureSrc, resolvePictureSrc } from "@/services/api";
-import TextIconButton from "@/components/buttons/TextIconButton.vue";
+import TextIconButton from "@/components/buttons/IconTextButton.vue";
 import downloadIcon from "@/assets/icons/download.svg";
 import collageIcon from "@/assets/icons/collage.svg";
 import formatIcon from "@/assets/icons/format.svg";

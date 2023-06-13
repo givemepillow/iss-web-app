@@ -3,7 +3,7 @@
     <BackgroundOverlay v-if="isPostPending">
       <TheLoading />
     </BackgroundOverlay>
-    <div class="editor__user editor__user--mobile">
+    <div class="editor__user editor__user--mobile app-card">
       <UserLabel :user="me" />
     </div>
     <div class="editor__cropper app-card">
@@ -17,7 +17,7 @@
         <PostEditorTitle ref="titleElement" :maxlength="25" placeholder="Придумайте название..." />
       </div>
       <div class="editor__info--middle  app-card">
-        <PostEditorDescription ref="descriptionElement" :maxlength="500" placeholder="Добавьте описание..." />
+        <PostEditorDescription ref="descriptionElement" :maxlength="2500" placeholder="Добавьте описание..." />
       </div>
       <div class="editor__info--bottom">
         <CreatePostSubmit
@@ -32,9 +32,9 @@
 <script setup>
 import { inject, ref } from "vue";
 import PostEditorCarousel from "@/components/common/CropperCarousel.vue";
-import CreatePostSubmit from "@/components/new/PostEditorSubmit.vue";
-import PostEditorDescription from "@/components/new/PostEditorDescription.vue";
-import PostEditorTitle from "@/components/new/PostEditorTitle.vue";
+import CreatePostSubmit from "@/components/new/NewPostSubmit.vue";
+import PostEditorDescription from "@/components/new/NewPostDescription.vue";
+import PostEditorTitle from "@/components/new/NewPostTitle.vue";
 import UserLabel from "@/components/common/UserLabel.vue";
 import { publishPost } from "@/services/api";
 import { useUserInfoStore } from "@/stores/userinfo";

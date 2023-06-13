@@ -17,7 +17,9 @@
         type="file"
         @change="onChange"
       />
-      <img alt="" src="../../assets/icons/images.svg">
+      <div class="prompt">
+        <img alt="" src="@/assets/icons/images.svg">
+      </div>
     </div>
   </div>
 </template>
@@ -55,27 +57,39 @@ function onChange(e) {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .container {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
 
 .dropzone {
-    background-color: transparent;
-    height: 50%;
-    width: 50%;
-    border: #555555 dashed 3px;
-    border-radius: 10px;
-    padding: 2rem;
+  background-color: transparent;
+  height: 50%;
+  width: 50%;
+  border: #555555 dashed 3px;
+  border-radius: 10px;
+  padding: 2rem;
+
+  .prompt {
+    height: 100%;
+    width: 100%;
+    padding: 0.5rem;
+
+    img {
+      -webkit-user-drag: none;
+      user-select: none;
+      object-fit: contain;
+      height: 100%;
+      width: 100%;
+      opacity: 0.65;
+    }
+  }
 }
 
-img {
-    -webkit-user-drag: none;
-}
 
 </style>

@@ -48,7 +48,6 @@
             placeholder="Расскажите что-нибудь о себе."
             textarea
           />
-          <EmojiButton class="emoji-button" />
         </div>
         <AppButton
           :disabled="v$.name.$error || v$.username.$error"
@@ -72,19 +71,18 @@ import InputItem from "@/components/common/InputItem.vue";
 import { alpha, helpers, maxLength, minLength, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import {
-  deleteUser, getAvatar,
+  deleteUser,
   logOut,
   saveUserChanges,
   usernameAvailable
 } from "@/services/api";
 import AppButton from "@/components/buttons/AppButton.vue";
-import TextIconButton from "@/components/buttons/TextIconButton.vue";
+import TextIconButton from "@/components/buttons/IconTextButton.vue";
 import logoutIcon from "@/assets/icons/logout.svg";
 import destroyIcon from "@/assets/icons/destroy.svg";
 import BackgroundOverlay from "@/components/common/BackgroundOverlay.vue";
 import TheLoading from "@/components/common/TheLoading.vue";
 import ModalPopup from "@/components/common/ModalPopup.vue";
-import EmojiButton from "@/components/buttons/EmojiButton.vue";
 
 const cropperCarouselElement = ref(null);
 
@@ -203,11 +201,9 @@ async function onSaveChanges() {
 }
 
 onMounted(async () => {
-  let response = await getAvatar(me.id, me.avatarId);
-  let b = await response.blob();
-
-
-  cropperCarouselElement.value.pushLink(me.id, URL.createObjectURL(b), b);
+  // let response = await getAvatar(me.id, me.avatarId);
+  // let b = await response.blob();
+  // cropperCarouselElement.value.pushLink(me.id, URL.createObjectURL(b), b);
 });
 
 scroll(0, 0);
@@ -271,15 +267,6 @@ $padding: 2.5rem;
       display: grid;
       padding: 2rem 0.5rem 0.5rem 0.5rem;
       grid-template-columns: 100%;
-
-      .emoji-button {
-        position: absolute;
-        height: 1rem;
-        width: 1rem;
-        bottom: 3rem;
-        right: 1rem;
-        opacity: 0.5;
-      }
 
 
       .username, .name {

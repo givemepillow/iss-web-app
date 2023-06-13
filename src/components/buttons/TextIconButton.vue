@@ -1,7 +1,7 @@
 <template>
   <div :style="{'font-size': props.fontSize + 'pt'}" class="text-icon-button">
-    <IconButton :alpha="0" :shadow="false" :size="props.size" :src="props.src" />
     <span>{{ props.text }}</span>
+    <IconButton :alpha="0" :shadow="false" :size="props.size" :src="props.src" />
   </div>
 </template>
 
@@ -32,7 +32,7 @@ const props = defineProps({
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding-right: 0.5rem;
+  //padding-right: 0.5rem;
   transition: background-color ease-in 0.15s;
 }
 

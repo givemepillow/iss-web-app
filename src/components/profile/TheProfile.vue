@@ -30,7 +30,7 @@ import { ref } from "vue";
 import Profile from "@/models/profile";
 import TheWall from "@/components/common/TheWall.vue";
 import Post from "@/models/post";
-import TextIconButton from "@/components/buttons/TextIconButton.vue";
+import TextIconButton from "@/components/buttons/IconTextButton.vue";
 import marksIcon from "@/assets/icons/marks.svg";
 import wallIcon from "@/assets/icons/wall.svg";
 import { useRouter } from "vue-router";

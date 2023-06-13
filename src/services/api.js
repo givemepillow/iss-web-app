@@ -1,6 +1,7 @@
 import ky from "ky";
 
 export const apiUrl = import.meta.env.VITE_API_ENDPOINT;
+export const wsUrl = import.meta.env.VITE_WS_ENDPOINT;
 
 
 const api = ky.create({
@@ -30,6 +31,10 @@ export function getPosts(limit, last_created_at) {
 
 export function getBookmarks(username) {
   return api.get(`users/${username}/bookmarks`);
+}
+
+export function getMessages(postId) {
+  return api.get(`discussions/${postId}/messages`);
 }
 
 export function getPostsByUserId(user_id, limit, last_created_at) {
@@ -87,7 +92,7 @@ export function saveUserChanges(formData) {
 }
 
 export function getAvatar(user_id, avatar_id) {
-  return api.get(`avatars/optimized/${user_id}/${avatar_id ?? "0"}`);
+  return api.get(`avatars/optimized/${user_id}/${avatar_id}`);
 }
 
 export async function usernameAvailable(username) {
@@ -107,7 +112,7 @@ export function resolveOriginalPictureSrc(user_id, picture_id) {
 }
 
 export function resolveAvatarSrc(user_id, avatar_id) {
-  return `${apiUrl}/avatars/optimized/${user_id}/${avatar_id ?? "0"}`;
+  return `${apiUrl}/avatars/optimized/${user_id ?? 0}/${avatar_id ?? 0}`;
 }
 
 export function resolveOriginalAvatarSrc(user_id, avatar_id) {

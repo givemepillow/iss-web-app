@@ -1,6 +1,9 @@
 <template>
   <div :class="{'login--visible': true}" class="login">
-    <img :src="pillowIcon" alt="pillow" class="login__logo" height="96">
+    <div class="login__logo" >
+      <IconTextButton :src="shareIcon" :size="4" :font-size="38" text="ISS" />
+      <span>Image Sharing Service</span>
+    </div>
     <Transition
       enter-active-class="animate__animated animate__fadeInRight"
       leave-active-class="animate__animated animate__fadeOutLeft"
@@ -130,7 +133,7 @@ import {
   maxLength,
   alpha
 } from "@vuelidate/validators";
-import pillowIcon from "@/assets/icons/pillow.svg";
+import shareIcon from "@/assets/icons/share.svg";
 import BaseButton from "@/components/buttons/AppButton.vue";
 import InputItem from "@/components/common/InputItem.vue";
 import { useRouter } from "vue-router";
@@ -138,6 +141,7 @@ import TelegramLogin from "@/components/login/TelegramLogin.vue";
 import { confirmCode, signIn, signInViaTelegram, signUp, usernameAvailable } from "@/services/api";
 import { useTimer } from "@/services/timer";
 import { useUserInfoStore } from "@/stores/userinfo";
+import IconTextButton from "@/components/buttons/IconTextButton.vue";
 
 const router = useRouter();
 const timer = useTimer();

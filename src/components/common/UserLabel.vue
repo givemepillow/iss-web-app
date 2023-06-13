@@ -1,22 +1,21 @@
 <template>
-  <RouterLink :to="'/'+props.user?.username" :key="$route.path">
-    <div class="user-label">
-      <div class="user-label__avatar">
-        <img
-          :alt="props.user?.username"
-          :src="resolveAvatarSrc(props.user?.id ?? 0, props.user?.avatarId ?? 0)"
-        >
-      </div>
-      <span class="user-label__name">
+  <div class="user-label" @click="goProfile('/'+props.user?.username)">
+    <div class="user-label__avatar">
+      <img
+        :alt="props.user?.username"
+        :src="resolveAvatarSrc(props.user?.id ?? 0, props.user?.avatarId ?? 0)"
+      >
+    </div>
+    <span class="user-label__name">
       {{ props.user?.username }}
     </span>
-    </div>
-  </RouterLink>
+  </div>
 </template>
 
 <script setup>
 import User from "@/models/user";
 import { resolveAvatarSrc } from "@/services/api";
+import { useRouter, useRoute } from "vue-router";
 
 
 const props = defineProps({
@@ -24,6 +23,17 @@ const props = defineProps({
     type: User
   }
 });
+
+const router = useRouter();
+const route = useRoute();
+
+async function goProfile(path) {
+  const currentPath = route.path;
+  await router.push({ path: path, force: true });
+  if (currentPath!== path) {
+    await router.go(0);
+  }
+}
 
 </script>
 

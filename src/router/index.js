@@ -10,7 +10,7 @@ const router = createRouter({
       path: "/",
       name: "root",
       redirect: to => {
-        return "explore";
+        return "/explore";
       }
     },
     {
@@ -44,7 +44,7 @@ const router = createRouter({
     {
       path: "/new",
       name: "new",
-      component: () => import( "@/components/new/PostEditor.vue"),
+      component: () => import( "@/components/new/NewPost.vue"),
       meta: {
         enterClass: "animate__animated animate__fadeIn",
         leaveClass: "animate__animated animate__fadeOut"

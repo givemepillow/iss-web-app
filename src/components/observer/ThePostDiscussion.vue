@@ -1,42 +1,53 @@
 <template>
   <div class="discussion">
-    <div v-if="messages.length > 0" class="window">
-      <div
-        v-for="msg of messages"
-        :key="msg.id"
-        :class="{'message--myself': msg.user.id === me.id}"
-        class="message"
-      >
-        <IconButton
-          v-if="msg.user.id !== me.id"
-          :padding="0"
-          :src="resolveAvatarSrc(msg.user.id, msg.user.avatarId)"
-          @click="$router.push({path: '/'+(msg.user.username ?? '')})"
-        />
-        <div class="content">
-          <div v-if="msg.user.id !== me.id" class="username"
-               @click="$router.push({path: '/'+(msg.user.username ?? '')})">{{ msg.user.username }}
+    <div class="window">
+      <div ref="messagesElement" class="messages">
+        <div v-if="messages.length ===0" class="placeholder">
+          <div class="placeholder-wrapper">
+            <img :src="commentsIcon" alt="" />
           </div>
-          <div class="text">{{ msg.text }}</div>
-          <div class="time">{{ fmtTime(msg.sentAt) }}</div>
         </div>
-        <IconButton
-          v-if="msg.user.id === me.id"
-          :padding="0"
-          :src="resolveAvatarSrc(msg.user.id, msg.user.avatarId)"
-          @click="$router.push({path: '/'+(msg.user.username ?? '')})"
-        />
+        <TransitionGroup name="list">
+          <div
+            v-for="msg of messages"
+            :key="msg.id"
+            :class="{'message--myself': msg.user.id === me.id}"
+            class="message"
+          >
+            <IconButton
+              v-if="msg.user.id !== me.id"
+              :padding="0"
+              :src="resolveAvatarSrc(msg.user.id, msg.user.avatarId)"
+              @click="$router.push({path: '/'+(msg.user.username ?? '')})"
+            />
+            <div class="content">
+              <div v-if="msg.user.id !== me.id" class="username"
+                   @click="$router.push({path: '/'+(msg.user.username ?? '')})">{{ msg.user.username }}
+              </div>
+              <div class="text">{{ msg.text }}</div>
+              <div class="time">{{ fmtTime(msg.sentAt) }}</div>
+            </div>
+            <IconButton
+              v-if="msg.user.id === me.id"
+              :padding="0"
+              :src="resolveAvatarSrc(msg.user.id, msg.user.avatarId)"
+              @click="$router.push({path: '/'+(msg.user.username ?? '')})"
+            />
+          </div>
+        </TransitionGroup>
       </div>
     </div>
-    <div v-else class="placeholder">
-      <div class="placeholder-wrapper">
-        <img :src="commentsIcon" alt="" />
-      </div>
-    </div>
+
     <div class="input">
       <EmojiButton class="emoji" @emoji="onEmoji" />
-      <span ref="textarea" class="textarea" contenteditable role="textbox"
-            @keydown.enter.prevent.stop="sendComment"></span>
+      <span
+        ref="textarea"
+        class="textarea"
+        contenteditable
+        role="textbox"
+        @keydown.enter.prevent.stop="sendComment"
+      >
+      </span>
       <img :src="sendIcon" alt="" class="send-button" @click="sendComment">
     </div>
   </div>
@@ -46,15 +57,17 @@
 
 import sendIcon from "@/assets/icons/send.svg";
 import EmojiButton from "@/components/buttons/EmojiButton.vue";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onUnmounted, onUpdated, ref } from "vue";
 import { useUserInfoStore } from "@/stores/userinfo";
-import { apiUrl, resolveAvatarSrc } from "@/services/api";
+import { getMessages, resolveAvatarSrc, wsUrl } from "@/services/api";
 import commentsIcon from "@/assets/icons/comments.svg";
 import IconButton from "@/components/buttons/IconButton.vue";
+import { fmtTime } from "@/services/datetime";
 
 const value = ref("");
 const rows = ref(1);
 const textarea = ref(null);
+const messagesElement = ref(null);
 
 const props = defineProps({
   post_id: String
@@ -64,14 +77,20 @@ const maxlength = 500;
 const userinfo = useUserInfoStore();
 const me = await userinfo.get(true);
 const messages = ref([]);
-const connection = new WebSocket(`ws://${apiUrl.split("://")[1]}/discussions/${props.post_id}`);
+const connection = new WebSocket(`${wsUrl}/discussions/${props.post_id}`);
+const response = await getMessages(props.post_id);
+
+
+if (response.ok) {
+  messages.value.push(...(await response.json()));
+}
 connection.onmessage = function(event) {
   let msg = JSON.parse(event.data);
   messages.value.push(msg);
 };
 
 connection.onopen = function() {
-  console.log("Successfully connected to the echo websocket server...");
+  console.log("Successfully connected to the websocket server...");
 };
 
 function onEmoji(emoji) {
@@ -82,30 +101,16 @@ function onEmoji(emoji) {
 }
 
 
-const months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
-
-function fmtTime(timeString) {
-  let date = new Date(timeString);
-  let now = new Date();
-  let time = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-  if (now.getDate() === date.getDate() && now.getMonth() === date.getMonth()) {
-    return time;
-  } else {
-    return `${String(date.getDate())} ${months[date.getMonth()]} ${time}`;
-  }
-
-}
-
 function sendComment() {
   if (textarea.value.innerText.length === 0) return;
   connection.send(JSON.stringify({
-    "text": textarea.value.innerText
+    "text": textarea.value.innerText.slice(0, 500)
   }));
   textarea.value.innerText = "";
 }
 
-onMounted(() => {
-  // discussion;
+onUpdated(() => {
+  messagesElement.value.scroll({ top: messagesElement.value.scrollHeight, behavior: "smooth" });
 });
 
 onUnmounted(() => {
@@ -114,7 +119,16 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
 
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-25px);
+}
 
 .discussion {
   height: 100%;
@@ -122,93 +136,124 @@ onUnmounted(() => {
   display: grid;
   min-height: 0;
   min-width: 0;
+  grid-gap: 0.5rem;
   grid-template-columns: 100%;
   grid-template-rows: minmax(0, 1fr) auto;
 
   .window {
-    display: grid;
-    grid-auto-columns: 100%;
-    grid-gap: 0.25rem;
-    grid-auto-rows: auto;
-    align-content: end;
-    grid-template-rows: unset;
-    grid-auto-flow: row;
-
-    min-width: 0;
-    min-height: 0;
-    padding: 0.5rem 0;
-
-    .message {
-      align-items: end;
+    .messages {
       display: grid;
-      margin: 0;
-      color: var(--app-text-color);
-      border-radius: 15px;
-      font-size: 12pt;
-      gap: 0.5rem;
-      grid-template-columns: 2rem auto;
-      justify-self: start;
-      max-width: calc(100% - 2.25rem);
+      grid-gap: 0.5rem;
+      grid-template-rows: 1fr;
+      grid-auto-rows: auto;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      padding: 0 0.5rem 0.5rem 0;
 
-
-      &--myself {
-        grid-template-columns: auto 2rem;
-        justify-self: end;
+      &::-webkit-scrollbar {
+        width: 0.5rem;
+        border-radius: 5px;
+        overflow: clip;
+        height: 0.25em;
       }
 
-      .content {
-        background-color: #333333;
-        padding: 0.25rem 0.5rem 0.5rem 0.5rem;
-        border-radius: 10px;
+      /* Track */
+      &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+      }
+
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+      }
+
+      /* Handle on hover */
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.65);;
+      }
+
+      .message {
+
+        align-items: end;
         display: grid;
+        color: var(--app-text-color);
+        border-radius: 15px;
+        font-size: 12pt;
+        gap: 0.5rem;
+        grid-template-columns: 2rem auto;
+        justify-self: start;
+        max-width: calc(100% - 2.5rem);
 
-        .text {
-          word-wrap: anywhere;
-          width: 100%;
-          font-size: 11pt;
-        }
 
-        .username {
-          background: var(--app-active-color);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          font-size: 10.5pt;
-          cursor: pointer;
-        }
-
-        .time {
+        &--myself {
+          grid-template-columns: auto 2rem;
           justify-self: end;
-          //background-color: red;
-          font-size: 9pt;
-          opacity: 0.65;
         }
-      }
 
-      .avatar {
-        height: 1.75rem;
-        width: 1.75rem;
-        border-radius: 100%;
+        .content {
+          box-shadow: var(--app-default-shadow);
+          background-color: #333333;
+          padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+          border-radius: 10px;
+          display: grid;
 
-        img {
-          height: 100%;
-          width: 100%;
-          object-fit: contain;
+          .text {
+            word-wrap: anywhere;
+            width: 100%;
+            font-size: 11pt;
+          }
+
+          .username {
+            background: var(--app-active-color);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 10.5pt;
+            cursor: pointer;
+            user-select: none;
+          }
+
+          .time {
+            justify-self: end;
+            //background-color: red;
+            font-size: 9pt;
+            opacity: 0.65;
+            user-select: none;
+          }
+        }
+
+        .avatar {
+          height: 1.75rem;
+          width: 1.75rem;
+          border-radius: 100%;
+
+          img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+          }
         }
       }
     }
   }
 
   .placeholder {
+    height: 100%;
     display: grid;
     align-items: center;
     justify-items: center;
-
 
     .placeholder-wrapper {
       height: 45%;
       width: 45%;
       opacity: 0.5;
-
 
       img {
         height: 100%;
@@ -222,7 +267,6 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    //padding: 0.25rem;
     background-color: transparent;
 
     .emoji {

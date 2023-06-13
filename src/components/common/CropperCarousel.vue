@@ -82,7 +82,7 @@
       />
       <CropperCarouselZoomSlider
         :class="{'hidden-zoom-slider': !isZoomSliderShowed    }"
-        :value="cropperElements[swiper?.realIndex]?.currentZoom ?? 0"
+        :model-value="Number(cropperElements[swiper?.realIndex]?.currentZoom ?? 0)"
         class="cropper-carousel__zoom-slider"
         @zoomChange="onZoomChange"
       />

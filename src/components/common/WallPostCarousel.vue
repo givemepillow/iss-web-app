@@ -23,7 +23,7 @@ import { onMounted, ref } from "vue";
 import Swiper, { Pagination, Autoplay } from "swiper";
 import Post from "@/models/post";
 import { resolvePictureSrc } from "@/services/api";
-import TextIconButton from "@/components/buttons/TextIconButton.vue";
+import TextIconButton from "@/components/buttons/IconTextButton.vue";
 import collageIcon from "@/assets/icons/collage.svg";
 
 const container = ref(null);

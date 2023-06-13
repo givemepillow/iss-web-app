@@ -35,11 +35,13 @@
         <div class="post__title">
           <PostTitle :title="post.title" />
         </div>
+        <div class="post__datetime">{{ fmtDate(post.createdAt) }}</div>
         <Transition
           enter-active-class="animate__animated animate__fadeIn"
           leave-active-class="animate__animated animate__fadeOut"
           mode="out-in"
         >
+
           <Suspense>
             <div v-if="isDescription && post.description.length > 0" class="post__description">
               <ThePostDescription :description="post.description" />
@@ -59,18 +61,10 @@
         </Transition>
       </div>
       <div class="" style="overflow: clip">
-        <BaseButton
-          v-if="isDescription"
-          class="post__button post__button--description"
-          text="Описание"
-          @click="isDescription = !isDescription"
-        />
-        <BaseButton
-          v-else
-          class="post__button post__button--discussion"
-          text="Обсуждение"
-          @click="isDescription = !isDescription"
-        />
+        <div class="post__button app-card" @click="onClick">
+          <TextIconButton v-if="isDescription" :src="arrowRightIcon" text="К обсуждению" />
+          <IconTextButton v-else :src="arrowLeftIcon" text="К описанию" />
+        </div>
       </div>
     </div>
   </div>
@@ -82,7 +76,6 @@ import UserLabel from "@/components/common/UserLabel.vue";
 import PostCarousel from "@/components/observer/ThePostCarousel.vue";
 import PostTitle from "@/components/observer/ThePostTitle.vue";
 import PostStatistics from "@/components/common/PostStatistics.vue";
-import BaseButton from "@/components/buttons/AppButton.vue";
 import { deletePost, getPost } from "@/services/api";
 import Post from "@/models/post";
 import OptionsMenu from "@/components/common/OptionsMenu.vue";
@@ -112,6 +105,11 @@ import p16 from "@/assets/placeholders/tree.svg";
 import p17 from "@/assets/placeholders/summer.svg";
 import p18 from "@/assets/placeholders/forest.svg";
 import p19 from "@/assets/placeholders/grove.svg";
+import TextIconButton from "@/components/buttons/TextIconButton.vue";
+import arrowRightIcon from "@/assets/icons/arrowRight.svg";
+import arrowLeftIcon from "@/assets/icons/arrowLeft.svg";
+import IconTextButton from "@/components/buttons/IconTextButton.vue";
+import { fmtDate } from "@/services/datetime";
 
 const placeholders = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p12, p13, p14, p15, p16, p17, p18, p19];
 
@@ -127,6 +125,7 @@ const states = Object.freeze({
 const currentState = ref(states.default);
 const userinfo = useUserInfoStore();
 const me = await userinfo.get(false);
+
 
 const props = defineProps({
   post_id: {
@@ -159,6 +158,10 @@ async function onConfirm() {
   }
 }
 
+function onClick() {
+  isDescription.value = !isDescription.value;
+}
+
 
 async function onSelect(key) {
   if (key === "delete") {
@@ -179,8 +182,6 @@ const postWidth = Math.min(
 const postHeight = postWidth / postRatio;
 
 scroll(0, 0);
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -272,9 +273,16 @@ $padding: 0.5rem;
   &__article {
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
     padding: 0.5rem 0.75rem;
     overflow: clip;
+  }
+
+  &__datetime {
+    font-size: 11pt;
+    opacity: 0.75;
+    border-bottom: grey solid 1px;
+    margin-bottom: 0.5rem;
   }
 
 
@@ -334,8 +342,13 @@ $padding: 0.5rem;
   &__button {
     height: 100%;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 14pt;
     transition: all ease-in-out 250ms;
+    background: var(--app-active-color);
+    color: white;
   }
 }
 </style>
