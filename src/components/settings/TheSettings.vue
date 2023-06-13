@@ -63,12 +63,12 @@
 </template>
 
 <script setup>
-import { computed, inject, onMounted, reactive, ref } from "vue";
+import { computed, inject, reactive, ref } from "vue";
 import CropperCarousel from "@/components/common/CropperCarousel.vue";
 import { useUserInfoStore } from "@/stores/userinfo";
 import { useRouter } from "vue-router";
 import InputItem from "@/components/common/InputItem.vue";
-import { alpha, helpers, maxLength, minLength, required } from "@vuelidate/validators";
+import { helpers, maxLength, minLength, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import {
   deleteUser,
@@ -83,6 +83,7 @@ import destroyIcon from "@/assets/icons/destroy.svg";
 import BackgroundOverlay from "@/components/common/BackgroundOverlay.vue";
 import TheLoading from "@/components/common/TheLoading.vue";
 import ModalPopup from "@/components/common/ModalPopup.vue";
+import { isUserNameValid } from "@/services/validators";
 
 const cropperCarouselElement = ref(null);
 
@@ -121,7 +122,7 @@ const rules = computed(() => ({
       required: helpers.withMessage("Имя пользователя обязтельно!", required),
       minLength: helpers.withMessage("Минимум 3 символа!", minLength(3)),
       maxLength: helpers.withMessage("Максимум 25 символов!", maxLength(25)),
-      alphaNum: helpers.withMessage("Только буквеннве сиволы!", alpha),
+      correct: helpers.withMessage("Недопустимые символы!", isUserNameValid),
       available: helpers.withMessage("Имя пользователя занято!", helpers.withAsync(isUsernameAvailable)),
       $autoDirty: true,
       $lazy: true
@@ -199,12 +200,6 @@ async function onSaveChanges() {
   await userinfo.get(true);
   currentState.value = states.default;
 }
-
-onMounted(async () => {
-  // let response = await getAvatar(me.id, me.avatarId);
-  // let b = await response.blob();
-  // cropperCarouselElement.value.pushLink(me.id, URL.createObjectURL(b), b);
-});
 
 scroll(0, 0);
 </script>

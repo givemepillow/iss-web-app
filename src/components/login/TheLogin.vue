@@ -1,7 +1,7 @@
 <template>
   <div :class="{'login--visible': true}" class="login">
-    <div class="login__logo" >
-      <IconTextButton :src="shareIcon" :size="4" :font-size="38" text="ISS" />
+    <div class="login__logo">
+      <IconTextButton :font-size="38" :size="4" :src="shareIcon" text="ISS" />
       <span>Image Sharing Service</span>
     </div>
     <Transition
@@ -130,8 +130,7 @@ import {
   between,
   numeric,
   minLength,
-  maxLength,
-  alpha
+  maxLength
 } from "@vuelidate/validators";
 import shareIcon from "@/assets/icons/share.svg";
 import BaseButton from "@/components/buttons/AppButton.vue";
@@ -139,6 +138,7 @@ import InputItem from "@/components/common/InputItem.vue";
 import { useRouter } from "vue-router";
 import TelegramLogin from "@/components/login/TelegramLogin.vue";
 import { confirmCode, signIn, signInViaTelegram, signUp, usernameAvailable } from "@/services/api";
+import { isUserNameValid } from "@/services/validators";
 import { useTimer } from "@/services/timer";
 import { useUserInfoStore } from "@/stores/userinfo";
 import IconTextButton from "@/components/buttons/IconTextButton.vue";
@@ -190,7 +190,7 @@ const rules = computed(() => ({
       required: helpers.withMessage("Это обязательное поле!", required),
       minLength: helpers.withMessage("Минимум 3 символа!", minLength(3)),
       maxLength: helpers.withMessage("Максимум 25 символов!", maxLength(25)),
-      alphaNum: helpers.withMessage("Только буквы и цифры!", alpha),
+      correct: helpers.withMessage("Недопустимые символы!", isUserNameValid),
       available: helpers.withMessage("Имя пользователя занято!", helpers.withAsync(isUsernameAvailable)),
       $autoDirty: true,
       $lazy: true

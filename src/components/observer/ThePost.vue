@@ -15,7 +15,7 @@
     <div class="post__picture">
       <div class="post__bar post__bar--vertical app-card">
         <UserLabel :user="post.user" />
-        <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
+        <OptionsMenu v-if="post.user.id === me.id" :options="options" @select="onSelect" />
       </div>
       <div class="post__carousel">
         <PostCarousel
@@ -26,7 +26,7 @@
     <div class="post__info">
       <div class="post__bar post__bar--horizontal  app-card">
         <UserLabel :user="post.user" />
-        <OptionsMenu v-if="post.user.id !== 0" :options="options" @select="onSelect" />
+        <OptionsMenu v-if="post.user.id === me.id" :options="options" @select="onSelect" />
       </div>
       <div class="post__statistics  app-card ">
         <PostStatistics :me="me" :post="post" />
