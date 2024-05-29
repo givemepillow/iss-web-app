@@ -18,12 +18,17 @@ const props = defineProps({
   shadow: {
     type: Boolean,
     default: true
-  }
+  },
+  padding: {
+    type: Number,
+    default: 0.25
+  },
 });
 
 const buttonStyle = {
   width: props.size + "rem",
   height: props.size + "rem",
+  padding: props.padding + "rem",
   "background-color": `rgba(0, 0, 0, ${props.alpha})`,
   "box-shadow": props.shadow ? "rgba(0, 0, 0, 0.16) 0 1px 4px" : "none"
 };
@@ -38,14 +43,18 @@ const buttonStyle = {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 0.25rem;
+
   transition: background-color ease-in 0.15s;
   border-radius: 100%;
+  overflow: clip;
 
   img {
     display: block;
     -webkit-user-drag: none;
     user-select: none;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
   }
 }
 

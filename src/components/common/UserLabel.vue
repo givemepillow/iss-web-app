@@ -1,24 +1,40 @@
 <template>
-  <div class="user-label">
+  <div class="user-label" @click="goProfile('/'+props.user?.username)">
     <div class="user-label__avatar">
-      <img :alt="props.user?.username ?? 'default'" :src="props.user?.avatarUrl ?? avatar" class="">
+      <img
+        :alt="props.user?.username"
+        :src="resolveAvatarSrc(props.user?.id ?? 0, props.user?.avatarId ?? 0)"
+      >
     </div>
     <span class="user-label__name">
-      {{ props.user?.username ?? 'default' }}
+      {{ props.user?.username }}
     </span>
   </div>
 </template>
 
 <script setup>
-import avatar from "@/assets/avatars/batman.svg";
+import User from "@/models/user";
+import { resolveAvatarSrc } from "@/services/api";
+import { useRouter, useRoute } from "vue-router";
 
 
 const props = defineProps({
   user: {
-    type: Object,
-    required: true
+    type: User
   }
 });
+
+const router = useRouter();
+const route = useRoute();
+
+async function goProfile(path) {
+  const currentPath = route.path;
+  await router.push({ path: path, force: true });
+  if (currentPath!== path) {
+    await router.go(0);
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -26,8 +42,10 @@ const props = defineProps({
   display: flex;
   gap: 1em;
   align-items: center;
-  font-size: 12pt;
+  font-size: 10pt;
   padding: 0;
+  background-color: transparent;
+
 
   &__avatar {
     height: 2rem;
@@ -45,7 +63,6 @@ const props = defineProps({
       -webkit-user-drag: none;
       user-select: none;
     }
-
   }
 
 

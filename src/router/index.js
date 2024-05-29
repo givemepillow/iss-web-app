@@ -1,51 +1,73 @@
 import { createRouter, createWebHistory } from "vue-router";
-import PostView from "@/views/PostView.vue";
-import NewView from "@/views/NewView.vue";
+import TheExplore from "@/components/explore/TheExplore.vue";
+import TheProfile from "@/components/profile/TheProfile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  mode: "history",
   routes: [
     {
       path: "/",
-      name: "main",
-      component: () => import("@/views/ExploreView.vue")
+      name: "root",
+      redirect: to => {
+        return "/explore";
+      }
     },
     {
-      path: "/posts/new",
+      path: "/:username/:tab?",
+      name: "user",
+      props: route => ({ username: route.params.username, tab: route.params.tab }),
+      component: TheProfile,
+      meta: {
+        enterClass: "animate__animated animate__zoomIn",
+        leaveClass: "animate__animated animate__fadeOutDown"
+      }
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: () => import( "@/components/settings/TheSettings.vue"),
+      meta: {
+        enterClass: "animate__animated animate__zoomIn",
+        leaveClass: "animate__animated animate__zoomOut"
+      }
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: () => import( "@/components/login/TheLogin.vue"),
+      meta: {
+        enterClass: "animate__animated animate__zoomIn",
+        leaveClass: "animate__animated animate__zoomOut"
+      }
+    },
+    {
+      path: "/new",
       name: "new",
-      component: NewView
+      component: () => import( "@/components/new/NewPost.vue"),
+      meta: {
+        enterClass: "animate__animated animate__fadeIn",
+        leaveClass: "animate__animated animate__fadeOut"
+      }
     },
     {
       path: "/posts/:id",
       name: "post",
       props: route => ({ post_id: route.params.id }),
-      component: PostView
+      component: () => import( "@/components/observer/ThePost.vue"),
+      meta: {
+        enterClass: "animate__animated animate__zoomIn",
+        leaveClass: "animate__animated animate__fadeOutDown"
+      }
     },
     {
       path: "/explore",
       name: "explore",
-      component: () => import("@/views/ExploreView.vue")
-    },
-    {
-      path: "/posts",
-      name: "posts",
-      component: () => import("@/views/ExploreView.vue")
-    },
-    {
-      path: "/login",
-      name: "login",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("@/views/LoginView.vue")
-    },
-    {
-      path: "/dev",
-      name: "dev",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("@/views/DevView.vue")
+      component: TheExplore,
+      meta: {
+        enterClass: "animate__animated animate__fadeInDown",
+        leaveClass: "animate__animated animate__fadeOutDown"
+      }
     }
   ]
 });

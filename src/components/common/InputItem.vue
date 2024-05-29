@@ -6,15 +6,29 @@
     >
       {{ props.label }}
     </label>
+
     <input
+      v-if="!textarea"
       :autocomplete="autocomplete"
       :autofocus="autofocus"
-      :max="max"
       :maxlength="maxlength"
       :minlength="minlength"
       :name="name"
       :placeholder="placeholder"
-      :type="type"
+      :type="props.type"
+      :value="modelValue"
+      class="input-item__input"
+      @blur="$emit('blur')"
+      @input="onInput"
+    />
+    <textarea
+      v-else
+      :autocomplete="autocomplete"
+      :autofocus="autofocus"
+      :maxlength="maxlength"
+      :minlength="minlength"
+      :name="name"
+      :placeholder="placeholder"
       :value="modelValue"
       class="input-item__input"
       @blur="$emit('blur')"
@@ -46,6 +60,10 @@ const props = defineProps({
     type: String,
     required: true
   },
+  value: {
+    type: String,
+    default: ""
+  },
   label: {
     type: String,
     default: "Input field",
@@ -55,6 +73,10 @@ const props = defineProps({
     type: String,
     default: "",
     required: false
+  },
+  textarea: {
+    type: Boolean,
+    default: false
   },
   error: {
     type: String,
@@ -82,14 +104,9 @@ const props = defineProps({
     type: String,
     default: "on"
   },
-  max: {
-    type: Number,
-    default: 99999999
-  },
   modelValue: {
     type: String,
-    default: "",
-    required: true
+    default: ""
   },
   minlength: {
     type: Number,
@@ -129,11 +146,13 @@ function onInput(event) {
     margin: 0 0 0.3rem 0;
     padding: 0 0 0 .2rem;
     font-size: 9pt;
+    color: var(--app-text-color)
   }
 
   &__tip, &__error {
     display: block;
     position: absolute;
+    bottom: -1.15rem;
     margin: 0 0 0 0;
     padding: 0 0 0 .2rem;
     font-size: 9pt;
@@ -154,14 +173,16 @@ function onInput(event) {
     background-color: var(--app-background-color);
     border-radius: var(--app-border-radius);
     outline: none;
-    height: 2.2rem;
-    font-size: 12pt;
+    height: 100%;
+    font-size: 11pt;
+    font-family: inherit;
     box-sizing: border-box;
     color: var(--app-text-color);
     padding: 0.3rem;
     border: #444444 solid 2px;
     transition: all ease-in-out 0.15s;
     text-align: v-bind(align);
+    resize: none;
 
     &:focus {
       border: rgba(8, 189, 189, 0.75) solid 2px;
